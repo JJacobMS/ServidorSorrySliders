@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f8cf44f900134782b4fa7b0660abbc76" Name="Diagram1">
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.CuentaSet" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.NotificaciónSet" Width="1.5" PointX="5.25" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.PartidaSet" Width="1.5" PointX="5.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.RelaciónAmigosSet" Width="1.5" PointX="5.25" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.RelacionBaneadosSet" Width="1.5" PointX="5.25" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.RelacionPartidaCuentaSet" Width="1.5" PointX="7.5" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.UsuarioSet" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_CuentaPartida" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_CuentaRelacionPartidaCuenta" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_CuentaUsuario" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_RelaciónAmigosCuenta" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_RelaciónAmigosCuenta1" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_RelacionBaneadosCuenta" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_RelacionBaneadosCuenta1" ManuallyRouted="false" />
+        <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_PartidaRelacionPartidaCuenta" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
