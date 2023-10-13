@@ -16,6 +16,8 @@ namespace DatosSorrySliders
                 stringBuilder.Append(byteArreglo);
             }
             return stringBuilder.ToString();
+            //string cadena = Encoding.UTF8.GetString(bytes);
+
         }
     }
 }
