@@ -8,7 +8,9 @@ using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -86,9 +88,9 @@ namespace ServidorSorrySliders
                     context.SaveChanges();
 
                     context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
-                        "VALUES(@correo, CONVERT(varbinary(MAX), @avatar), HASHBYTES('SHA2_512', @contrasena), @nickname, @idUsuario)",
+                        "VALUES(@correo, @avatar, HASHBYTES('SHA2_512', @contrasena), @nickname, @idUsuario)",
                         new SqlParameter("@correo", cuentaPorGuardar.CorreoElectronico),
-                        new SqlParameter("@avatar", Utilidades.ConvertirArrayByteString(cuentaPorGuardar.Avatar)),
+                        new SqlParameter("@avatar", (cuentaPorGuardar.Avatar)),
                         new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
                         new SqlParameter("@idUsuario", usuarioPorGuardar.IdUsuario));
 
@@ -116,6 +118,7 @@ namespace ServidorSorrySliders
     {
         public (Constantes, string, byte[]) RecuperarDatosUsuario(string correoElectronico)
         {
+
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
