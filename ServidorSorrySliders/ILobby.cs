@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace ServidorSorrySliders
 {
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(ILobbyCallback))]
     public interface ILobby
     {
         [OperationContract(IsOneWay = true)]
         void EntrarPartida(string uid, string correoJugadorNuevo);
-        [OperationContract]
-        (Constantes, List<CuentaSet>) UnirseAlLobby(string uid, string correoJugadorNuevo);
+        
     }
 
     [ServiceContract]
@@ -25,7 +24,3 @@ namespace ServidorSorrySliders
     }
 }
 
-
-// Crear un uid cuando crea 
-// EntrarPartida Cliente -> Servidor (One way)
-// JugadorEntroPartida Servidor -> Cliente (One way) Callback
