@@ -54,10 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IInicioSesion.cs" />
+    <Compile Include="ILobby.cs" />
     <Compile Include="IMenuPrincipal.cs" />
     <Compile Include="IRegistroUsuario.cs" />
+    <Compile Include="IUnirsePartida.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServicioComunicacionSorrySliders.cs" />
+    <Compile Include="ServicioComunicacionSorrySlidersLobby.cs" />
+    <Compile Include="ServicioComunicacionSorrySlidersUnirsePartida.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
