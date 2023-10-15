@@ -26,7 +26,6 @@ namespace ServidorSorrySliders
                         CantidadJugadores = numeroJugadores
                     };
                     context.PartidaSet.Add(partida);
-
                     context.SaveChanges();
 
                     RelacionPartidaCuentaSet relacionPartidaCuenta = new RelacionPartidaCuentaSet
@@ -48,7 +47,6 @@ namespace ServidorSorrySliders
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
-
                 }
             }
             catch (SqlException ex)
