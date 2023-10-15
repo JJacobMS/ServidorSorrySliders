@@ -16,8 +16,7 @@ namespace ServidorSorrySliders
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public partial class ServicioComunicacionSorrySliders : ILobby
     {
-        //EN PROCESO ...
-        Dictionary<string, List<OperationContext>>  _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
+        Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
         public void EntrarPartida(string uid, string correoJugadorNuevo)
         {
             if (!_jugadoresEnLinea.ContainsKey(uid))
@@ -30,11 +29,12 @@ namespace ServidorSorrySliders
                 _jugadoresEnLinea[uid].Add(OperationContext.Current);
             }
 
-            Console.WriteLine("Oper " + _jugadoresEnLinea.Count);
-            foreach (OperationContext item in _jugadoresEnLinea[uid])
+            Console.WriteLine("Jugadores Conectados: " + _jugadoresEnLinea.Count);
+
+            foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
             {
-                Console.WriteLine(item.SessionId);
-                item.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida(null);
+                Console.WriteLine(operationContextJugador.SessionId);
+                operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida(null);
             }
         }
 
