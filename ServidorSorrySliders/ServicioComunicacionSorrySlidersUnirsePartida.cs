@@ -69,11 +69,17 @@ namespace ServidorSorrySliders
                         "Where PartidaSet.CodigoPartida = @codigoPartida;", new SqlParameter("@codigoPartida", codigoPartida)).FirstOrDefault();
                     if (partidaRecuperada == null)
                     {
-                        return (Constantes.OPERACION_EXITOSA, partidaRecuperada);
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
                     else 
                     {
-                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                        PartidaSet partida = new PartidaSet
+                        {
+                            CantidadJugadores = partidaRecuperada.CantidadJugadores,
+                            CodigoPartida = partidaRecuperada.CodigoPartida,
+                            CorreoElectronico = partidaRecuperada.CorreoElectronico
+                        };
+                        return (Constantes.OPERACION_EXITOSA, partida);
                     }
                 }
             }
@@ -125,8 +131,7 @@ namespace ServidorSorrySliders
                     }
 
                     contexto.Database.ExecuteSqlCommand("Insert into RelacionPartidaCuentaSet(Posicion,CodigoPartida, CorreoElectronico) " +
-                        "VALUES (@posicion, @uid, @correo);", new SqlParameter("@posicion",0),
-                        new SqlParameter("@uid", uid), new SqlParameter("@correo", correoJugadorNuevo));
+                        "VALUES (0, @uid, @correo);", new SqlParameter("@uid", uid), new SqlParameter("@correo", correoJugadorNuevo));
 
                     return (Constantes.OPERACION_EXITOSA, numeroMaximoJugadores);
                 }
