@@ -17,5 +17,8 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract]
         (Constantes, List<CuentaSet>) RecuperarJugadoresLobby(string uid);
+
+        [OperationContract]
+        (Constantes, PartidaSet) RecuperarPartida(string codigoPartida);
     }
 }

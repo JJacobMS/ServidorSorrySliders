@@ -11,15 +11,21 @@ namespace DatosSorrySliders
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Runtime.Serialization;
+    [DataContract]
     public partial class RelacionPartidaCuentaSet
     {
+        [DataMember]
         public int IdPartidaCuenta { get; set; }
+        [DataMember]
         public int Posicion { get; set; }
+        [DataMember]
         public System.Guid CodigoPartida { get; set; }
+        [DataMember]
         public string CorreoElectronico { get; set; }
-    
+        [DataMember]
         public virtual CuentaSet CuentaSet { get; set; }
+        [DataMember]
         public virtual PartidaSet PartidaSet { get; set; }
     }
 }
