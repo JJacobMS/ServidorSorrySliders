@@ -38,6 +38,15 @@ namespace ServidorSorrySliders
             }
         }
 
+        public void SalirPartida(string uid)
+        {
+            OperationContext operationContextJugador = OperationContext.Current;
+
+
+
+            operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
+        }
+
         private bool ExisteOperationContextEnLista(OperationContext contextoNuevo, List<OperationContext> contextosExistentes)
         {
             for (int i = 0; i < contextosExistentes.Count; i++)
@@ -49,6 +58,7 @@ namespace ServidorSorrySliders
             }
             return false;
         }
+
 
     }
 }

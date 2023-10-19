@@ -13,6 +13,9 @@ namespace ServidorSorrySliders
     {
         [OperationContract(IsOneWay = true)]
         void EntrarPartida(string uid, string correoJugadorNuevo);
+
+        [OperationContract(IsOneWay = true)]
+        void SalirPartida(string uid);
         
     }
 
@@ -21,6 +24,9 @@ namespace ServidorSorrySliders
     {
         [OperationContract(IsOneWay = true)]
         void JugadorEntroPartida(List<CuentaSet> listaJugadores);
+
+        [OperationContract(IsOneWay = true)]
+        void JugadorSalioPartida();
     }
 }
 
