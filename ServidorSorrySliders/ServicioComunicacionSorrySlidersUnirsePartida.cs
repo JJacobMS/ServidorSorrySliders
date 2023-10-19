@@ -95,7 +95,7 @@ namespace ServidorSorrySliders
             }
         }
 
-        public Constantes SalirDelLobby(string correoJugador, string codigoPartida)
+        public void SalirDelLobby(string correoJugador, string codigoPartida)
         {
             try
             {
@@ -104,18 +104,15 @@ namespace ServidorSorrySliders
                     contexto.Database.ExecuteSqlCommand("DELETE from RelacionPartidaCuentaSet where codigoPartida=@codigoPartida AND " +
                         "CorreoElectronico=@correoElectronico;", new SqlParameter("@codigoPartida", codigoPartida),
                         new SqlParameter("@correoElectronico", correoJugador));
-                   return (Constantes.OPERACION_EXITOSA);
                 }
             }
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.ToString()); 
-                return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex.ToString());
-                return Constantes.ERROR_CONEXION_BD;
             }
         }
 
