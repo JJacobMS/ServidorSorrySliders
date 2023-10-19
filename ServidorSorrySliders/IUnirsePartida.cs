@@ -20,5 +20,8 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract]
         (Constantes, PartidaSet) RecuperarPartida(string codigoPartida);
+
+        [OperationContract]
+        Constantes SalirDelLobby(string correoJugador, string codigoPartida);
     }
 }

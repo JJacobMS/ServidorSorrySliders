@@ -95,6 +95,30 @@ namespace ServidorSorrySliders
             }
         }
 
+        public Constantes SalirDelLobby(string correoJugador, string codigoPartida)
+        {
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    contexto.Database.ExecuteSqlCommand("DELETE from RelacionPartidaCuentaSet where codigoPartida=@codigoPartida AND " +
+                        "CorreoElectronico=@correoElectronico;", new SqlParameter("@codigoPartida", codigoPartida),
+                        new SqlParameter("@correoElectronico", correoJugador));
+                   return (Constantes.OPERACION_EXITOSA);
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.ToString()); 
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
         public (Constantes, int) UnirseAlLobby(string uid, string correoJugadorNuevo)
         {
             int numeroMaximoJugadores = -1;

@@ -17,7 +17,7 @@ namespace ServidorSorrySliders
     public partial class ServicioComunicacionSorrySliders : ILobby
     {
         Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
-        public void EntrarPartida(string uid, string correoJugadorNuevo)
+        public void EntrarPartida(string uid)
         {
             if (!_jugadoresEnLinea.ContainsKey(uid))
             {
@@ -29,22 +29,27 @@ namespace ServidorSorrySliders
                 _jugadoresEnLinea[uid].Add(OperationContext.Current);
             }
 
-            Console.WriteLine("Jugadores Conectados: " + _jugadoresEnLinea.Count);
-
+            List<OperationContext> contextosExistentes = _jugadoresEnLinea[uid];
             foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
             {
-                Console.WriteLine(operationContextJugador.SessionId);
-                operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida(null);
+                operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
             }
         }
 
         public void SalirPartida(string uid)
         {
-            OperationContext operationContextJugador = OperationContext.Current;
-
-
-
-            operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
+            if(_jugadoresEnLinea.ContainsKey(uid))
+            {
+                List<OperationContext> contextosExistentes = _jugadoresEnLinea[uid];
+                if (ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
+                {
+                    EliminarContextDeLista(OperationContext.Current, _jugadoresEnLinea[uid]);
+                    foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+                    {
+                        operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                    }
+                }
+            }
         }
 
         private bool ExisteOperationContextEnLista(OperationContext contextoNuevo, List<OperationContext> contextosExistentes)
@@ -59,6 +64,17 @@ namespace ServidorSorrySliders
             return false;
         }
 
+        private void EliminarContextDeLista(OperationContext contextoAEliminar, List<OperationContext> contextosExistentes)
+        {
+            for (int i = contextosExistentes.Count - 1; i >= 0; i--)
+            {
+                OperationContext operationContextJugador = contextosExistentes[i];
+                if (contextoAEliminar.SessionId.Equals(operationContextJugador.SessionId))
+                {
+                    contextosExistentes.RemoveAt(i);
+                }
+            }
+        }
 
     }
 }
