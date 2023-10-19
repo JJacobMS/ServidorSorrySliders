@@ -12,7 +12,7 @@ namespace ServidorSorrySliders
     public interface ILobby
     {
         [OperationContract(IsOneWay = true)]
-        void EntrarPartida(string uid, string correoJugadorNuevo);
+        void EntrarPartida(string uid);
         
     }
 
@@ -20,7 +20,7 @@ namespace ServidorSorrySliders
     public interface ILobbyCallback
     {
         [OperationContract(IsOneWay = true)]
-        void JugadorEntroPartida(List<CuentaSet> listaJugadores);
+        void JugadorEntroPartida();
     }
 }
 
