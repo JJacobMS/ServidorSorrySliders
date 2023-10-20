@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICrearLobby.cs" />
+    <Compile Include="IDetallesCuentaUsuario.cs" />
     <Compile Include="IInicioSesion.cs" />
     <Compile Include="IListaAmigos.cs" />
     <Compile Include="ILobby.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersCrearLobby.cs" />
     <Compile Include="ServicioComunicacionSorrySliders.cs" />
+    <Compile Include="ServicioComunicacionSorrySlidersCuentaUsuario.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersListaAmigos.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersLobby.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersUnirsePartida.cs" />
