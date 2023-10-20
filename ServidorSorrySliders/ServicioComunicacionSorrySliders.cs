@@ -94,8 +94,6 @@ namespace ServidorSorrySliders
                         new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
                         new SqlParameter("@idUsuario", usuarioPorGuardar.IdUsuario));
 
-                    /*string query = $"INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) VALUES('{cuentaPorGuardar.CorreoElectronico}', {Utilidades.ConvertirArrayByteString(cuentaPorGuardar.Avatar)}, HASHBYTES('SHA2_512', N'{cuentaPorGuardar.Contraseña}'), '{cuentaPorGuardar.Nickname}', {usuarioPorGuardar.IdUsuario})";
-                    context.Database.ExecuteSqlCommand(query);*/
                     Console.WriteLine("Inserción exitosa");
                 }
                 return Constantes.OPERACION_EXITOSA;
@@ -118,7 +116,6 @@ namespace ServidorSorrySliders
     {
         public (Constantes, string, byte[]) RecuperarDatosUsuario(string correoElectronico)
         {
-
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())

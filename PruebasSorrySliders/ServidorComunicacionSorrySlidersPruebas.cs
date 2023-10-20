@@ -114,5 +114,36 @@ namespace PruebasSorrySliders
 
         }
 
+        [Fact]
+        public void VerificarCrearPartidaExitosamentePrueba()
+        {
+            Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
+            Constantes resultadoObtenido;
+            string codigo;
+            int cantidadJugadores = 4;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            
+            CuentaSet cuenta = new CuentaSet
+            {
+                CorreoElectronico = "sao@gmail.com"
+            };
+            (resultadoObtenido, codigo) = servicioComunicacion.CrearPartida(cuenta.CorreoElectronico, cantidadJugadores);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+
+        }
+
+        [Fact]
+        public void VerificarRecuperarPartidaExitosamentePrueba()
+        {
+            Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
+            Constantes resultadoObtenido;
+            string codigoPartida= "B7C18916-DFA0-4F39-8561-5BF44B1C0076";
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            PartidaSet partidaRecuperada = new PartidaSet{};
+            (resultadoObtenido, partidaRecuperada) = servicioComunicacion.RecuperarPartida(codigoPartida);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+
+        }
     }
 }

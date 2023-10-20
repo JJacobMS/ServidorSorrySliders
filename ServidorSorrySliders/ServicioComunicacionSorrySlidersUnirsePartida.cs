@@ -23,7 +23,7 @@ namespace ServidorSorrySliders
                         ("Select CuentaSet.CorreoElectronico, Avatar, Nickname, Contraseña, IdUsuario from CuentaSet " +
                         "Inner Join RelacionPartidaCuentaSet ON RelacionPartidaCuentaSet.CorreoElectronico = CuentaSet.CorreoElectronico " +
                         "Where RelacionPartidaCuentaSet.CodigoPartida = @uid " +
-                        "Order By RelacionPartidaCuentaSet.Posicion;", new SqlParameter("@uid", uid)).ToList();
+                        "Order By RelacionPartidaCuentaSet.IdPartidaCuenta;", new SqlParameter("@uid", uid)).ToList();
 
                     if (cuentasPartida == null)
                     {
@@ -57,6 +57,65 @@ namespace ServidorSorrySliders
             }
         }
 
+        public (Constantes, PartidaSet) RecuperarPartida(string codigoPartida)
+        {
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var partidaRecuperada = contexto.Database.SqlQuery<PartidaSet>
+                        ("SELECT PartidaSet.CodigoPartida, PartidaSet.CorreoElectronico, PartidaSet.CantidadJugadores from PartidaSet " +
+                        "INNER JOIN RelacionPartidaCuentaSet ON RelacionPartidaCuentaSet.CodigoPartida = PartidaSet.CodigoPartida " +
+                        "Where PartidaSet.CodigoPartida = @codigoPartida;", new SqlParameter("@codigoPartida", codigoPartida)).FirstOrDefault();
+                    if (partidaRecuperada == null)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+                    else 
+                    {
+                        PartidaSet partida = new PartidaSet
+                        {
+                            CantidadJugadores = partidaRecuperada.CantidadJugadores,
+                            CodigoPartida = partidaRecuperada.CodigoPartida,
+                            CorreoElectronico = partidaRecuperada.CorreoElectronico
+                        };
+                        return (Constantes.OPERACION_EXITOSA, partida);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+        public void SalirDelLobby(string correoJugador, string codigoPartida)
+        {
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    contexto.Database.ExecuteSqlCommand("DELETE from RelacionPartidaCuentaSet where codigoPartida=@codigoPartida AND " +
+                        "CorreoElectronico=@correoElectronico;", new SqlParameter("@codigoPartida", codigoPartida),
+                        new SqlParameter("@correoElectronico", correoJugador));
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.ToString()); 
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
         public (Constantes, int) UnirseAlLobby(string uid, string correoJugadorNuevo)
         {
             int numeroMaximoJugadores = -1;
@@ -68,7 +127,7 @@ namespace ServidorSorrySliders
                         ("Select CuentaSet.CorreoElectronico, Avatar, Nickname, Contraseña, IdUsuario from CuentaSet " +
                         "Inner Join RelacionPartidaCuentaSet ON RelacionPartidaCuentaSet.CorreoElectronico = CuentaSet.CorreoElectronico " +
                         "Where RelacionPartidaCuentaSet.CodigoPartida = @uid " +
-                        "Order By RelacionPartidaCuentaSet.Posicion;", new SqlParameter("@uid", uid)).ToList();
+                        "Order By RelacionPartidaCuentaSet.IdPartidaCuenta;", new SqlParameter("@uid", uid)).ToList();
 
                     for (int i = 0; i < cuentasPartida.Count; i++)
                     {
@@ -93,8 +152,7 @@ namespace ServidorSorrySliders
                     }
 
                     contexto.Database.ExecuteSqlCommand("Insert into RelacionPartidaCuentaSet(Posicion,CodigoPartida, CorreoElectronico) " +
-                        "VALUES (@posicion, @uid, @correo);", new SqlParameter("@posicion", cuentasPartida.Count),
-                        new SqlParameter("@uid", uid), new SqlParameter("@correo", correoJugadorNuevo));
+                        "VALUES (0, @uid, @correo);", new SqlParameter("@uid", uid), new SqlParameter("@correo", correoJugadorNuevo));
 
                     return (Constantes.OPERACION_EXITOSA, numeroMaximoJugadores);
                 }

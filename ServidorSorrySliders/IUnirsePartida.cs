@@ -17,5 +17,11 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract]
         (Constantes, List<CuentaSet>) RecuperarJugadoresLobby(string uid);
+
+        [OperationContract]
+        (Constantes, PartidaSet) RecuperarPartida(string codigoPartida);
+
+        [OperationContract(IsOneWay = true)]
+        void SalirDelLobby(string correoJugador, string codigoPartida);
     }
 }
