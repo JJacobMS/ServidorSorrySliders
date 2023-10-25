@@ -23,5 +23,7 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract(IsOneWay = true)]
         void SalirDelLobby(string correoJugador, string codigoPartida);
+        [OperationContract]
+        Constantes CrearCuentaProvisionalInvitado(CuentaSet cuentaProvisionalInvitado);
     }
 }

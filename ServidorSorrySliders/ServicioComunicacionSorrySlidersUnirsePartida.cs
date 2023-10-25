@@ -7,11 +7,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders: IUnirsePartida
     {
+        
         public (Constantes, List<CuentaSet>) RecuperarJugadoresLobby(string uid)
         {
             List<CuentaSet> cuentasPartidaLobby = new List<CuentaSet>();
@@ -168,6 +170,36 @@ namespace ServidorSorrySliders
                 Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex);
                 return (Constantes.ERROR_CONEXION_BD, numeroMaximoJugadores);
+            }
+        }
+        public Constantes CrearCuentaProvisionalInvitado(CuentaSet cuentaProvisionalInvitado)
+        {
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    int idUsuarioInvitado = 10;
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                        "VALUES(@correo, @avatar,'', @nickname, @idUsuario)",
+                        new SqlParameter("@correo", cuentaProvisionalInvitado.CorreoElectronico),
+                        new SqlParameter("@avatar", cuentaProvisionalInvitado.Avatar),
+                        new SqlParameter("@nickname", cuentaProvisionalInvitado.Nickname),
+                        new SqlParameter("@idUsuario", idUsuarioInvitado));
+
+                    Console.WriteLine("Inserción exitosa Invitado");
+                }
+                return Constantes.OPERACION_EXITOSA;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex);
+                return Constantes.ERROR_CONEXION_BD;
             }
         }
     }
