@@ -76,71 +76,70 @@ namespace ServidorSorrySliders
         }
     }
 
-    public partial class ServicioComunicacionSorrySliders : IRegistroUsuario
-    {
-        public Constantes AgregarUsuario(UsuarioSet usuarioPorGuardar, CuentaSet cuentaPorGuardar)
-        {
-            try
-            {
-                using (var context = new BaseDeDatosSorrySlidersEntities())
-                {
-                    context.UsuarioSet.Add(usuarioPorGuardar);
-                    context.SaveChanges();
-
-                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
-                        "VALUES(@correo, @avatar, HASHBYTES('SHA2_512', @contrasena), @nickname, @idUsuario)",
-                        new SqlParameter("@correo", cuentaPorGuardar.CorreoElectronico),
-                        new SqlParameter("@avatar", (cuentaPorGuardar.Avatar)),
-                        new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
-                        new SqlParameter("@idUsuario", usuarioPorGuardar.IdUsuario));
-
-                    Console.WriteLine("Inserción exitosa");
-                }
-                return Constantes.OPERACION_EXITOSA;
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error1", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return Constantes.ERROR_CONSULTA;
-            }
-            catch (EntityException ex)
-            {
-                MessageBox.Show(ex.Message, "Error2", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return Constantes.ERROR_CONEXION_BD;
-            }
-
-        }
-    }
-
     public partial class ServicioComunicacionSorrySliders : IMenuPrincipal
     {
-        public (Constantes, string, byte[]) RecuperarDatosUsuario(string correoElectronico)
+        public (Constantes, string, byte[], string) RecuperarDatosUsuario(string correoElectronico)
         {
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    var usuario = context.CuentaSet.FirstOrDefault(registro => registro.CorreoElectronico == correoElectronico);
-                    if (usuario != null)
+                    var cuenta = context.CuentaSet.FirstOrDefault(registro => registro.CorreoElectronico == correoElectronico);
+                    if (cuenta != null)
                     {
-                        return (Constantes.OPERACION_EXITOSA, usuario.Nickname, usuario.Avatar);
+                        return (Constantes.OPERACION_EXITOSA, cuenta.Nickname, cuenta.Avatar, cuenta.Contraseña);
                     }
                     else
                     {
-                        return (Constantes.OPERACION_EXITOSA_VACIA, null, null);
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null, null, null);
                     }
                 }
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Error1", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return (Constantes.ERROR_CONSULTA, null, null);
+                Console.WriteLine(ex);
+                return (Constantes.ERROR_CONSULTA, null, null, null);
             }
             catch (EntityException ex)
             {
-                MessageBox.Show(ex.Message, "Error2", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return (Constantes.ERROR_CONEXION_BD, null, null);
+                Console.WriteLine(ex);
+                return (Constantes.ERROR_CONEXION_BD, null, null, null);
+            }
+        }
+
+        public (Constantes, List<Puntuacion>) RecuperarPuntuaciones()
+        {
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var puntuaciones = context.Database.SqlQuery<Puntuacion>("SELECT CuentaSet.Nickname, Count(Posicion) AS NumeroPartidasGanadas FROM RelacionPartidaCuentaSET " +
+                    "Inner Join CuentaSet on CuentaSet.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico " +
+                    "where RelacionPartidaCuentaSET.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico AND Posicion = 0 GROUP BY CuentaSet.Nickname ORDER BY NumeroPartidasGanadas DESC;").ToList();
+                    if (puntuaciones == null)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+                    else
+                    {
+                        return (Constantes.OPERACION_EXITOSA, puntuaciones);
+
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
     }
+
+
+
 }

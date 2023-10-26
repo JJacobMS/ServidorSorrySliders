@@ -13,5 +13,7 @@ namespace InterfacesServidorSorrySliders
     {
         [OperationContract]
         Constantes AgregarUsuario(UsuarioSet usuarioPorGuardar, CuentaSet cuentaPorGuardar);
+        [OperationContract]
+        Constantes ActualizarUsuario(UsuarioSet usuarioPorActualizar, CuentaSet cuentaPorActualizar);
     }
 }
