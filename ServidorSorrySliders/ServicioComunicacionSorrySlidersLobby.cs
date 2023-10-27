@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ServidorSorrySliders
 {
@@ -29,7 +30,7 @@ namespace ServidorSorrySliders
                 _jugadoresEnLinea[uid].Add(OperationContext.Current);
             }
             try {
-                List<OperationContext> contextosExistentes = _jugadoresEnLinea[uid];
+
                 foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
                 {
                     operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
@@ -50,16 +51,25 @@ namespace ServidorSorrySliders
         {
             if(_jugadoresEnLinea.ContainsKey(uid))
             {
-                List<OperationContext> contextosExistentes = _jugadoresEnLinea[uid];
+
                 if (ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
                 {
                     try
                     {
                         EliminarContextDeLista(OperationContext.Current, _jugadoresEnLinea[uid]);
-                        foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+                        Console.WriteLine(_jugadoresEnLinea[uid].Count);
+                        if (_jugadoresEnLinea[uid].Count > 0)
                         {
-                            operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                            foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+                            {
+                                operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                            }
                         }
+                        else
+                        {
+                            EliminarPartida(uid);
+                        }
+                        
                     }
                     catch (CommunicationObjectAbortedException ex) 
                     {
@@ -96,6 +106,36 @@ namespace ServidorSorrySliders
                     contextosExistentes.RemoveAt(i);
                     return;
                 }
+            }
+        }
+
+        private void EliminarPartida(string uid)
+        {
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var filasAfectadas = context.Database.ExecuteSqlCommand(
+                        "DELETE FROM PartidaSet WHERE CodigoPartida = @codigo",
+                        new SqlParameter("@codigo", uid));
+
+                    if (filasAfectadas > 0)
+                    {
+                        Console.WriteLine("Partida Eliminada " + uid);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error, ninguna partida se eliminó");
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
             }
         }
 
