@@ -31,5 +31,25 @@ namespace DatosSorrySliders
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [DataMember]
         public virtual ICollection<CuentaSet> CuentaSet { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            UsuarioSet usuarioComparar = obj as UsuarioSet;
+            if (usuarioComparar != null)
+            {
+                if (usuarioComparar.Nombre == null || !Nombre.Equals(usuarioComparar.Nombre))
+                {
+                    return false;
+                }
+
+                if (usuarioComparar.Apellido == null || !Apellido.Equals(usuarioComparar.Apellido))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            return false;
+        }
     }
 }

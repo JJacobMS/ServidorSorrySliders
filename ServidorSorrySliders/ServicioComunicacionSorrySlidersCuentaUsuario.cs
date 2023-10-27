@@ -13,6 +13,7 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IDetallesCuentaUsuario
     {
+        
         public (Constantes, UsuarioSet) RecuperarDatosUsuarioDeCuenta (string correoElectronico)
         {
             try
@@ -51,6 +52,73 @@ namespace ServidorSorrySliders
             }
         }
 
+        public Constantes VerificarContrasenaActual(CuentaSet cuenta)
+        {
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var cuentaVerificada = contexto.Database.SqlQuery<string>
+                        ("Select CorreoElectronico From cuentaSet " +
+                        "WHERE HASHBYTES('SHA2_512', @contrasena) = Contraseña And CorreoElectronico = @correo", 
+                        new SqlParameter("@contrasena", cuenta.Contraseña),
+                        new SqlParameter("@correo", cuenta.CorreoElectronico)).
+                    FirstOrDefault();
+
+                    if (cuentaVerificada == null)
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+
+                    return Constantes.OPERACION_EXITOSA;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public Constantes CambiarContrasena(CuentaSet cuenta)
+        {
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var filasAfectadas = context.Database.ExecuteSqlCommand(
+                        "UPDATE CuentaSet SET Contraseña = HASHBYTES('SHA2_512', @contrasenaNueva) " +
+                        "WHERE CorreoElectronico = @correo",
+                        new SqlParameter("@contrasenaNueva", cuenta.Contraseña),
+                        new SqlParameter("@correo", cuenta.CorreoElectronico));
+
+                    if (filasAfectadas > 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                    else
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
     }
 
     public partial class ServicioComunicacionSorrySliders : IRegistroUsuario

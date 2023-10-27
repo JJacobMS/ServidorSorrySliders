@@ -13,5 +13,11 @@ namespace InterfacesServidorSorrySliders
     {
         [OperationContract]
         (Constantes, UsuarioSet) RecuperarDatosUsuarioDeCuenta(string correoElectronico);
+
+        [OperationContract]
+        Constantes VerificarContrasenaActual(CuentaSet cuenta);
+
+        [OperationContract]
+        Constantes CambiarContrasena(CuentaSet cuenta);
     }
 }
