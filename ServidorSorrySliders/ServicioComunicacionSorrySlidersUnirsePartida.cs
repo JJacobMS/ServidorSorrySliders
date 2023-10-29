@@ -202,5 +202,28 @@ namespace ServidorSorrySliders
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
+
+        public void EliminarCuentaProvisional(string correoElectronico)
+        {
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    context.Database.ExecuteSqlCommand("DELETE FROM CuentaSet " +
+                        "WHERE CorreoElectronico = @correo",
+                        new SqlParameter("@correo", correoElectronico));
+
+                    Console.WriteLine("Eliminar cuenta provisional invitado " + correoElectronico);
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
     }
 }
