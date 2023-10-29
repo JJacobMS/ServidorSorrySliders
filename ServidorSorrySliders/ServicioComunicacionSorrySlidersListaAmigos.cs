@@ -64,7 +64,8 @@ namespace ServidorSorrySliders
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
                     var jugadores = contexto.Database.SqlQuery<CuentaSet>
-                        ("Select * From CuentaSet Where Nickname Like '%' + @nickname + '%' Or CorreoElectronico Like '%' + @correo + '%'",
+                        ("Select * From CuentaSet Where Nickname Like '%' + @nickname + '%' Or CorreoElectronico Like '%' + @correo + '%' " +
+                        "AND CorreoElectronico Like '%@%' ORDER BY CorreoElectronico DESC",
                         new SqlParameter("@nickname", informacionJugador), new SqlParameter("@correo", informacionJugador)).ToList();
 
                     if (jugadores == null || jugadores.Count <= 0)
