@@ -29,22 +29,21 @@ namespace ServidorSorrySliders
             {
                 _jugadoresEnLinea[uid].Add(OperationContext.Current);
             }
-            try {
-
-                foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+            foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+            {
+                try 
                 {
                     operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
                 }
+                catch (CommunicationObjectAbortedException ex) 
+                {
+                    Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);                
+                }
             }
-            catch (CommunicationObjectAbortedException ex) 
-            {
-                Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);                
-            }
-
         }
 
         public void SalirPartida(string uid)
@@ -54,31 +53,33 @@ namespace ServidorSorrySliders
 
                 if (ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
                 {
-                    try
+                    EliminarContextDeLista(OperationContext.Current, _jugadoresEnLinea[uid]);
+
+
+                    if (_jugadoresEnLinea[uid].Count > 0)
                     {
-                        EliminarContextDeLista(OperationContext.Current, _jugadoresEnLinea[uid]);
-                        Console.WriteLine(_jugadoresEnLinea[uid].Count);
-                        if (_jugadoresEnLinea[uid].Count > 0)
+
+                        foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
                         {
-                            foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+                            try
                             {
                                 operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+
+                            }
+                            catch (CommunicationObjectAbortedException ex)
+                            {
+                                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.StackTrace);
+
                             }
                         }
-                        else
-                        {
-                            EliminarPartida(uid);
-                        }
-                        
                     }
-                    catch (CommunicationObjectAbortedException ex) 
+                    else
                     {
-                        Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.StackTrace);
-
+                        EliminarPartida(uid);
                     }
                 }
             }
