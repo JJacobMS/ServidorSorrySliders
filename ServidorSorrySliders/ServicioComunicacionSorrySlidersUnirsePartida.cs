@@ -235,7 +235,7 @@ namespace ServidorSorrySliders
             }
             catch (EntityException ex)
             {
-                log.LogError("Error de conexión a la base de datos", ex)
+                log.LogError("Error de conexión a la base de datos", ex);
                 Console.WriteLine(ex);
             }
         }
