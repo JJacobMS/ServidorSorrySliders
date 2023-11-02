@@ -20,6 +20,7 @@ namespace ServidorSorrySliders
         Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
         public void EntrarPartida(string uid)
         {
+            Logger log = new Logger(this.GetType(), "ILobby");
             if (!_jugadoresEnLinea.ContainsKey(uid))
             {
                 _jugadoresEnLinea.Add(uid, new List<OperationContext>());
@@ -38,17 +39,21 @@ namespace ServidorSorrySliders
                 catch (CommunicationObjectAbortedException ex) 
                 {
                     Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
+                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);                
+                    Console.WriteLine(ex.StackTrace);
+                    log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
         }
 
         public void SalirPartida(string uid)
         {
-            if(_jugadoresEnLinea.ContainsKey(uid))
+            Logger log = new Logger(this.GetType(), "ILobby");
+            if (_jugadoresEnLinea.ContainsKey(uid))
             {
 
                 if (ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
@@ -69,11 +74,12 @@ namespace ServidorSorrySliders
                             catch (CommunicationObjectAbortedException ex)
                             {
                                 Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                                log.LogWarn("La conexión del usuario se ha perdido", ex);
                             }
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex.StackTrace);
-
+                                log.LogFatal("Ha ocurrido un error inesperado", ex);
                             }
                         }
                     }
@@ -112,6 +118,7 @@ namespace ServidorSorrySliders
 
         private void EliminarPartida(string uid)
         {
+            Logger log = new Logger(this.GetType(), "ILobby");
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
@@ -133,10 +140,17 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
             }
             catch (EntityException ex)
             {
+                log.LogError("Error de conexión a la base de datos", ex);
                 Console.WriteLine(ex.StackTrace);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogFatal("Ha ocurrido un error inesperado", ex);
             }
         }
 

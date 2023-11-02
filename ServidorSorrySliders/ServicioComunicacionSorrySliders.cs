@@ -14,6 +14,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net.Config;
 
 namespace ServidorSorrySliders
 {
@@ -22,6 +23,7 @@ namespace ServidorSorrySliders
 
         public Constantes VerificarContrasenaDeCuenta(CuentaSet cuentaPorVerificar)
         {
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
@@ -41,18 +43,21 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
 
         public Constantes VerificarExistenciaCorreoCuenta(string correoElectronico)
         {
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
@@ -68,9 +73,10 @@ namespace ServidorSorrySliders
                     return Constantes.OPERACION_EXITOSA;
                 }
             }
-            catch (EntityException excepcion)
+            catch (EntityException ex)
             {
-                Debug.WriteLine(excepcion.ToString());
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
@@ -80,6 +86,7 @@ namespace ServidorSorrySliders
     {
         public (Constantes, string, byte[], string) RecuperarDatosUsuario(string correoElectronico)
         {
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
@@ -98,22 +105,25 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null, null, null);
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null, null, null);
             }
         }
 
         public (Constantes, List<Puntuacion>) RecuperarPuntuaciones()
         {
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    var puntuaciones = context.Database.SqlQuery<Puntuacion>("SELECT CuentaSet.Nickname, Count(Posicion) AS NumeroPartidasGanadas FROM RelacionPartidaCuentaSET " +
+                    var puntuaciones = context.Database.SqlQuery<Puntuacion>("SELECT TOP(5) CuentaSet.Nickname, Count(Posicion) AS NumeroPartidasGanadas FROM RelacionPartidaCuentaSET " +
                     "Inner Join CuentaSet on CuentaSet.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico " +
                     "where RelacionPartidaCuentaSET.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico AND Posicion = 0 GROUP BY CuentaSet.Nickname ORDER BY NumeroPartidasGanadas DESC;").ToList();
                     if (puntuaciones == null)
@@ -129,11 +139,13 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 Console.WriteLine(ex.ToString());
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
+                log.LogError("Error de conexión a la base de datos", ex);
                 Console.WriteLine(ex.ToString());
                 return (Constantes.ERROR_CONEXION_BD, null);
             }

@@ -16,6 +16,7 @@ namespace ServidorSorrySliders
         
         public (Constantes, List<CuentaSet>) RecuperarJugadoresLobby(string uid)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             List<CuentaSet> cuentasPartidaLobby = new List<CuentaSet>();
             try
             {
@@ -48,19 +49,20 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
 
         public (Constantes, PartidaSet) RecuperarPartida(string codigoPartida)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
@@ -88,17 +90,20 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
 
         public void SalirDelLobby(string correoJugador, string codigoPartida)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
@@ -110,16 +115,19 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString()); 
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
             }
         }
 
         public (Constantes, int) UnirseAlLobby(string uid, string correoJugadorNuevo)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             int numeroMaximoJugadores = -1;
             try
             {
@@ -162,18 +170,19 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, numeroMaximoJugadores);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, numeroMaximoJugadores);
             }
         }
         public Constantes CrearCuentaProvisionalInvitado(CuentaSet cuentaProvisionalInvitado)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
@@ -194,17 +203,20 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
 
         public void EliminarCuentaProvisional(string correoElectronico)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
@@ -218,10 +230,12 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 Console.WriteLine(ex);
             }
             catch (EntityException ex)
             {
+                log.LogError("Error de conexión a la base de datos", ex)
                 Console.WriteLine(ex);
             }
         }

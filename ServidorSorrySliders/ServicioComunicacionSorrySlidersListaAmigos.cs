@@ -16,6 +16,7 @@ namespace ServidorSorrySliders
     {
         public (Constantes, List<CuentaSet>) RecuperarAmigosCuenta(string correoElectronico)
         {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
             try
             {
                 List<CuentaSet> amigosJugador = new List<CuentaSet>();
@@ -46,18 +47,21 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Error1", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                MessageBox.Show(ex.Message, "Error2", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
 
         public (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador)
         {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
             try
             {
                 List<CuentaSet> jugadoresEncontrados = new List<CuentaSet>();
@@ -89,12 +93,14 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Error1", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                MessageBox.Show(ex.Message, "Error2", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
