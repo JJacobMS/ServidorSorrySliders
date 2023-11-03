@@ -14,7 +14,6 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using log4net.Config;
 
 namespace ServidorSorrySliders
 {
