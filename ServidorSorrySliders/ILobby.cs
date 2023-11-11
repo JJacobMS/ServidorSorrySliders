@@ -15,6 +15,8 @@ namespace ServidorSorrySliders
         void EntrarPartida(string uid);
         [OperationContract(IsOneWay = true)]
         void SalirPartida(string uid);
+        [OperationContract(IsOneWay = true)]
+        void ChatJuego(string uid, string nickname, string mensaje);
 
     }
 
@@ -25,6 +27,8 @@ namespace ServidorSorrySliders
         void JugadorEntroPartida();
         [OperationContract(IsOneWay = true)]
         void JugadorSalioPartida();
+        [OperationContract]
+        void DevolverMensaje(string nickname, string mensaje);
     }
 }
 

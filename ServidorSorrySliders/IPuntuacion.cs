@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 namespace InterfacesServidorSorrySliders
 {
     [ServiceContract]
-    public interface IMenuPrincipal
+    public interface IPuntuacion
     {
         [OperationContract]
-        (Constantes, string, byte[], string) RecuperarDatosUsuario(string correoElectronico);
-
+        (Constantes, List<Puntuacion>) RecuperarPuntuaciones();
     }
 }

@@ -14,10 +14,10 @@ using System.Windows.Forms;
 
 namespace ServidorSorrySliders
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public partial class ServicioComunicacionSorrySliders : ILobby
     {
-        Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
+        private Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
         public void EntrarPartida(string uid)
         {
             Logger log = new Logger(this.GetType(), "ILobby");
@@ -154,5 +154,30 @@ namespace ServidorSorrySliders
             }
         }
 
+        public void ChatJuego(string uid, string nickname, string mensaje)
+        {
+            Logger log = new Logger(this.GetType(), "IJuego");
+            Console.WriteLine("Mensaje original en servidor" +" nickname "+nickname+"  men "+mensaje);
+            
+
+            foreach (OperationContext contexto in _jugadoresEnLinea[uid])
+            {
+                try
+                {
+                    contexto.GetCallbackChannel<ILobbyCallback>().DevolverMensaje(nickname, mensaje);
+                }
+                catch (CommunicationObjectAbortedException ex)
+                {
+                    Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    log.LogFatal("Ha ocurrido un error inesperado", ex);
+                }
+            }
+        }
     }
 }
