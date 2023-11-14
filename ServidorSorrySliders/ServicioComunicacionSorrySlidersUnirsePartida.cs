@@ -28,7 +28,7 @@ namespace ServidorSorrySliders
                         "Where RelacionPartidaCuentaSet.CodigoPartida = @uid " +
                         "Order By RelacionPartidaCuentaSet.IdPartidaCuenta;", new SqlParameter("@uid", uid)).ToList();
 
-                    if (cuentasPartida == null)
+                    if (cuentasPartida == null || cuentasPartida.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }

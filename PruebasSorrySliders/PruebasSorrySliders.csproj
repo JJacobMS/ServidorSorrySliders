@@ -66,11 +66,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActualizarRegistrosExitosamentePruebas.cs" />
+    <Compile Include="ActualizarRegistrosNoExistentesPruebas.cs" />
+    <Compile Include="CreacionRegistrosErrorConsultaPruebas.cs" />
     <Compile Include="CreacionRegistrosExitososPruebas.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecuperarRegistrosErrorConexionBaseDatosPruebas.cs" />
     <Compile Include="RecuperarRegistrosExitososPruebas.cs" />
-    <Compile Include="ServidorComunicacionSorrySlidersDetallesCuentaUsuarioPruebas.cs" />
-    <Compile Include="ServidorComunicacionSorrySlidersPruebas.cs" />
+    <Compile Include="RecuperarRegistrosVaciosPruebas.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
