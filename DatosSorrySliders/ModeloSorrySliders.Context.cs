@@ -32,6 +32,6 @@ namespace DatosSorrySliders
         public virtual DbSet<RelacionPartidaCuentaSet> RelacionPartidaCuentaSet { get; set; }
         public virtual DbSet<UsuarioSet> UsuarioSet { get; set; }
         public virtual DbSet<TipoNotificacion> TipoNotificacion { get; set; }
-        public virtual DbSet<NotificaciónSet> NotificaciónSet { get; set; }
+        public virtual DbSet<NotificacionSet> NotificacionSet { get; set; }
     }
 }

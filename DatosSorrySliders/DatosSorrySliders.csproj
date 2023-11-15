@@ -72,7 +72,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModeloSorrySliders.edmx</DependentUpon>
     </Compile>
-    <Compile Include="NotificaciónSet.cs">
+    <Compile Include="NotificacionSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
     <Compile Include="PartidaSet.cs">

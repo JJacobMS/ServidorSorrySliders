@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InterfacesServidorSorrySliders
 {
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(ICallbackListaAmigos))]
     public interface IListaAmigos
     {
         [OperationContract]
@@ -16,5 +16,15 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract]
         (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador);
+        [OperationContract]
+        (Constantes, List<TipoNotificacion>) RecuperarTipoNotificacion();
+        [OperationContract]
+        Constantes GuardarNotificacion(string correoRemitente, string correoDestinatario);
+    }
+    [ServiceContract]
+    public interface ICallbackListaAmigos 
+    {
+        [OperationContract(IsOneWay = true)]
+        void InvitarAmigo(string correo, string uid);
     }
 }

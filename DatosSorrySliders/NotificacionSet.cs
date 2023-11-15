@@ -12,7 +12,7 @@ namespace DatosSorrySliders
     using System;
     using System.Collections.Generic;
     
-    public partial class NotificaciónSet
+    public partial class NotificacionSet
     {
         public int IdNotificacion { get; set; }
         public string CorreoElectronicoRemitente { get; set; }

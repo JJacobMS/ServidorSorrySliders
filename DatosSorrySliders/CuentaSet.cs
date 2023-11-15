@@ -23,8 +23,8 @@ namespace DatosSorrySliders
             this.RelaciónAmigosSet1 = new HashSet<RelaciónAmigosSet>();
             this.RelacionBaneadosSet = new HashSet<RelacionBaneadosSet>();
             this.RelacionBaneadosSet1 = new HashSet<RelacionBaneadosSet>();
-            this.NotificaciónSet = new HashSet<NotificaciónSet>();
-            this.NotificaciónSet1 = new HashSet<NotificaciónSet>();
+            this.NotificacionSet = new HashSet<NotificacionSet>();
+            this.NotificacionSet1 = new HashSet<NotificacionSet>();
         }
     
         public string CorreoElectronico { get; set; }
@@ -47,8 +47,8 @@ namespace DatosSorrySliders
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelacionBaneadosSet> RelacionBaneadosSet1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NotificaciónSet> NotificaciónSet { get; set; }
+        public virtual ICollection<NotificacionSet> NotificacionSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NotificaciónSet> NotificaciónSet1 { get; set; }
+        public virtual ICollection<NotificacionSet> NotificacionSet1 { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IListaAmigos
     {
+        
+
         public (Constantes, List<CuentaSet>) RecuperarAmigosCuenta(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "IListaAmigos");
@@ -103,6 +105,55 @@ namespace ServidorSorrySliders
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
+        }
+
+        public (Constantes, List<TipoNotificacion>) RecuperarTipoNotificacion()
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                List<TipoNotificacion> tiposNotificacion = new List<TipoNotificacion>();
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var notificacionesRecuperadas = contexto.Database.SqlQuery<TipoNotificacion>
+                        ("SELECT IdTipoNotificacion, NombreNotificacion from TipoNotificacion").ToList();
+
+                    if (notificacionesRecuperadas == null || notificacionesRecuperadas.Count() <= 0)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+
+                    for (int i = 0; i < notificacionesRecuperadas.Count(); i++)
+                    {
+                        TipoNotificacion notificacion = new TipoNotificacion
+                        {
+                            IdTipoNotificacion = notificacionesRecuperadas[i].IdTipoNotificacion,
+                            NombreNotificacion = notificacionesRecuperadas[i].NombreNotificacion
+                        };
+                        tiposNotificacion.Add(notificacion);
+                    }
+
+                    return (Constantes.OPERACION_EXITOSA, tiposNotificacion);
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+        public Constantes GuardarNotificacion(string correoRemitente, string correoDestinatario)
+        {
+            throw new NotImplementedException();
         }
     }
 }
