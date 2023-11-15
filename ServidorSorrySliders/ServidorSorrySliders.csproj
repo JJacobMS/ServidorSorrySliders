@@ -59,10 +59,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IChat.cs" />
     <Compile Include="ICrearLobby.cs" />
     <Compile Include="IDetallesCuentaUsuario.cs" />
     <Compile Include="IInicioSesion.cs" />
-    <Compile Include="IJuego.cs" />
     <Compile Include="IListaAmigos.cs" />
     <Compile Include="ILobby.cs" />
     <Compile Include="IMenuPrincipal.cs" />
@@ -75,7 +75,6 @@
     <Compile Include="ServicioComunicacionSorrySlidersCrearLobby.cs" />
     <Compile Include="ServicioComunicacionSorrySliders.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersCuentaUsuario.cs" />
-    <Compile Include="ServicioComunicacionSorrySlidersJuego.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersListaAmigos.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersLobby.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersPuntuaciones.cs" />

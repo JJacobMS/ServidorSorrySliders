@@ -11,9 +11,7 @@ namespace DatosSorrySliders
 {
     using System;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
-    [DataContract]
+    
     public partial class UsuarioSet
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,35 +19,12 @@ namespace DatosSorrySliders
         {
             this.CuentaSet = new HashSet<CuentaSet>();
         }
-        [DataMember]
+    
         public int IdUsuario { get; set; }
-        [DataMember]
         public string Nombre { get; set; }
-        [DataMember]
         public string Apellido { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [DataMember]
         public virtual ICollection<CuentaSet> CuentaSet { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            UsuarioSet usuarioComparar = obj as UsuarioSet;
-            if (usuarioComparar != null)
-            {
-                if (usuarioComparar.Nombre == null || !Nombre.Equals(usuarioComparar.Nombre))
-                {
-                    return false;
-                }
-
-                if (usuarioComparar.Apellido == null || !Apellido.Equals(usuarioComparar.Apellido))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            return false;
-        }
     }
 }

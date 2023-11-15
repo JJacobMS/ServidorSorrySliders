@@ -15,9 +15,9 @@ using System.Windows.Forms;
 namespace ServidorSorrySliders
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public partial class ServicioComunicacionSorrySliders : ILobby
+    public partial class ServicioComunicacionSorrySliders : ILobby, IChat
     {
-        private Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
+        public Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
         public void EntrarPartida(string uid)
         {
             Logger log = new Logger(this.GetType(), "ILobby");
@@ -40,7 +40,12 @@ namespace ServidorSorrySliders
                 {
                     Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
-
+                }
+                catch (InvalidCastException ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                 }
                 catch (Exception ex)
                 {
@@ -68,13 +73,19 @@ namespace ServidorSorrySliders
                         {
                             try
                             {
-                                operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                                operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
 
                             }
                             catch (CommunicationObjectAbortedException ex)
                             {
                                 Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
                                 log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            }
+                            catch (InvalidCastException ex)
+                            {
+                                Console.WriteLine(ex.StackTrace);
+                                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                             }
                             catch (Exception ex)
                             {
@@ -156,15 +167,12 @@ namespace ServidorSorrySliders
 
         public void ChatJuego(string uid, string nickname, string mensaje)
         {
-            Logger log = new Logger(this.GetType(), "IJuego");
-            Console.WriteLine("Mensaje original en servidor" +" nickname "+nickname+"  men "+mensaje);
-            
-
+            Logger log = new Logger(this.GetType(), "IChat");            
             foreach (OperationContext contexto in _jugadoresEnLinea[uid])
             {
                 try
                 {
-                    contexto.GetCallbackChannel<ILobbyCallback>().DevolverMensaje(nickname, mensaje);
+                    contexto.GetCallbackChannel<IChatCallback>().DevolverMensaje(nickname, mensaje);
                 }
                 catch (CommunicationObjectAbortedException ex)
                 {
@@ -172,11 +180,58 @@ namespace ServidorSorrySliders
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
 
                 }
+                catch (InvalidCastException ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.StackTrace);
                     log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
+            }
+        }
+
+        public void IngresarAlChat(string uid)
+        {
+            if (!_jugadoresEnLinea.ContainsKey(uid))
+            {
+                _jugadoresEnLinea.Add(uid, new List<OperationContext>());
+            }
+
+            if (!ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
+            {
+                _jugadoresEnLinea[uid].Add(OperationContext.Current);
+            }
+        }
+
+        public void IniciarPartida(string uid)
+        {
+            Logger log = new Logger(this.GetType(), "ILobby");
+            try
+            {
+                foreach (OperationContext contexto in _jugadoresEnLinea[uid])
+                {
+                    contexto.GetCallbackChannel<ILobbyCallback>().HostInicioPartida();
+                }
+            }
+            catch (CommunicationObjectAbortedException ex)
+            {
+                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                log.LogWarn("La conexión del usuario se ha perdido", ex);
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogFatal("Ha ocurrido un error inesperado", ex);
             }
         }
     }
