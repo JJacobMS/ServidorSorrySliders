@@ -11,9 +11,7 @@ namespace DatosSorrySliders
 {
     using System;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
-    [DataContract]
+    
     public partial class PartidaSet
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,14 +19,11 @@ namespace DatosSorrySliders
         {
             this.RelacionPartidaCuentaSet = new HashSet<RelacionPartidaCuentaSet>();
         }
-
-        [DataMember]
+    
         public System.Guid CodigoPartida { get; set; }
-        [DataMember]
         public int CantidadJugadores { get; set; }
-        [DataMember]
         public string CorreoElectronico { get; set; }
-        [DataMember]
+    
         public virtual CuentaSet CuentaSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelacionPartidaCuentaSet> RelacionPartidaCuentaSet { get; set; }

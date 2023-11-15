@@ -88,6 +88,9 @@
     <Compile Include="RelaciónAmigosSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
+    <Compile Include="TipoNotificacion.cs">
+      <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
+    </Compile>
     <Compile Include="UsuarioSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>

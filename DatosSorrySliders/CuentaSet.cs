@@ -11,43 +11,33 @@ namespace DatosSorrySliders
 {
     using System;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
-    [DataContract]
+    
     public partial class CuentaSet
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CuentaSet()
         {
-            this.NotificaciónSet = new HashSet<NotificaciónSet>();
             this.PartidaSet = new HashSet<PartidaSet>();
             this.RelacionPartidaCuentaSet = new HashSet<RelacionPartidaCuentaSet>();
-            this.NotificaciónSet1 = new HashSet<NotificaciónSet>();
             this.RelaciónAmigosSet = new HashSet<RelaciónAmigosSet>();
             this.RelaciónAmigosSet1 = new HashSet<RelaciónAmigosSet>();
             this.RelacionBaneadosSet = new HashSet<RelacionBaneadosSet>();
             this.RelacionBaneadosSet1 = new HashSet<RelacionBaneadosSet>();
+            this.NotificaciónSet = new HashSet<NotificaciónSet>();
+            this.NotificaciónSet1 = new HashSet<NotificaciónSet>();
         }
-        [DataMember]
+    
         public string CorreoElectronico { get; set; }
-        [DataMember]
         public byte[] Avatar { get; set; }
-        [DataMember]
         public string Contraseña { get; set; }
-        [DataMember]
         public string Nickname { get; set; }
-        [DataMember]
         public int IdUsuario { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NotificaciónSet> NotificaciónSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PartidaSet> PartidaSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelacionPartidaCuentaSet> RelacionPartidaCuentaSet { get; set; }
         public virtual UsuarioSet UsuarioSet { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NotificaciónSet> NotificaciónSet1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelaciónAmigosSet> RelaciónAmigosSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -56,25 +46,9 @@ namespace DatosSorrySliders
         public virtual ICollection<RelacionBaneadosSet> RelacionBaneadosSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelacionBaneadosSet> RelacionBaneadosSet1 { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            CuentaSet cuentaComparar = obj as CuentaSet;
-            if (cuentaComparar != null)
-            {
-                if (cuentaComparar.CorreoElectronico == null || !cuentaComparar.CorreoElectronico.Equals(CorreoElectronico))
-                {
-                    return false;
-                }
-
-                if (cuentaComparar.Nickname == null || !cuentaComparar.Nickname.Equals(Nickname))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            return false;
-        }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NotificaciónSet> NotificaciónSet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NotificaciónSet> NotificaciónSet1 { get; set; }
     }
 }

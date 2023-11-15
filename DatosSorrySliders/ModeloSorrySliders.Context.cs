@@ -26,11 +26,12 @@ namespace DatosSorrySliders
         }
     
         public virtual DbSet<CuentaSet> CuentaSet { get; set; }
-        public virtual DbSet<NotificaciónSet> NotificaciónSet { get; set; }
         public virtual DbSet<PartidaSet> PartidaSet { get; set; }
         public virtual DbSet<RelaciónAmigosSet> RelaciónAmigosSet { get; set; }
         public virtual DbSet<RelacionBaneadosSet> RelacionBaneadosSet { get; set; }
         public virtual DbSet<RelacionPartidaCuentaSet> RelacionPartidaCuentaSet { get; set; }
         public virtual DbSet<UsuarioSet> UsuarioSet { get; set; }
+        public virtual DbSet<TipoNotificacion> TipoNotificacion { get; set; }
+        public virtual DbSet<NotificaciónSet> NotificaciónSet { get; set; }
     }
 }
