@@ -45,6 +45,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constantes.cs" />
+    <Compile Include="ContextoJugador.cs" />
     <Compile Include="CuentaSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
