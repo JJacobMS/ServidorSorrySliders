@@ -136,7 +136,7 @@ namespace PruebasSorrySliders
         }
 
         [Fact]
-        public void VerificarContrasenaCuentaExitosamente()
+        public void VerificarContrasenaCuentaExitosamentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
 
@@ -150,7 +150,7 @@ namespace PruebasSorrySliders
         }
         //Pruebas Interfaces IDetallesCuentaUsuario
         [Fact]
-        public void VerificarRecuperarDetallesUsuarioExistente()
+        public void VerificarRecuperarDetallesUsuarioExistentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
             UsuarioSet usuarioEsperado = new UsuarioSet
@@ -169,7 +169,7 @@ namespace PruebasSorrySliders
         }
 
         [Fact]
-        public void VerificarExistenciaContrasenaExistente()
+        public void VerificarExistenciaContrasenaExistentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
 
@@ -186,7 +186,7 @@ namespace PruebasSorrySliders
         }
         //Pruebas Interfaces IListaAmigos
         [Fact]
-        public void VerificarRecuperarAmigosCuentaExitosamente()
+        public void VerificarRecuperarAmigosCuentaExitosamentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
             string correoElectronicoPrueba = "correoPrueba@gmail.com";
@@ -206,7 +206,7 @@ namespace PruebasSorrySliders
         }
 
         [Fact]
-        public void VerificarRecuperarCuentasExitosamente()
+        public void VerificarRecuperarCuentasExitosamentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
             string informacionJugador = "amigo";
@@ -226,13 +226,14 @@ namespace PruebasSorrySliders
         }
         //Pruebas Interfaces IUnirsePartida
         [Fact]
-        public void VerificarRecuperarJugadoresLobbyExitosamente()
+        public void VerificarRecuperarJugadoresLobbyExitosamentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
             string uidLobby = "00000000-0000-0000-0000-000000000000";
 
             List<CuentaSet> cuentasEsperadas = new List<CuentaSet>
             {
+                new CuentaSet{ Nickname = "nicknamePrueba", CorreoElectronico = "correoPrueba@gmail.com"},
                 new CuentaSet{ Nickname = "amigoPruebasUno", CorreoElectronico = "correoAmigoPruebaUno@gmail.com"},
                 new CuentaSet{ Nickname = "amigoPruebasDos", CorreoElectronico = "correoAmigoPruebaDos@gmail.com"},
             };
@@ -245,5 +246,25 @@ namespace PruebasSorrySliders
             Assert.Equal(cuentasEsperadas, cuentasLobbyActuales);
         }
 
+        [Fact]
+        public void VerificarRecuperarPartidaExitosamentePrueba()
+        {
+            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
+            string uidLobby = "00000000-0000-0000-0000-000000000000";
+
+            PartidaSet partidaEsperada = new PartidaSet
+            {
+                CantidadJugadores = 4,
+                CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"),
+                CorreoElectronico = "correoPrueba@gmail.com"
+            };
+
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            (Constantes respuestaActual, PartidaSet partidaRecuperada) = servicioComunicacion.RecuperarPartida(uidLobby);
+
+            Assert.Equal(respuestaEsperada, respuestaActual);
+            Assert.Equal(partidaEsperada, partidaRecuperada);
+        }
     }
 }

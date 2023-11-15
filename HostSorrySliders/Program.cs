@@ -31,6 +31,7 @@ namespace HostSorrySliders
             {
                 log.LogFatal("Ha ocurrido un error inesperado", ex);
                 Console.WriteLine("Ha ocurrido un error con el servidor \n"+ex.StackTrace);
+                Console.ReadLine();
             }
         }
     }

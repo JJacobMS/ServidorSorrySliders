@@ -13,7 +13,7 @@ namespace ServidorSorrySliders
         [OperationContract(IsOneWay = true)]
         void ChatJuego(string uid, string nickname, string mensaje);
         [OperationContract(IsOneWay = true)]
-        void IngresarAlChat(string uid);
+        void IngresarAlChat(string uid, string correo);
     }
 
     [ServiceContract]
