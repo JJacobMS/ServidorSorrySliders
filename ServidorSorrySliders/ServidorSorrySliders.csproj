@@ -63,6 +63,7 @@
     <Compile Include="ICrearLobby.cs" />
     <Compile Include="IDetallesCuentaUsuario.cs" />
     <Compile Include="IInicioSesion.cs" />
+    <Compile Include="IJuegoLanzamiento.cs" />
     <Compile Include="IListaAmigos.cs" />
     <Compile Include="ILobby.cs" />
     <Compile Include="IMenuPrincipal.cs" />
