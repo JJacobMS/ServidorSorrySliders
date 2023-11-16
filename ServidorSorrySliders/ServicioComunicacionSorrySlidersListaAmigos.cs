@@ -6,16 +6,16 @@ using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ServidorSorrySliders
 {
-    public partial class ServicioComunicacionSorrySliders : IListaAmigos
+    public partial class ServicioComunicacionSorrySliders : IListaAmigos, INotificarJugadores
     {
-        
-
+        private Dictionary<string, OperationContext> _jugadoresEnLineaListaAmigos = new Dictionary<string, OperationContext>();
         public (Constantes, List<CuentaSet>) RecuperarAmigosCuenta(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "IListaAmigos");
@@ -151,9 +151,65 @@ namespace ServidorSorrySliders
             }
         }
 
-        public Constantes GuardarNotificacion(string correoRemitente, string correoDestinatario)
+        public Constantes GuardarNotificacion(NotificacionSet notificacion)
         {
-            throw new NotImplementedException();
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    NotificacionSet notificacionNueva = new NotificacionSet 
+                    {
+                        CorreoElectronicoRemitente = notificacion.CorreoElectronicoRemitente,
+                        CorreoElectronicoDestinatario = notificacion.CorreoElectronicoDestinatario,
+                        IdTipoNotificacion = notificacion.IdTipoNotificacion,
+                        Mensaje = notificacion.Mensaje
+                    };
+                    contexto.NotificacionSet.Add(notificacionNueva);
+                    contexto.SaveChanges();
+                    return Constantes.OPERACION_EXITOSA;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return (Constantes.ERROR_CONSULTA);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
+                return (Constantes.ERROR_CONEXION_BD);
+            }
+        }
+
+        public void NotificarJugadorInvitado(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "INotificarJugadores");
+
+            try
+            {
+                _jugadoresEnLineaListaAmigos[correoElectronico].GetCallbackChannel<ICallbackNotificarJugadores>().RecuperarNotificacion();
+
+            }
+            catch (CommunicationObjectAbortedException ex)
+            {
+                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                log.LogWarn("La conexión del usuario se ha perdido", ex);
+
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogFatal("Ha ocurrido un error inesperado", ex);
+            }
         }
     }
 }
