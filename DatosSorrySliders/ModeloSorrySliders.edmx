@@ -15,7 +15,7 @@
           <Property Name="Nickname" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IdUsuario" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="NotificaciónSet">
+        <EntityType Name="NotificacionSet">
           <Key>
             <PropertyRef Name="IdNotificacion" />
           </Key>
@@ -75,12 +75,12 @@
         </EntityType>
         <Association Name="FK_CuentaNotificación">
           <End Role="CuentaSet" Type="Self.CuentaSet" Multiplicity="1" />
-          <End Role="NotificaciónSet" Type="Self.NotificaciónSet" Multiplicity="*" />
+          <End Role="NotificacionSet" Type="Self.NotificacionSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CuentaSet">
               <PropertyRef Name="CorreoElectronico" />
             </Principal>
-            <Dependent Role="NotificaciónSet">
+            <Dependent Role="NotificacionSet">
               <PropertyRef Name="CorreoElectronicoDestinatario" />
             </Dependent>
           </ReferentialConstraint>
@@ -123,12 +123,12 @@
         </Association>
         <Association Name="FK_NotificaciónCuenta">
           <End Role="CuentaSet" Type="Self.CuentaSet" Multiplicity="1" />
-          <End Role="NotificaciónSet" Type="Self.NotificaciónSet" Multiplicity="*" />
+          <End Role="NotificacionSet" Type="Self.NotificacionSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CuentaSet">
               <PropertyRef Name="CorreoElectronico" />
             </Principal>
-            <Dependent Role="NotificaciónSet">
+            <Dependent Role="NotificacionSet">
               <PropertyRef Name="CorreoElectronicoRemitente" />
             </Dependent>
           </ReferentialConstraint>
@@ -195,19 +195,19 @@
         </Association>
         <Association Name="FK_TipoNotificacion">
           <End Role="TipoNotificacion" Type="Self.TipoNotificacion" Multiplicity="0..1" />
-          <End Role="NotificaciónSet" Type="Self.NotificaciónSet" Multiplicity="*" />
+          <End Role="NotificacionSet" Type="Self.NotificacionSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TipoNotificacion">
               <PropertyRef Name="IdTipoNotificacion" />
             </Principal>
-            <Dependent Role="NotificaciónSet">
+            <Dependent Role="NotificacionSet">
               <PropertyRef Name="IdTipoNotificacion" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="BaseDeDatosSorrySlidersModelStoreContainer">
           <EntitySet Name="CuentaSet" EntityType="Self.CuentaSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="NotificaciónSet" EntityType="Self.NotificaciónSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NotificacionSet" EntityType="Self.NotificacionSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PartidaSet" EntityType="Self.PartidaSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RelaciónAmigosSet" EntityType="Self.RelaciónAmigosSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RelacionBaneadosSet" EntityType="Self.RelacionBaneadosSet" Schema="dbo" store:Type="Tables" />
@@ -216,7 +216,7 @@
           <EntitySet Name="UsuarioSet" EntityType="Self.UsuarioSet" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_CuentaNotificación" Association="Self.FK_CuentaNotificación">
             <End Role="CuentaSet" EntitySet="CuentaSet" />
-            <End Role="NotificaciónSet" EntitySet="NotificaciónSet" />
+            <End Role="NotificacionSet" EntitySet="NotificacionSet" />
           </AssociationSet>
           <AssociationSet Name="FK_CuentaPartida" Association="Self.FK_CuentaPartida">
             <End Role="CuentaSet" EntitySet="CuentaSet" />
@@ -232,7 +232,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_NotificaciónCuenta" Association="Self.FK_NotificaciónCuenta">
             <End Role="CuentaSet" EntitySet="CuentaSet" />
-            <End Role="NotificaciónSet" EntitySet="NotificaciónSet" />
+            <End Role="NotificacionSet" EntitySet="NotificacionSet" />
           </AssociationSet>
           <AssociationSet Name="FK_PartidaRelacionPartidaCuenta" Association="Self.FK_PartidaRelacionPartidaCuenta">
             <End Role="PartidaSet" EntitySet="PartidaSet" />
@@ -256,7 +256,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_TipoNotificacion" Association="Self.FK_TipoNotificacion">
             <End Role="TipoNotificacion" EntitySet="TipoNotificacion" />
-            <End Role="NotificaciónSet" EntitySet="NotificaciónSet" />
+            <End Role="NotificacionSet" EntitySet="NotificacionSet" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -279,9 +279,9 @@
           <NavigationProperty Name="RelaciónAmigosSet1" Relationship="Self.FK_RelaciónAmigosCuenta1" FromRole="CuentaSet" ToRole="RelaciónAmigosSet" />
           <NavigationProperty Name="RelacionBaneadosSet" Relationship="Self.FK_RelacionBaneadosCuenta" FromRole="CuentaSet" ToRole="RelacionBaneadosSet" />
           <NavigationProperty Name="RelacionBaneadosSet1" Relationship="Self.FK_RelacionBaneadosCuenta1" FromRole="CuentaSet" ToRole="RelacionBaneadosSet" />
-          <NavigationProperty Name="NotificaciónSet" Relationship="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación" FromRole="CuentaSet" ToRole="NotificaciónSet" />
-          <NavigationProperty Name="NotificaciónSet1" Relationship="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta" FromRole="CuentaSet" ToRole="NotificaciónSet" />
-        </EntityType>
+          <NavigationProperty Name="NotificacionSet" Relationship="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación" FromRole="CuentaSet" ToRole="NotificacionSet" />
+          <NavigationProperty Name="NotificacionSet1" Relationship="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta" FromRole="CuentaSet" ToRole="NotificacionSet" />
+          </EntityType>
         <EntityType Name="PartidaSet">
           <Key>
             <PropertyRef Name="CodigoPartida" />
@@ -468,29 +468,29 @@
             <End Role="RelacionPartidaCuentaSet" EntitySet="RelacionPartidaCuentaSet" />
           </AssociationSet>
           <EntitySet Name="TipoNotificacion" EntityType="BaseDeDatosSorrySlidersModel.TipoNotificacion" />
-          <EntitySet Name="NotificaciónSet" EntityType="BaseDeDatosSorrySlidersModel.NotificaciónSet" />
+          <EntitySet Name="NotificacionSet" EntityType="BaseDeDatosSorrySlidersModel.NotificacionSet" />
           <AssociationSet Name="FK_CuentaNotificación" Association="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación">
             <End Role="CuentaSet" EntitySet="CuentaSet" />
-            <End Role="NotificaciónSet" EntitySet="NotificaciónSet" />
+            <End Role="NotificacionSet" EntitySet="NotificacionSet" />
           </AssociationSet>
           <AssociationSet Name="FK_NotificaciónCuenta" Association="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta">
             <End Role="CuentaSet" EntitySet="CuentaSet" />
-            <End Role="NotificaciónSet" EntitySet="NotificaciónSet" />
+            <End Role="NotificacionSet" EntitySet="NotificacionSet" />
           </AssociationSet>
           <AssociationSet Name="FK_TipoNotificacion" Association="BaseDeDatosSorrySlidersModel.FK_TipoNotificacion">
             <End Role="TipoNotificacion" EntitySet="TipoNotificacion" />
-            <End Role="NotificaciónSet" EntitySet="NotificaciónSet" />
+            <End Role="NotificacionSet" EntitySet="NotificacionSet" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="TipoNotificacion">
           <Key>
             <PropertyRef Name="IdTipoNotificacion" />
           </Key>
           <Property Name="IdTipoNotificacion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="NombreNotificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="NotificaciónSet" Relationship="BaseDeDatosSorrySlidersModel.FK_TipoNotificacion" FromRole="TipoNotificacion" ToRole="NotificaciónSet" />
+          <NavigationProperty Name="NotificacionSet" Relationship="BaseDeDatosSorrySlidersModel.FK_TipoNotificacion" FromRole="TipoNotificacion" ToRole="NotificacionSet" />
         </EntityType>
-        <EntityType Name="NotificaciónSet">
+        <EntityType Name="NotificacionSet">
           <Key>
             <PropertyRef Name="IdNotificacion" />
           </Key>
@@ -499,47 +499,47 @@
           <Property Name="CorreoElectronicoDestinatario" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="IdTipoNotificacion" Type="Int32" />
           <Property Name="Mensaje" Type="String" MaxLength="45" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CuentaSet" Relationship="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación" FromRole="NotificaciónSet" ToRole="CuentaSet" />
-          <NavigationProperty Name="CuentaSet1" Relationship="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta" FromRole="NotificaciónSet" ToRole="CuentaSet" />
-          <NavigationProperty Name="TipoNotificacion" Relationship="BaseDeDatosSorrySlidersModel.FK_TipoNotificacion" FromRole="NotificaciónSet" ToRole="TipoNotificacion" />
+          <NavigationProperty Name="CuentaSet" Relationship="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación" FromRole="NotificacionSet" ToRole="CuentaSet" />
+          <NavigationProperty Name="CuentaSet1" Relationship="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta" FromRole="NotificacionSet" ToRole="CuentaSet" />
+          <NavigationProperty Name="TipoNotificacion" Relationship="BaseDeDatosSorrySlidersModel.FK_TipoNotificacion" FromRole="NotificacionSet" ToRole="TipoNotificacion" />
         </EntityType>
         <Association Name="FK_CuentaNotificación">
           <End Type="BaseDeDatosSorrySlidersModel.CuentaSet" Role="CuentaSet" Multiplicity="1" />
-          <End Type="BaseDeDatosSorrySlidersModel.NotificaciónSet" Role="NotificaciónSet" Multiplicity="*" />
+          <End Type="BaseDeDatosSorrySlidersModel.NotificacionSet" Role="NotificacionSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CuentaSet">
               <PropertyRef Name="CorreoElectronico" />
             </Principal>
-            <Dependent Role="NotificaciónSet">
+            <Dependent Role="NotificacionSet">
               <PropertyRef Name="CorreoElectronicoDestinatario" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_NotificaciónCuenta">
           <End Type="BaseDeDatosSorrySlidersModel.CuentaSet" Role="CuentaSet" Multiplicity="1" />
-          <End Type="BaseDeDatosSorrySlidersModel.NotificaciónSet" Role="NotificaciónSet" Multiplicity="*" />
+          <End Type="BaseDeDatosSorrySlidersModel.NotificacionSet" Role="NotificacionSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CuentaSet">
               <PropertyRef Name="CorreoElectronico" />
             </Principal>
-            <Dependent Role="NotificaciónSet">
+            <Dependent Role="NotificacionSet">
               <PropertyRef Name="CorreoElectronicoRemitente" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TipoNotificacion">
           <End Type="BaseDeDatosSorrySlidersModel.TipoNotificacion" Role="TipoNotificacion" Multiplicity="0..1" />
-          <End Type="BaseDeDatosSorrySlidersModel.NotificaciónSet" Role="NotificaciónSet" Multiplicity="*" />
+          <End Type="BaseDeDatosSorrySlidersModel.NotificacionSet" Role="NotificacionSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TipoNotificacion">
               <PropertyRef Name="IdTipoNotificacion" />
             </Principal>
-            <Dependent Role="NotificaciónSet">
+            <Dependent Role="NotificacionSet">
               <PropertyRef Name="IdTipoNotificacion" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -610,9 +610,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="NotificaciónSet">
-            <EntityTypeMapping TypeName="BaseDeDatosSorrySlidersModel.NotificaciónSet">
-              <MappingFragment StoreEntitySet="NotificaciónSet">
+          <EntitySetMapping Name="NotificacionSet">
+            <EntityTypeMapping TypeName="BaseDeDatosSorrySlidersModel.NotificacionSet">
+              <MappingFragment StoreEntitySet="NotificacionSet">
                 <ScalarProperty Name="Mensaje" ColumnName="Mensaje" />
                 <ScalarProperty Name="IdTipoNotificacion" ColumnName="IdTipoNotificacion" />
                 <ScalarProperty Name="CorreoElectronicoDestinatario" ColumnName="CorreoElectronicoDestinatario" />

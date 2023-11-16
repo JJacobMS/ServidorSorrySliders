@@ -17,13 +17,13 @@ namespace DatosSorrySliders
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TipoNotificacion()
         {
-            this.NotificaciónSet = new HashSet<NotificaciónSet>();
+            this.NotificacionSet = new HashSet<NotificacionSet>();
         }
     
         public int IdTipoNotificacion { get; set; }
         public string NombreNotificacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NotificaciónSet> NotificaciónSet { get; set; }
+        public virtual ICollection<NotificacionSet> NotificacionSet { get; set; }
     }
 }

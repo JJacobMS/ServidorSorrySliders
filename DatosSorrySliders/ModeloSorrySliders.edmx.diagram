@@ -20,11 +20,11 @@
         <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_RelacionBaneadosCuenta1" ManuallyRouted="false" />
         <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_PartidaRelacionPartidaCuenta" ManuallyRouted="false" />
         <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.TipoNotificacion" Width="1.5" PointX="0.75" PointY="0.875" />
-        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.NotificaciónSet" Width="1.5" PointX="5.25" PointY="0.75" />
+        <EntityTypeShape EntityType="BaseDeDatosSorrySlidersModel.NotificacionSet" Width="1.5" PointX="5.25" PointY="0.75" />
         <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_CuentaNotificación" />
         <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_NotificaciónCuenta" />
         <AssociationConnector Association="BaseDeDatosSorrySlidersModel.FK_TipoNotificacion" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
