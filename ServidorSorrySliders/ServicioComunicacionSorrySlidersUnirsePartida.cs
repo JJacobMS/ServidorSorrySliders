@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -111,6 +114,27 @@ namespace ServidorSorrySliders
                     contexto.Database.ExecuteSqlCommand("DELETE from RelacionPartidaCuentaSet where codigoPartida=@codigoPartida AND " +
                         "CorreoElectronico=@correoElectronico;", new SqlParameter("@codigoPartida", codigoPartida),
                         new SqlParameter("@correoElectronico", correoJugador));
+
+                    int numeroJugadoresRestantes = contexto.Database.SqlQuery<int>
+                        ("SELECT COUNT(CorreoElectronico) FROM RelacionPartidaCuentaSet " +
+                        "WHERE codigoPartida = @codigoPartida", 
+                        new SqlParameter("@codigoPartida", codigoPartida)).FirstOrDefault();
+
+                    if (numeroJugadoresRestantes <= 0)
+                    {
+                        var filasAfectadas = contexto.Database.ExecuteSqlCommand(
+                        "DELETE FROM PartidaSet WHERE CodigoPartida = @codigo",
+                        new SqlParameter("@codigo", codigoPartida));
+
+                        if (filasAfectadas > 0)
+                        {
+                            Console.WriteLine("Partida Eliminada " + codigoPartida);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error, ninguna partida se eliminó");
+                        }
+                    }
                 }
             }
             catch (SqlException ex)
@@ -237,6 +261,16 @@ namespace ServidorSorrySliders
             {
                 log.LogError("Error de conexión a la base de datos", ex);
                 Console.WriteLine(ex);
+            }
+        }
+
+        private void EliminarRelacionPartidaJugadorDesconectado(string correoElectronico, string codigoPartida)
+        {
+            SalirDelLobby(correoElectronico, codigoPartida);
+            Regex validarEsInvitadoRegex = new Regex("^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$");
+            if (validarEsInvitadoRegex.IsMatch(correoElectronico))
+            {
+                EliminarCuentaProvisional(correoElectronico);
             }
         }
     }
