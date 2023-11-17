@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 namespace InterfacesServidorSorrySliders
 {
     [ServiceContract]
-    public interface IRegistroUsuario
+    public interface IDetallesCuentaUsuario
     {
         [OperationContract]
-        Constantes AgregarUsuario(UsuarioSet usuarioPorGuardar, CuentaSet cuentaPorGuardar);
+        (Constantes, UsuarioSet) RecuperarDatosUsuarioDeCuenta(string correoElectronico);
+
         [OperationContract]
-        Constantes ActualizarUsuario(UsuarioSet usuarioPorActualizar, CuentaSet cuentaPorActualizar);
+        Constantes VerificarContrasenaActual(CuentaSet cuenta);
+
+        [OperationContract]
+        Constantes CambiarContrasena(CuentaSet cuenta);
     }
 }

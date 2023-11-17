@@ -12,19 +12,18 @@ namespace DatosSorrySliders
     using System;
     using System.Collections.Generic;
     
-    public partial class UsuarioSet
+    public partial class TipoNotificacion
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public UsuarioSet()
+        public TipoNotificacion()
         {
-            this.CuentaSet = new HashSet<CuentaSet>();
+            this.NotificacionSet = new HashSet<NotificacionSet>();
         }
     
-        public int IdUsuario { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public int IdTipoNotificacion { get; set; }
+        public string NombreNotificacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CuentaSet> CuentaSet { get; set; }
+        public virtual ICollection<NotificacionSet> NotificacionSet { get; set; }
     }
 }

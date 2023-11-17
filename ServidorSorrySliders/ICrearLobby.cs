@@ -9,11 +9,9 @@ using System.Threading.Tasks;
 namespace InterfacesServidorSorrySliders
 {
     [ServiceContract]
-    public interface IRegistroUsuario
+    public interface ICrearLobby
     {
         [OperationContract]
-        Constantes AgregarUsuario(UsuarioSet usuarioPorGuardar, CuentaSet cuentaPorGuardar);
-        [OperationContract]
-        Constantes ActualizarUsuario(UsuarioSet usuarioPorActualizar, CuentaSet cuentaPorActualizar);
+        (Constantes, string) CrearPartida(string correoHost, int NumeroJugadores);
     }
 }

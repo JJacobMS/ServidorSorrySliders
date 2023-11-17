@@ -45,6 +45,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constantes.cs" />
+    <Compile Include="ContextoJugador.cs" />
     <Compile Include="CuentaSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
@@ -72,7 +74,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModeloSorrySliders.edmx</DependentUpon>
     </Compile>
-    <Compile Include="NotificaciónSet.cs">
+    <Compile Include="NotificacionSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
     <Compile Include="PartidaSet.cs">
@@ -86,6 +88,9 @@
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
     <Compile Include="RelaciónAmigosSet.cs">
+      <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoNotificacion.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
     <Compile Include="UsuarioSet.cs">

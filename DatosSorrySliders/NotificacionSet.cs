@@ -12,15 +12,16 @@ namespace DatosSorrySliders
     using System;
     using System.Collections.Generic;
     
-    public partial class NotificaciónSet
+    public partial class NotificacionSet
     {
         public int IdNotificacion { get; set; }
-        public bool AceptacionNotificacion { get; set; }
-        public System.DateTime FechaNotificacion { get; set; }
         public string CorreoElectronicoRemitente { get; set; }
         public string CorreoElectronicoDestinatario { get; set; }
+        public Nullable<int> IdTipoNotificacion { get; set; }
+        public string Mensaje { get; set; }
     
         public virtual CuentaSet CuentaSet { get; set; }
         public virtual CuentaSet CuentaSet1 { get; set; }
+        public virtual TipoNotificacion TipoNotificacion { get; set; }
     }
 }
