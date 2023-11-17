@@ -166,8 +166,15 @@ namespace ServidorSorrySliders
                         Mensaje = notificacion.Mensaje
                     };
                     contexto.NotificacionSet.Add(notificacionNueva);
-                    contexto.SaveChanges();
-                    return Constantes.OPERACION_EXITOSA;
+                    int filasAfectadas = contexto.SaveChanges();
+                    if (filasAfectadas != 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                    else 
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
                 }
             }
             catch (SqlException ex)
@@ -187,11 +194,12 @@ namespace ServidorSorrySliders
         public void NotificarJugadorInvitado(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "INotificarJugadores");
-
             try
             {
-                _jugadoresEnLineaListaAmigos[correoElectronico].GetCallbackChannel<ICallbackNotificarJugadores>().RecuperarNotificacion();
-
+                if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+                {
+                    _jugadoresEnLineaListaAmigos[correoElectronico].GetCallbackChannel<INotificarJugadoresCallback>().RecuperarNotificacion();
+                }
             }
             catch (CommunicationObjectAbortedException ex)
             {
@@ -209,6 +217,106 @@ namespace ServidorSorrySliders
             {
                 Console.WriteLine(ex.StackTrace);
                 log.LogFatal("Ha ocurrido un error inesperado", ex);
+            }
+        }
+
+        public Constantes AgregarProxy(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "INotificar");
+            try
+            {
+                if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+                {
+                    _jugadoresEnLineaListaAmigos.Remove(correoElectronico);
+                    _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
+                    Console.WriteLine("Remover key con contexto y guardar key con contexto");
+                }
+                else 
+                {
+                    _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
+                    Console.WriteLine("Guardar nuevo Key y contexto");
+                }
+                foreach (var correo in _jugadoresEnLineaListaAmigos)
+                {
+                    Console.WriteLine("Correo Guardado: "+correo);
+                }
+                return Constantes.OPERACION_EXITOSA;
+            }
+            catch (CommunicationObjectAbortedException ex)
+            {
+                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                log.LogWarn("La conexión del usuario se ha perdido", ex);
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogFatal("Ha ocurrido un error inesperado", ex);
+            }
+            return Constantes.ERROR_CONEXION_SERVIDOR;
+        }
+
+        public void EliminarProxy(string correoElectronico)
+        {
+            if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+            {
+                _jugadoresEnLineaListaAmigos.Remove(correoElectronico);
+            }
+        }
+
+        public (Constantes, List<NotificacionSet>) RecuperarNotificaciones(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var notificacionesJugador = contexto.Database.SqlQuery<NotificacionSet>("SELECT idNotificacion, " +
+                        "CorreoElectronicoRemitente, CorreoElectronicoDestinatario, IdTipoNotificacion, Mensaje FROM " +
+                        "NotificacionSet where CorreoElectronicoDestinatario=@correo", new SqlParameter("@correo", correoElectronico)).ToList();
+
+                    List<NotificacionSet> listaNotificaciones = new List<NotificacionSet>(){ };
+
+                    foreach (var notificacion in notificacionesJugador) 
+                    {
+                        NotificacionSet notificacionNueva = new NotificacionSet()
+                        {
+                            IdNotificacion = notificacion.IdNotificacion,
+                            CorreoElectronicoRemitente = notificacion.CorreoElectronicoRemitente,
+                            CorreoElectronicoDestinatario = notificacion.CorreoElectronicoDestinatario,
+                            IdTipoNotificacion = notificacion.IdTipoNotificacion,
+                            Mensaje = notificacion.Mensaje
+                            
+                        };
+                        listaNotificaciones.Add(notificacionNueva);
+                    }
+
+                    if (listaNotificaciones == null || listaNotificaciones.Count <= 0)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+                    else
+                    {
+                        return (Constantes.OPERACION_EXITOSA, listaNotificaciones);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
     }
