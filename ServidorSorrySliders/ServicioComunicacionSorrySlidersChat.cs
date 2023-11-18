@@ -42,8 +42,10 @@ namespace ServidorSorrySliders
 
         public void IngresarAlChat(string uid, string correo)
         {
+            CambiarSingle();
             ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = correo, ContextoJugadorCallBack = OperationContext.Current};
             Console.WriteLine( "Agregar Jugador Chat" + ManejarOperationContext.AgregarJugadorContextoLista(_jugadoresEnLineaChat, jugadorNuevo, uid));
+            CambiarMultiple();
         }
     }
 }

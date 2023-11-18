@@ -15,14 +15,17 @@ namespace ServidorSorrySliders
         private Dictionary<string, List<ContextoJugador>> _jugadoresEnLineaJuegoLanzamiento = new Dictionary<string, List<ContextoJugador>>();
         public void AgregarJugadorJuegoLanzamiento(string codigoPartida, string correoElectronico)
         {
+            CambiarSingle();
             ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = correoElectronico, ContextoJugadorCallBack = OperationContext.Current };
 
             ManejarOperationContext.AgregarJugadorContextoLista(_jugadoresEnLineaJuegoLanzamiento, jugadorNuevo, codigoPartida);
             Console.WriteLine("Se agregó " + correoElectronico + " al juego");
+            CambiarMultiple();
         }
 
         public void EliminarJugadorJuegoLanzamiento(string codigoPartida)
         {
+            CambiarSingle();
             Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
             if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
             {
@@ -60,10 +63,12 @@ namespace ServidorSorrySliders
                     }
                 }
             }
+            CambiarMultiple();
         }
 
         public void NotificarFinalizarLanzamiento(string codigoPartida, string correo)
         {
+            CambiarSingle();
             Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
             if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
             {
@@ -104,6 +109,7 @@ namespace ServidorSorrySliders
                 }
 
             }
+            CambiarMultiple();
         }
 
         public void NotificarLanzamientoDado(string codigoPartida, string correo, int numeroDado)
@@ -194,6 +200,20 @@ namespace ServidorSorrySliders
                 }
             }
             return true;
+        }
+
+        private void CambiarSingle()
+        {
+            var hostServicio = (ServiceHost)OperationContext.Current.Host;
+            var comportamiento = hostServicio.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+            comportamiento.ConcurrencyMode = ConcurrencyMode.Single;
+        }
+
+        private void CambiarMultiple()
+        {
+            var hostServicio = (ServiceHost)OperationContext.Current.Host;
+            var comportamiento = hostServicio.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+            comportamiento.ConcurrencyMode = ConcurrencyMode.Multiple;
         }
     }
 }
