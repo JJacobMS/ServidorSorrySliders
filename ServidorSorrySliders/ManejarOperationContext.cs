@@ -44,9 +44,33 @@ namespace ServidorSorrySliders
                 if (contextoAEliminar.SessionId.Equals(operationContextJugador.SessionId))
                 {
                     jugadoresExistentes.RemoveAt(i);
+                    //¿Si se eliminan todos entonces se debería eliminar el registro del diccionario?
                     return;
                 }
             }
+        }
+
+        public static string DevolverCorreoJugador(List<ContextoJugador> jugadoresExistentes, OperationContext jugadorActual)
+        {
+            for (int i = 0; i < jugadoresExistentes.Count; i++)
+            {
+                if (jugadorActual.SessionId.Equals(jugadoresExistentes[i].ContextoJugadorCallBack.SessionId))
+                {
+                    return jugadoresExistentes[i].CorreoJugador;
+                }
+            }
+            return null;
+        }
+        public static int DevolverPosicionCorreoJugador(List<ContextoJugador> jugadoresExistentes, string correo)
+        {
+            for (int i = 0; i < jugadoresExistentes.Count; i++)
+            {
+                if (correo.Equals(jugadoresExistentes[i].CorreoJugador))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }

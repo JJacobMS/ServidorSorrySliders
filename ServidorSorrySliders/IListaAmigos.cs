@@ -24,6 +24,8 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         (Constantes, List<NotificacionSet>) RecuperarNotificaciones(string correoElectronico);
         //Recuperar jugadores que no son amigos //Recuperar amigos
+        // NOTIFICAR QUE SE ENVIO NOTIFICACION PROXY LISTA AMIGOS
+        /*void MostrarEnvioNotificaicon (string correoElectronico)*/
 
     }
 
@@ -37,6 +39,10 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract(IsOneWay = true)]
         void NotificarJugadorInvitado(string correoElectronico);
+        /*private void NotificarInvitado(correo)
+         buscar en el diccionario para ver si lo encuentra y si lo encuentra
+            llamar al callback
+         */
     }
 
     [ServiceContract]

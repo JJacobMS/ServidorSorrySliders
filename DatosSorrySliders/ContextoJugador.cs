@@ -11,6 +11,11 @@ namespace DatosSorrySliders
     {
         public string CorreoJugador { get; set; }
         public OperationContext ContextoJugadorCallBack { get; set; }
-        
+        public bool ListoParaTurnoSiguiente { get; set; }
+
+        public ContextoJugador()
+        {
+            ListoParaTurnoSiguiente = false;
+        }
     }
 }
