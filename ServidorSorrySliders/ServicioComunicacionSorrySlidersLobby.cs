@@ -20,6 +20,7 @@ namespace ServidorSorrySliders
         private Dictionary<string, List<ContextoJugador>> _jugadoresEnLineaLobby = new Dictionary<string, List<ContextoJugador>>();
         public void EntrarPartida(string uid, string cuentaCorreo)
         {
+            CambiarSingle();
             Logger log = new Logger(this.GetType(), "ILobby");
             ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = cuentaCorreo, ContextoJugadorCallBack = OperationContext.Current};
 
@@ -58,10 +59,12 @@ namespace ServidorSorrySliders
                     EliminarRelacionPartidaJugadorDesconectado(jugadorOperation.CorreoJugador, uid);*/
                 }
             }
+            CambiarMultiple();
         }
 
         public void SalirPartida(string uid)
         {
+            CambiarSingle();
             Logger log = new Logger(this.GetType(), "ILobby");
             if (_jugadoresEnLineaLobby.ContainsKey(uid))
             {
@@ -97,6 +100,7 @@ namespace ServidorSorrySliders
                     }
                 }
             }
+            CambiarMultiple();
         }
 
         public void IniciarPartida(string uid)
