@@ -11,17 +11,25 @@ namespace DatosSorrySliders
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Runtime.Serialization;
+    [DataContract]
     public partial class NotificacionSet
     {
+        [DataMember]
         public int IdNotificacion { get; set; }
+        [DataMember]
         public string CorreoElectronicoRemitente { get; set; }
+        [DataMember]
         public string CorreoElectronicoDestinatario { get; set; }
+        [DataMember]
         public Nullable<int> IdTipoNotificacion { get; set; }
+        [DataMember]
         public string Mensaje { get; set; }
-    
+        [DataMember]
         public virtual CuentaSet CuentaSet { get; set; }
+        [DataMember]
         public virtual CuentaSet CuentaSet1 { get; set; }
+        [DataMember]
         public virtual TipoNotificacion TipoNotificacion { get; set; }
     }
 }
