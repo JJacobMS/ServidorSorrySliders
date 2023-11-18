@@ -1,4 +1,5 @@
 ﻿using DatosSorrySliders;
+using ServidorSorrySliders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,9 @@ using System.Threading.Tasks;
 namespace InterfacesServidorSorrySliders
 {
     [ServiceContract]
-    public interface IRegistroUsuario
+    public interface IPuntuacion
     {
         [OperationContract]
-        Constantes AgregarUsuario(UsuarioSet usuarioPorGuardar, CuentaSet cuentaPorGuardar);
-        [OperationContract]
-        Constantes ActualizarUsuario(UsuarioSet usuarioPorActualizar, CuentaSet cuentaPorActualizar);
+        (Constantes, List<Puntuacion>) RecuperarPuntuaciones();
     }
 }

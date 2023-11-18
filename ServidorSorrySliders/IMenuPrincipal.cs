@@ -1,4 +1,5 @@
 ﻿using DatosSorrySliders;
+using ServidorSorrySliders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace InterfacesServidorSorrySliders
     public interface IMenuPrincipal
     {
         [OperationContract]
-        (Constantes, string, byte[]) RecuperarDatosUsuario(string correoElectronico);
+        (Constantes, string, byte[], string) RecuperarDatosUsuario(string correoElectronico);
+
     }
 }

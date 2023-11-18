@@ -10,94 +10,125 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ServidorSorrySliders
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public partial class ServicioComunicacionSorrySliders : ILobby
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    public partial class ServicioComunicacionSorrySliders : ILobby, IChat
     {
-        Dictionary<string, List<OperationContext>> _jugadoresEnLinea = new Dictionary<string, List<OperationContext>>();
-        public void EntrarPartida(string uid)
+        private Dictionary<string, List<ContextoJugador>> _jugadoresEnLineaLobby = new Dictionary<string, List<ContextoJugador>>();
+        public void EntrarPartida(string uid, string cuentaCorreo)
         {
-            if (!_jugadoresEnLinea.ContainsKey(uid))
-            {
-                _jugadoresEnLinea.Add(uid, new List<OperationContext>());
-            }
+            CambiarSingle();
+            Logger log = new Logger(this.GetType(), "ILobby");
+            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = cuentaCorreo, ContextoJugadorCallBack = OperationContext.Current};
 
-            if (!ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
+            ManejarOperationContext.AgregarJugadorContextoLista(_jugadoresEnLineaLobby, jugadorNuevo, uid);
+
+            foreach (ContextoJugador jugadorOperation in _jugadoresEnLineaLobby[uid])
             {
-                _jugadoresEnLinea[uid].Add(OperationContext.Current);
-            }
-            try {
-                List<OperationContext> contextosExistentes = _jugadoresEnLinea[uid];
-                foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+                bool huboError = false;
+                try 
                 {
-                    operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                    jugadorOperation.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                }
+                catch (CommunicationObjectAbortedException ex) 
+                {
+                    huboError = true;
+                    Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
+                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                }
+                catch (InvalidCastException ex)
+                {
+                    huboError = true;
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                }
+                catch (Exception ex)
+                {
+                    huboError = true;
+                    Console.WriteLine(ex.StackTrace);
+                    log.LogFatal("Ha ocurrido un error inesperado", ex);
+                }
+                if (huboError)
+                {
+                    //COMPROBAR JUGADORES
+                    /*ManejarOperationContext.EliminarJugadorLista(jugadorOperation.ContextoJugadorCallBack, _jugadoresEnLineaLobby[uid]);
+                    EliminarRelacionPartidaJugadorDesconectado(jugadorOperation.CorreoJugador, uid);*/
                 }
             }
-            catch (CommunicationObjectAbortedException ex) 
-            {
-                Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);                
-            }
-
+            CambiarMultiple();
         }
 
         public void SalirPartida(string uid)
         {
-            if(_jugadoresEnLinea.ContainsKey(uid))
+            CambiarSingle();
+            Logger log = new Logger(this.GetType(), "ILobby");
+            if (_jugadoresEnLineaLobby.ContainsKey(uid))
             {
-                List<OperationContext> contextosExistentes = _jugadoresEnLinea[uid];
-                if (ExisteOperationContextEnLista(OperationContext.Current, _jugadoresEnLinea[uid]))
+                if (ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaLobby[uid]))
                 {
-                    try
+                    ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaLobby[uid]);
+                    Console.WriteLine("Jugador eliminado del lobby");
+                    if (_jugadoresEnLineaLobby[uid].Count > 0)
                     {
-                        EliminarContextDeLista(OperationContext.Current, _jugadoresEnLinea[uid]);
-                        foreach (OperationContext operationContextJugador in _jugadoresEnLinea[uid])
+                        foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid])
                         {
-                            operationContextJugador.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
+                            try
+                            {
+                                jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
+                            }
+                            catch (CommunicationObjectAbortedException ex)
+                            {
+                                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                                log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            }
+                            catch (InvalidCastException ex)
+                            {
+                                Console.WriteLine(ex.StackTrace);
+                                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.StackTrace);
+                                log.LogFatal("Ha ocurrido un error inesperado", ex);
+                            }
                         }
                     }
-                    catch (CommunicationObjectAbortedException ex) 
-                    {
-                        Console.WriteLine("Ha ocurrido un error en el callback \n"+ex.StackTrace);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.StackTrace);
-
-                    }
                 }
             }
+            CambiarMultiple();
         }
 
-        private bool ExisteOperationContextEnLista(OperationContext contextoNuevo, List<OperationContext> contextosExistentes)
+        public void IniciarPartida(string uid)
         {
-            for (int i = 0; i < contextosExistentes.Count; i++)
+            Logger log = new Logger(this.GetType(), "ILobby");
+            try
             {
-                if (contextoNuevo.SessionId.Equals(contextosExistentes[i].SessionId))
+                foreach (ContextoJugador contexto in _jugadoresEnLineaLobby[uid])
                 {
-                    return true;
+                    contexto.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().HostInicioPartida();
                 }
             }
-            return false;
-        }
-
-        private void EliminarContextDeLista(OperationContext contextoAEliminar, List<OperationContext> contextosExistentes)
-        {
-            for (int i = contextosExistentes.Count - 1; i >= 0; i--)
+            catch (CommunicationObjectAbortedException ex)
             {
-                OperationContext operationContextJugador = contextosExistentes[i];
-                if (contextoAEliminar.SessionId.Equals(operationContextJugador.SessionId))
-                {
-                    contextosExistentes.RemoveAt(i);
-                    return;
-                }
+                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                log.LogWarn("La conexión del usuario se ha perdido", ex);
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogFatal("Ha ocurrido un error inesperado", ex);
             }
         }
-
     }
 }

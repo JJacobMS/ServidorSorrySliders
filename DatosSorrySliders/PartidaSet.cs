@@ -11,9 +11,7 @@ namespace DatosSorrySliders
 {
     using System;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
-    [DataContract]
+    
     public partial class PartidaSet
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,16 +19,39 @@ namespace DatosSorrySliders
         {
             this.RelacionPartidaCuentaSet = new HashSet<RelacionPartidaCuentaSet>();
         }
-
-        [DataMember]
+    
         public System.Guid CodigoPartida { get; set; }
-        [DataMember]
         public int CantidadJugadores { get; set; }
-        [DataMember]
         public string CorreoElectronico { get; set; }
-        [DataMember]
+    
         public virtual CuentaSet CuentaSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelacionPartidaCuentaSet> RelacionPartidaCuentaSet { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            PartidaSet partida = obj as PartidaSet;
+            if (partida == null)
+            {
+                return false;
+            }
+
+            if (partida.CodigoPartida == null || !partida.CodigoPartida.Equals(CodigoPartida))
+            {
+                return false;
+            }
+
+            if (!partida.CantidadJugadores.Equals(CantidadJugadores))
+            {
+                return false;
+            }
+
+            if (partida.CorreoElectronico == null || !partida.CorreoElectronico.Equals(CorreoElectronico))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

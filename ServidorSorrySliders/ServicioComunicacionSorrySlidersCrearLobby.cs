@@ -15,6 +15,7 @@ namespace ServidorSorrySliders
     {
         public (Constantes, string) CrearPartida(string correoHost, int numeroJugadores)
         {
+            Logger log = new Logger(this.GetType(), "ICrearLobby");
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
@@ -51,12 +52,14 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Error1", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                MessageBox.Show(ex.Message, "Error2", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }

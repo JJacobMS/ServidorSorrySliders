@@ -12,9 +12,11 @@ namespace ServidorSorrySliders
     public interface ILobby
     {
         [OperationContract(IsOneWay = true)]
-        void EntrarPartida(string uid);
+        void EntrarPartida(string uid, string jugadorCorreo);
         [OperationContract(IsOneWay = true)]
         void SalirPartida(string uid);
+        [OperationContract(IsOneWay = true)]
+        void IniciarPartida(string uid);
 
     }
 
@@ -25,6 +27,8 @@ namespace ServidorSorrySliders
         void JugadorEntroPartida();
         [OperationContract(IsOneWay = true)]
         void JugadorSalioPartida();
+        [OperationContract(IsOneWay = true)]
+        void HostInicioPartida();
     }
 }
 

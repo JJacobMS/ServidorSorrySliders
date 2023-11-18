@@ -5,15 +5,21 @@ using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders: IUnirsePartida
     {
+        
         public (Constantes, List<CuentaSet>) RecuperarJugadoresLobby(string uid)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             List<CuentaSet> cuentasPartidaLobby = new List<CuentaSet>();
             try
             {
@@ -25,7 +31,7 @@ namespace ServidorSorrySliders
                         "Where RelacionPartidaCuentaSet.CodigoPartida = @uid " +
                         "Order By RelacionPartidaCuentaSet.IdPartidaCuenta;", new SqlParameter("@uid", uid)).ToList();
 
-                    if (cuentasPartida == null)
+                    if (cuentasPartida == null || cuentasPartida.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -46,19 +52,20 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
 
         public (Constantes, PartidaSet) RecuperarPartida(string codigoPartida)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
@@ -86,17 +93,20 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
         }
 
         public void SalirDelLobby(string correoJugador, string codigoPartida)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
@@ -104,20 +114,44 @@ namespace ServidorSorrySliders
                     contexto.Database.ExecuteSqlCommand("DELETE from RelacionPartidaCuentaSet where codigoPartida=@codigoPartida AND " +
                         "CorreoElectronico=@correoElectronico;", new SqlParameter("@codigoPartida", codigoPartida),
                         new SqlParameter("@correoElectronico", correoJugador));
+
+                    int numeroJugadoresRestantes = contexto.Database.SqlQuery<int>
+                        ("SELECT COUNT(CorreoElectronico) FROM RelacionPartidaCuentaSet " +
+                        "WHERE codigoPartida = @codigoPartida", 
+                        new SqlParameter("@codigoPartida", codigoPartida)).FirstOrDefault();
+
+                    if (numeroJugadoresRestantes <= 0)
+                    {
+                        var filasAfectadas = contexto.Database.ExecuteSqlCommand(
+                        "DELETE FROM PartidaSet WHERE CodigoPartida = @codigo",
+                        new SqlParameter("@codigo", codigoPartida));
+
+                        if (filasAfectadas > 0)
+                        {
+                            Console.WriteLine("Partida Eliminada " + codigoPartida);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error, ninguna partida se eliminó");
+                        }
+                    }
                 }
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString()); 
+                Console.WriteLine(ex.ToString());
+                log.LogError("Error al ejecutar consulta SQL", ex);
             }
             catch (EntityException ex)
             {
                 Console.WriteLine(ex.ToString());
+                log.LogError("Error de conexión a la base de datos", ex);
             }
         }
 
         public (Constantes, int) UnirseAlLobby(string uid, string correoJugadorNuevo)
         {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
             int numeroMaximoJugadores = -1;
             try
             {
@@ -160,14 +194,83 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, numeroMaximoJugadores);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, numeroMaximoJugadores);
+            }
+        }
+        public Constantes CrearCuentaProvisionalInvitado(CuentaSet cuentaProvisionalInvitado)
+        {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    int idUsuarioInvitado = 10;
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                        "VALUES(@correo, @avatar,'', @nickname, @idUsuario)",
+                        new SqlParameter("@correo", cuentaProvisionalInvitado.CorreoElectronico),
+                        new SqlParameter("@avatar", cuentaProvisionalInvitado.Avatar),
+                        new SqlParameter("@nickname", cuentaProvisionalInvitado.Nickname),
+                        new SqlParameter("@idUsuario", idUsuarioInvitado));
+
+                    Console.WriteLine("Inserción exitosa Invitado");
+                }
+                return Constantes.OPERACION_EXITOSA;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public void EliminarCuentaProvisional(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities())
+                {
+                    context.Database.ExecuteSqlCommand("DELETE FROM CuentaSet " +
+                        "WHERE CorreoElectronico = @correo",
+                        new SqlParameter("@correo", correoElectronico));
+
+                    Console.WriteLine("Eliminar cuenta provisional invitado " + correoElectronico);
+                }
+            }
+            catch (SqlException ex)
+            {
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                Console.WriteLine(ex);
+            }
+            catch (EntityException ex)
+            {
+                log.LogError("Error de conexión a la base de datos", ex);
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void EliminarRelacionPartidaJugadorDesconectado(string correoElectronico, string codigoPartida)
+        {
+            SalirDelLobby(correoElectronico, codigoPartida);
+            Regex validarEsInvitadoRegex = new Regex("^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$");
+            if (validarEsInvitadoRegex.IsMatch(correoElectronico))
+            {
+                EliminarCuentaProvisional(correoElectronico);
             }
         }
     }
