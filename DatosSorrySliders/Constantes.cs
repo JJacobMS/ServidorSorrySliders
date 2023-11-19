@@ -19,6 +19,8 @@ namespace DatosSorrySliders
         [EnumMember]
         OPERACION_EXITOSA,
         [EnumMember]
-        OPERACION_EXITOSA_VACIA
+        OPERACION_EXITOSA_VACIA,
+        [EnumMember]
+        ERROR_TIEMPO_ESPERA_SERVIDOR
     }
 }
