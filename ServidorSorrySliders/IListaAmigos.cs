@@ -23,9 +23,17 @@ namespace InterfacesServidorSorrySliders
         Constantes GuardarNotificacion(NotificacionSet notificacion);
         [OperationContract]
         (Constantes, List<NotificacionSet>) RecuperarNotificaciones(string correoElectronico);
-        //Recuperar jugadores que no son amigos //Recuperar amigos
-        // NOTIFICAR QUE SE ENVIO NOTIFICACION PROXY LISTA AMIGOS
-        /*void MostrarEnvioNotificaicon (string correoElectronico)*/
+        [OperationContract]
+        (Constantes, List<CuentaSet>) RecuperarAmigos(string correoElectronico);
+        [OperationContract]
+        Constantes EliminarNotificacionJugador(string correoElectronico, int idNotificacion);
+        [OperationContract]
+        void NotificarUsuario(string correoElectronico);
+        [OperationContract]
+        Constantes GuardarAmistad(string correoElectronicoDestinatario, string correoElectronicoRemitente);
+        [OperationContract]
+        Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo);
+       
 
     }
 
@@ -38,11 +46,7 @@ namespace InterfacesServidorSorrySliders
         void EliminarProxy(string correoElectronico);
 
         [OperationContract(IsOneWay = true)]
-        void NotificarJugadorInvitado(string correoElectronico);
-        /*private void NotificarInvitado(correo)
-         buscar en el diccionario para ver si lo encuentra y si lo encuentra
-            llamar al callback
-         */
+        void LlamarCallback(string correoElectronico);
     }
 
     [ServiceContract]
