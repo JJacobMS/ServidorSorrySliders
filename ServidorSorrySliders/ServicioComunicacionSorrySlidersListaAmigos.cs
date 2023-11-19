@@ -191,7 +191,7 @@ namespace ServidorSorrySliders
             }
         }
 
-        public void NotificarInvitado(string correoElectronico)
+        public void NotificarUsuario(string correoElectronico)
         {
             LlamarCallback(correoElectronico);
         }
@@ -398,7 +398,7 @@ namespace ServidorSorrySliders
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
-                    var amigosJugador = contexto.Database.SqlQuery<CuentaSet>("SELECT CuentaSet.CorreoElectronico, CuentaSet.Nickname" +
+                    var amigosJugador = contexto.Database.SqlQuery<CuentaSet>("SELECT CuentaSet.CorreoElectronico, CuentaSet.Nickname, CuentaSet.Avatar, CuentaSet.Contraseña, CuentaSet.IdUsuario " +
                         "FROM CuentaSet INNER JOIN RelaciónAmigosSet on CuentaSet.CorreoElectronico = RelaciónAmigosSet.CorreoElectronicoJugadorAmigo AND " +
                         "RelaciónAmigosSet.CorreoElectronicoJugadorPrincipal=@correo;", new SqlParameter("@correo", correoElectronico)).ToList();
 
@@ -435,6 +435,42 @@ namespace ServidorSorrySliders
                 Console.WriteLine(ex.StackTrace);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+        public Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var filasAfectadas = contexto.Database.ExecuteSqlCommand("DELETE FROM RelaciónAmigosSet where " +
+                        "(CorreoElectronicoJugadorPrincipal = @correoPrincipal AND CorreoElectronicoJugadorAmigo = @correoAmigo) OR " +
+                        "(CorreoElectronicoJugadorPrincipal = @correoAmigo AND CorreoElectronicoJugadorAmigo = @correoPrincipal);", 
+                        new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), new SqlParameter("@correoAmigo",correoElectronicoAmigo));
+
+                    if (filasAfectadas <= 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+                    else
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return Constantes.ERROR_CONEXION_BD;
             }
         }
     }

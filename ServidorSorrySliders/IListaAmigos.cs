@@ -28,9 +28,11 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         Constantes EliminarNotificacionJugador(string correoElectronico, int idNotificacion);
         [OperationContract]
-        void NotificarInvitado(string correoElectronico);
+        void NotificarUsuario(string correoElectronico);
         [OperationContract]
         Constantes GuardarAmistad(string correoElectronicoDestinatario, string correoElectronicoRemitente);
+        [OperationContract]
+        Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo);
        
 
     }
@@ -45,10 +47,6 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract(IsOneWay = true)]
         void LlamarCallback(string correoElectronico);
-        /*private void NotificarInvitado(correo)
-         buscar en el diccionario para ver si lo encuentra y si lo encuentra
-            llamar al callback
-         */
     }
 
     [ServiceContract]
