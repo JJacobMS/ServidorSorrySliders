@@ -14,7 +14,7 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         (Constantes, List<CuentaSet>) RecuperarAmigosCuenta(string correoElectronico);
         [OperationContract]
-        (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador);
+        (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador, string correoJugador);
         [OperationContract]
         (Constantes, List<TipoNotificacion>) RecuperarTipoNotificacion();
         [OperationContract]
