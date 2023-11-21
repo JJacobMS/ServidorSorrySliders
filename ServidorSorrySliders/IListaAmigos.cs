@@ -13,12 +13,10 @@ namespace InterfacesServidorSorrySliders
     {
         [OperationContract]
         (Constantes, List<CuentaSet>) RecuperarAmigosCuenta(string correoElectronico);
-
         [OperationContract]
         (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador);
         [OperationContract]
         (Constantes, List<TipoNotificacion>) RecuperarTipoNotificacion();
-
         [OperationContract]
         Constantes GuardarNotificacion(NotificacionSet notificacion);
         [OperationContract]
@@ -33,7 +31,14 @@ namespace InterfacesServidorSorrySliders
         Constantes GuardarAmistad(string correoElectronicoDestinatario, string correoElectronicoRemitente);
         [OperationContract]
         Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo);
-       
+        [OperationContract]
+        (Constantes, List<CuentaSet>) RecuperarBaneados(string correoElectronico);
+        [OperationContract]
+        (Constantes, List<CuentaSet>) RecuperarSolicitudesAmistad(string correoElectronico);
+        [OperationContract]
+        Constantes BanearJugador(string correoElectronicoPrincipal, string correoElectronicoBaneado);
+        [OperationContract]
+        Constantes EliminarBaneo(string correoElectronicoPrincipal, string correoElectronicoBaneado);
 
     }
 
