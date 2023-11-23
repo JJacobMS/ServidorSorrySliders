@@ -19,6 +19,33 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IInicioSesion
     {
+        public bool JugadorEstaEnLinea(string jugadorCorreo)
+        {
+            bool estaEnLinea = false;
+            CambiarSingle();
+            lock (_listaContextoJugadores)
+            {
+                for (int i = 0; i < _listaContextoJugadores.Count; i++)
+                {
+                    if (_listaContextoJugadores[i].CorreoJugador.Equals(jugadorCorreo))
+                    {
+                        //Aquí tendría q llamar a comprobar jugador
+                        /*try
+                        {
+                            _listaContextoJugadores[i].ContextoJugadorCallBack.GetCallbackChannel<IUsuarioEnLineaCallback>().ComprobarJugador();
+                        }
+                        catch ()
+                        {
+
+                        }*/
+                        estaEnLinea = true;
+                        break;
+                    }
+                }
+            }
+            CambiarMultiple();
+            return estaEnLinea;
+        }
 
         public Constantes VerificarContrasenaDeCuenta(CuentaSet cuentaPorVerificar)
         {
@@ -72,9 +99,13 @@ namespace ServidorSorrySliders
                     return Constantes.OPERACION_EXITOSA;
                 }
             }
+            catch (SqlException ex)
+            {
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
@@ -83,7 +114,7 @@ namespace ServidorSorrySliders
 
     public partial class ServicioComunicacionSorrySliders : IMenuPrincipal
     {
-        public (Constantes, string, byte[], string) RecuperarDatosUsuario(string correoElectronico)
+        public (Constantes, string, byte[]) RecuperarDatosUsuario(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "IInicioSesion");
             try
@@ -93,25 +124,23 @@ namespace ServidorSorrySliders
                     var cuenta = context.CuentaSet.FirstOrDefault(registro => registro.CorreoElectronico == correoElectronico);
                     if (cuenta != null)
                     {
-                        return (Constantes.OPERACION_EXITOSA, cuenta.Nickname, cuenta.Avatar, cuenta.Contraseña);
+                        return (Constantes.OPERACION_EXITOSA, cuenta.Nickname, cuenta.Avatar);
                     }
                     else
                     {
-                        return (Constantes.OPERACION_EXITOSA_VACIA, null, null, null);
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null, null);
                     }
                 }
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                return (Constantes.ERROR_CONSULTA, null, null, null);
+                return (Constantes.ERROR_CONSULTA, null, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error de conexión a la base de datos", ex);
-                return (Constantes.ERROR_CONEXION_BD, null, null, null);
+                return (Constantes.ERROR_CONEXION_BD, null, null);
             }
         }
         

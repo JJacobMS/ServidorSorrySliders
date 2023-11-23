@@ -9,12 +9,13 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    public class ActualizarRegistrosNoExistentesPruebas
+    //Para esta prueba no se debería tener una conexión con la base de datos
+    public class ActualizarRegistroErrorConexionBaseDatosPruebas
     {
         [Fact]
         public void VerificarCambioContrasenaCuentaNoExistentePrueba()
         {
-            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
+            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
             CuentaSet cuentaExistente = new CuentaSet

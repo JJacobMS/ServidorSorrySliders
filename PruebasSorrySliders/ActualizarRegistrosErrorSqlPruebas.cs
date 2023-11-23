@@ -9,19 +9,15 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    public class ActualizarRegistrosNoExistentesPruebas
+    public class ActualizarRegistrosErrorSqlPruebas
     {
         [Fact]
-        public void VerificarCambioContrasenaCuentaNoExistentePrueba()
+        public void VerificarCambioContrasenaCuentaErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuentaExistente = new CuentaSet
-            {
-                CorreoElectronico = "correoNoExistente",
-                Contraseña = "01234567890"
-            };
+            CuentaSet cuentaExistente = new CuentaSet();
 
             Constantes respuestaActual = servicioComunicacion.CambiarContrasena(cuentaExistente);
 

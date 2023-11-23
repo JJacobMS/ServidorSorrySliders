@@ -9,55 +9,41 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para estas pruebas es necesario no tener una conexión activa a la base de datos
-    public class RecuperarRegistrosErrorConexionBaseDatosPruebas
+    public class RecuperarRegistrosErrorSqlPruebas
     {
         //IInicioSesion
         [Fact]
-        public void VerificarCorreoSinConexionBDPrueba()
+        public void VerificarContrasenaCuentaErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            string correo = "correoPrueba@gmail.com";
+            CuentaSet cuentaNoExistente = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com" };
 
-            Constantes respuestaActual = servicioComunicacion.VerificarExistenciaCorreoCuenta(correo);
-
-            Assert.Equal(respuestaEsperada, respuestaActual);
-        }
-
-        [Fact]
-        public void VerificarContrasenaSinConexionBDPrueba()
-        {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
-
-            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuenta = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com", Contraseña = "1234567890" };
-
-            Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuenta);
+            Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuentaNoExistente);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
         //IDetallesCuentaUsuario
         [Fact]
-        public void VerificarRecuperarUsuarioSinConexionBDPrueba()
+        public void VerificarRecuperarUsuarioIncompletoErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
             UsuarioSet usuarioEsperado = null;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            string correo = "correoPrueba@gmail.com";
+            string correoNoExistente = null;
 
-            (Constantes respuestaActual, UsuarioSet usuarioActual) = servicioComunicacion.RecuperarDatosUsuarioDeCuenta(correo);
+            (Constantes respuestaActual, UsuarioSet usuarioActual) = servicioComunicacion.RecuperarDatosUsuarioDeCuenta(correoNoExistente);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(usuarioEsperado, usuarioActual);
         }
         [Fact]
-        public void VerificarCuentaYContrasenaSinConexionBDPrueba()
+        public void VerificarCuentaYContrasenaIncompletaErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
             CuentaSet cuentaNoExistente = new CuentaSet();
@@ -66,28 +52,11 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //IMenuPrincipal
-        [Fact]
-        public void VerificarRecuperarDatosUsuarioSinConexionBDPrueba()
-        {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
-            string correoElectronicoExistente = "correoPrueba@gmail.com";
-            string nicknameEsperado = null;
-            byte[] avatarEsperado = null;
-
-            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-
-            (Constantes respuestaActual, string nickname, byte[] avatar) = servicioComunicacion.RecuperarDatosUsuario(correoElectronicoExistente);
-
-            Assert.Equal(respuestaEsperada, respuestaActual);
-            Assert.Equal(nicknameEsperado, nickname);
-            Assert.Equal(avatarEsperado, avatar);
-        }
         //Pruebas Interfaces IListaAmigos
         [Fact]
-        public void VerificarRecuperarAmigosCuentaSinConexionBDPrueba()
+        public void VerificarRecuperarAmigosCuentaIncompletosErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
             string correoElectronicoPrueba = null;
 
             List<CuentaSet> amigosEsperados = null;
@@ -100,9 +69,9 @@ namespace PruebasSorrySliders
             Assert.Equal(amigosEsperados, amigosActuales);
         }
         [Fact]
-        public void VerificarRecuperarCuentasSinConexionPrueba()
+        public void VerificarRecuperarCuentasIncompletasErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
             string informacionJugador = null;
             string correoBuscar = null;
 
@@ -117,9 +86,9 @@ namespace PruebasSorrySliders
         }
         //IUnirsePartida
         [Fact]
-        public void VerificarRecuperarJugadoresLobbySinConexionBDPrueba()
+        public void VerificarRecuperarJugadoresLobbyDatosIncompletosErrorSqlPrueba()
         {
-            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
             string uidLobby = null;
 
             List<CuentaSet> cuentasEsperadas = null;

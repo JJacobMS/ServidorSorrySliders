@@ -66,12 +66,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActualizarRegistroErrorConexionBaseDatosPruebas.cs" />
+    <Compile Include="ActualizarRegistrosErrorSqlPruebas.cs" />
     <Compile Include="ActualizarRegistrosExitosamentePruebas.cs" />
     <Compile Include="ActualizarRegistrosNoExistentesPruebas.cs" />
+    <Compile Include="CreacionRegistroErrorConexionBaseDatosPruebas.cs" />
     <Compile Include="CreacionRegistrosErrorConsultaPruebas.cs" />
     <Compile Include="CreacionRegistrosExitososPruebas.cs" />
+    <Compile Include="CreacionRegistrosErrorPruebas.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecuperarRegistrosErrorConexionBaseDatosPruebas.cs" />
+    <Compile Include="RecuperarRegistrosErrorConexionServidorPruebas.cs" />
+    <Compile Include="RecuperarRegistrosErrorSqlPruebas.cs" />
     <Compile Include="RecuperarRegistrosExitososPruebas.cs" />
     <Compile Include="RecuperarRegistrosVaciosPruebas.cs" />
   </ItemGroup>
