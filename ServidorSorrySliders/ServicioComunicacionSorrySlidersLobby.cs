@@ -25,7 +25,7 @@ namespace ServidorSorrySliders
             ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = cuentaCorreo, ContextoJugadorCallBack = OperationContext.Current};
             lock (_jugadoresEnLineaLobby)
             {
-                ManejarOperationContext.AgregarJugadorContextoLista(_jugadoresEnLineaLobby, jugadorNuevo, uid);
+                ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaLobby, jugadorNuevo, uid);
 
                 foreach (ContextoJugador jugadorOperation in _jugadoresEnLineaLobby[uid])
                 {
@@ -70,45 +70,37 @@ namespace ServidorSorrySliders
             Logger log = new Logger(this.GetType(), "ILobby");
             lock (_jugadoresEnLineaLobby)
             {
-                if (_jugadoresEnLineaLobby.ContainsKey(uid))
+                string jugadorEliminado = ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaLobby, uid, OperationContext.Current);
+                if (jugadorEliminado.Length > 0 && _jugadoresEnLineaLobby.ContainsKey(uid))
                 {
-                    if (ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaLobby[uid]))
+                    foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid])
                     {
-
-                        ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaLobby[uid]);
-
-                        Console.WriteLine("Jugador eliminado del lobby");
-                        if (_jugadoresEnLineaLobby[uid].Count > 0)
+                        try
                         {
-                            foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid])
-                            {
-                                try
-                                {
-                                    jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
-                                }
-                                catch (CommunicationObjectAbortedException ex)
-                                {
-                                    Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                                    log.LogWarn("La conexión del usuario se ha perdido", ex);
-                                }
-                                catch (InvalidCastException ex)
-                                {
-                                    Console.WriteLine(ex.StackTrace);
-                                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.StackTrace);
-                                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                                }
-                            }
+                            jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
+                        }
+                        catch (CommunicationObjectAbortedException ex)
+                        {
+                            Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        }
+                        catch (InvalidCastException ex)
+                        {
+                            Console.WriteLine(ex.StackTrace);
+                            Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                            log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.StackTrace);
+                            log.LogFatal("Ha ocurrido un error inesperado", ex);
                         }
                     }
                 }
             }
             CambiarMultiple();
         }
+
 
         public void IniciarPartida(string uid)
         {

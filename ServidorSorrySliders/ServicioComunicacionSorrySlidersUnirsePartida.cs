@@ -275,14 +275,5 @@ namespace ServidorSorrySliders
             }
         }
 
-        private void EliminarRelacionPartidaJugadorDesconectado(string correoElectronico, string codigoPartida)
-        {
-            SalirDelLobby(correoElectronico, codigoPartida);
-            Regex validarEsInvitadoRegex = new Regex("^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$");
-            if (validarEsInvitadoRegex.IsMatch(correoElectronico))
-            {
-                EliminarCuentaProvisional(correoElectronico);
-            }
-        }
     }
 }

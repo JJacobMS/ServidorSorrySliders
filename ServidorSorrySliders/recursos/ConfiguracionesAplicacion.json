@@ -1,0 +1,5 @@
+{
+  "ConfiguracionesCorreo": {
+    //Cifrar Contraseña, y un método para desencriptar la contraseña 
+  }
+}

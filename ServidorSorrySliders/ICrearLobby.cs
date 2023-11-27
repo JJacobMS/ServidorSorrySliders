@@ -12,6 +12,6 @@ namespace InterfacesServidorSorrySliders
     public interface ICrearLobby
     {
         [OperationContract]
-        (Constantes, string) CrearPartida(string correoHost, int NumeroJugadores);
+        (Constantes, string) CrearPartida(string correoHost, int numeroJugadores);
     }
 }

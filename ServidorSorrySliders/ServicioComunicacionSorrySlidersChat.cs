@@ -51,7 +51,7 @@ namespace ServidorSorrySliders
 
             lock (_jugadoresEnLineaChat)
             {
-                ManejarOperationContext.AgregarJugadorContextoLista(_jugadoresEnLineaChat, jugadorNuevo, uid);
+                ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaChat, jugadorNuevo, uid);
             }
             Console.WriteLine( "Agregar Jugador Chat " + correo);
             CambiarMultiple();

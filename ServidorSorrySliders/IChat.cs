@@ -23,11 +23,11 @@ namespace ServidorSorrySliders
     [ServiceContract]
     public interface IChatCallback
     {
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void DevolverMensaje(string nickname, string mensaje);
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ExpulsadoDeJugador(string correoElectronico);
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void JugadorSalioListaJugadores(string correoElectronico);
     }
 }

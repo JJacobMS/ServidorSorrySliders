@@ -19,7 +19,7 @@ namespace ServidorSorrySliders
             ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = correoElectronico, ContextoJugadorCallBack = OperationContext.Current };
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
-                ManejarOperationContext.AgregarJugadorContextoLista(_jugadoresEnLineaJuegoLanzamiento, jugadorNuevo, codigoPartida);
+                ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaJuegoLanzamiento, jugadorNuevo, codigoPartida);
             }
             Console.WriteLine("Se agregó " + correoElectronico + " al juego");
             CambiarMultiple();
@@ -28,179 +28,204 @@ namespace ServidorSorrySliders
         public void EliminarJugadorJuegoLanzamiento(string codigoPartida)
         {
             CambiarSingle();
-            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
-                if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
-                {
-                    if (ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaJuegoLanzamiento[codigoPartida]))
-                    {
-                        string jugadorAEliminar = ManejarOperationContext.DevolverCorreoJugador(_jugadoresEnLineaJuegoLanzamiento[codigoPartida], OperationContext.Current);
-
-                        ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaJuegoLanzamiento[codigoPartida]);
-
-                        Console.WriteLine("Se eliminó " + jugadorAEliminar + " del juego");
-                        if (_jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
-                        {
-                            foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
-                            {
-                                try
-                                {
-                                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorSalioJuegoLanzamiento(jugadorAEliminar);
-
-                                }
-                                catch (CommunicationObjectAbortedException ex)
-                                {
-                                    Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                                    log.LogWarn("La conexión del usuario se ha perdido", ex);
-                                }
-                                catch (InvalidCastException ex)
-                                {
-                                    Console.WriteLine(ex.StackTrace);
-                                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.StackTrace);
-                                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                                }
-                            }
-                        }
-                    }
-                }
+                string jugadorEliminado = ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaJuegoLanzamiento, codigoPartida, OperationContext.Current);
+                NotificarJugadorSalioPartidaLanzamiento(jugadorEliminado, codigoPartida);
             }
             CambiarMultiple();
+        }
+        /// <summary>
+        /// Notifica a todos los jugadores de esa partida que el jugadorEliminado se ha salido, en el caso de que no encuentre a uno lo saca
+        /// </summary>
+        /// <param name="jugadorEliminado"></param>
+        /// <param name="codigoPartida"></param>
+        private void NotificarJugadorSalioPartidaLanzamiento(string jugadorEliminado, string codigoPartida)
+        {
+            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
+            if (jugadorEliminado.Length > 0 && _jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
+            {
+                List<ContextoJugador> jugadoresSinConexion = new List<ContextoJugador>();
+                foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
+                {
+                    try
+                    {
+                        jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorSalioJuegoLanzamiento(jugadorEliminado);
+                        Console.WriteLine("Notificó jugador " + jugador.CorreoJugador);
+                    }
+                    catch (CommunicationObjectAbortedException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        jugadoresSinConexion.Add(jugador);
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.LogFatal("Ha ocurrido un error inesperado", ex);
+                    }
+                }
+                if (jugadoresSinConexion.Count > 0)
+                {
+                    EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
+                }
+            }
+        }
+        private void EliminarJugadoresSinConexionJugadoresLanzamiento(List<ContextoJugador> jugadoresSinConexion, string codigo)
+        {
+            foreach (ContextoJugador jugador in jugadoresSinConexion)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaJuegoLanzamiento, codigo, jugador.ContextoJugadorCallBack);
+                NotificarJugadorSalioPartidaLanzamiento(jugador.CorreoJugador, codigo);
+            }
         }
 
         public void NotificarFinalizarLanzamiento(string codigoPartida, string correo)
         {
             CambiarSingle();
-            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
-                if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
+                int posicionJugador = PartidaYJugadorExisten(codigoPartida, correo);
+                if (posicionJugador != -1)
                 {
-                    if (_jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
+                    _jugadoresEnLineaJuegoLanzamiento[codigoPartida][posicionJugador].ListoParaTurnoSiguiente = true;
+
+                    if (NoHayJugadoresPendientes(codigoPartida))
                     {
-                        int posicionJugador = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaJuegoLanzamiento[codigoPartida], correo);
-                        if (posicionJugador != -1)
-                        {
-                            _jugadoresEnLineaJuegoLanzamiento[codigoPartida][posicionJugador].ListoParaTurnoSiguiente = true;
-                        }
-                        if (NoHayJugadoresPendientes(codigoPartida))
-                        {
-                            foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
-                            {
-                                try
-                                {
-                                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadoresListosParaSiguienteTurno();
-                                    jugador.ListoParaTurnoSiguiente = false;
-                                }
-                                catch (CommunicationObjectAbortedException ex)
-                                {
-                                    Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                                    log.LogWarn("La conexión del usuario se ha perdido", ex);
-                                }
-                                catch (InvalidCastException ex)
-                                {
-                                    Console.WriteLine(ex.StackTrace);
-                                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.StackTrace);
-                                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                                }
-                            }
-                        }
+                        NotificarJugadoresPartidaTurnoSiguiente(codigoPartida);
                     }
                 }
-
             }
             CambiarMultiple();
         }
 
-        public void NotificarLanzamientoDado(string codigoPartida, string correo, int numeroDado)
+        private int PartidaYJugadorExisten(string codigoPartida, string correoElectronico)
+        {
+            if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
+            {
+                if (_jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
+                {
+                    return ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaJuegoLanzamiento[codigoPartida], correoElectronico);
+                }
+            }
+            return -1;
+        }
+
+        private void NotificarJugadoresPartidaTurnoSiguiente(string codigoPartida)
         {
             Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
+
+            List<ContextoJugador> jugadoresSinConexion = new List<ContextoJugador>();
+            foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
+            {
+                try
+                {
+                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadoresListosParaSiguienteTurno();
+                    jugador.ListoParaTurnoSiguiente = false;
+                }
+                catch (CommunicationObjectAbortedException ex)
+                {
+                    jugadoresSinConexion.Add(jugador);
+                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                }
+                catch (InvalidCastException ex)
+                {
+                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                }
+                catch (Exception ex)
+                {
+                    log.LogFatal("Ha ocurrido un error inesperado", ex);
+                }
+            }
+            if (jugadoresSinConexion.Count > 0)
+            {
+                EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
+            }
+        }
+
+        public void NotificarLanzamientoDado(string codigoPartida, string correo, int numeroDado)
+        {
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
                 if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
                 {
-                    if (_jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
-                    {
-                        foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
-                        {
-                            if (jugador.CorreoJugador.Equals(correo))
-                            {
-                                continue;
-                            }
-                            try
-                            {
-                                jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorTiroDado(numeroDado);
-                            }
-                            catch (CommunicationObjectAbortedException ex)
-                            {
-                                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                                log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            }
-                            catch (InvalidCastException ex)
-                            {
-                                Console.WriteLine(ex.StackTrace);
-                                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.StackTrace);
-                                log.LogFatal("Ha ocurrido un error inesperado", ex);
-                            }
-                        }
-                    }
+                    NotificarJugadoresPartidaLanzamientoDado(codigoPartida, correo, numeroDado);
                 }
+            }
+        }
+
+        private void NotificarJugadoresPartidaLanzamientoDado(string codigoPartida, string correo, int numeroDado)
+        {
+            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
+            List<ContextoJugador> jugadoresSinConexion = new List<ContextoJugador>();
+            foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida].Where(jugador => !jugador.CorreoJugador.Equals(correo)))
+            {
+                try
+                {
+                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorTiroDado(numeroDado);
+                }
+                catch (CommunicationObjectAbortedException ex)
+                {
+                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                }
+                catch (InvalidCastException ex)
+                {
+                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                }
+                catch (Exception ex)
+                {
+                    log.LogFatal("Ha ocurrido un error inesperado", ex);
+                }
+            }
+            if (jugadoresSinConexion.Count > 0)
+            {
+                EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
             }
         }
 
         public void NotificarLanzamientoLinea(string codigoPartida, string correo, double posicionX, double posicionY)
         {
-            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
-                if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
+                if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida) && _jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
                 {
-                    if (_jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
-                    {
-                        foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
-                        {
-                            if (jugador.CorreoJugador.Equals(correo))
-                            {
-                                continue;
-                            }
-                            try
-                            {
-                                jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorDetuvoLinea(posicionX, posicionY);
-                            }
-                            catch (CommunicationObjectAbortedException ex)
-                            {
-                                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                                log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            }
-                            catch (InvalidCastException ex)
-                            {
-                                Console.WriteLine(ex.StackTrace);
-                                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.StackTrace);
-                                log.LogFatal("Ha ocurrido un error inesperado", ex);
-                            }
-                        }
-                    }
+                    NotificarTodosJugadoresPartidaLanzamientoLinea(codigoPartida, correo, posicionX, posicionY);
                 }
+            }
+        }
+
+        private void NotificarTodosJugadoresPartidaLanzamientoLinea(string codigoPartida, string correo, double posicionX, double posicionY)
+        {
+            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
+            List<ContextoJugador> jugadoresSinConexion = new List<ContextoJugador>();
+            foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida].Where(jugador => !jugador.CorreoJugador.Equals(correo)))
+            {
+                try
+                {
+                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorDetuvoLinea(posicionX, posicionY);
+                }
+                catch (CommunicationObjectAbortedException ex)
+                {
+                    Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                }
+                catch (InvalidCastException ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
+                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    log.LogFatal("Ha ocurrido un error inesperado", ex);
+                }
+            }
+            if (jugadoresSinConexion.Count > 0)
+            {
+                EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
             }
         }
 
@@ -229,5 +254,6 @@ namespace ServidorSorrySliders
             var comportamiento = hostServicio.Description.Behaviors.Find<ServiceBehaviorAttribute>();
             comportamiento.ConcurrencyMode = ConcurrencyMode.Multiple;
         }
+
     }
 }
