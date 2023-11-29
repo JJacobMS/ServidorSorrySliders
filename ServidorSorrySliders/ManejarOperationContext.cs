@@ -85,7 +85,7 @@ namespace ServidorSorrySliders
             if (diccionario.ContainsKey(codigoPartida))
             {
                 string jugadorAEliminar = DevolverCorreoJugador(diccionario[codigoPartida], contextoActual);
-                EliminarJugadorLista(OperationContext.Current, diccionario[codigoPartida]);
+                EliminarJugadorLista(contextoActual, diccionario[codigoPartida]);
 
                 if (diccionario[codigoPartida].Count == 0)
                 {

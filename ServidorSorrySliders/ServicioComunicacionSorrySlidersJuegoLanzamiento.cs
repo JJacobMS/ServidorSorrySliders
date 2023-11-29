@@ -55,8 +55,13 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
                         jugadoresSinConexion.Add(jugador);
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        jugadoresSinConexion.Add(jugador);
+                        log.LogInfo("No se pudo encontrar al jugador ", ex);
                     }
                     catch (InvalidCastException ex)
                     {
@@ -69,16 +74,8 @@ namespace ServidorSorrySliders
                 }
                 if (jugadoresSinConexion.Count > 0)
                 {
-                    EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
+                    EliminarJugadoresSinConexionMientrasJugabaLanzamiento(jugadoresSinConexion, codigoPartida);
                 }
-            }
-        }
-        private void EliminarJugadoresSinConexionJugadoresLanzamiento(List<ContextoJugador> jugadoresSinConexion, string codigo)
-        {
-            foreach (ContextoJugador jugador in jugadoresSinConexion)
-            {
-                ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaJuegoLanzamiento, codigo, jugador.ContextoJugadorCallBack);
-                NotificarJugadorSalioPartidaLanzamiento(jugador.CorreoJugador, codigo);
             }
         }
 
@@ -130,18 +127,24 @@ namespace ServidorSorrySliders
                     jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
                 }
+                catch (TimeoutException ex)
+                {
+                    jugadoresSinConexion.Add(jugador);
+                    log.LogInfo("No se pudo encontrar al jugador ", ex);
+                }
                 catch (InvalidCastException ex)
                 {
                     log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                 }
                 catch (Exception ex)
                 {
+                    jugadoresSinConexion.Add(jugador);
                     log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
             {
-                EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
+                EliminarJugadoresSinConexionMientrasJugabaLanzamiento(jugadoresSinConexion, codigoPartida);
             }
         }
 
@@ -165,10 +168,17 @@ namespace ServidorSorrySliders
                 try
                 {
                     jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorTiroDado(numeroDado);
+                    Console.WriteLine(jugador.CorreoJugador + " notificado dado");
                 }
                 catch (CommunicationObjectAbortedException ex)
                 {
+                    jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
+                }
+                catch (TimeoutException ex)
+                {
+                    jugadoresSinConexion.Add(jugador);
+                    log.LogInfo("No se pudo encontrar al jugador ", ex);
                 }
                 catch (InvalidCastException ex)
                 {
@@ -179,9 +189,10 @@ namespace ServidorSorrySliders
                     log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
+            Console.WriteLine("Jugadores sin conexion en lanzamiento dado: " + jugadoresSinConexion.Count);
             if (jugadoresSinConexion.Count > 0)
             {
-                EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
+                EliminarJugadoresSinConexionMientrasJugabaLanzamiento(jugadoresSinConexion, codigoPartida);
             }
         }
 
@@ -208,24 +219,26 @@ namespace ServidorSorrySliders
                 }
                 catch (CommunicationObjectAbortedException ex)
                 {
-                    Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                    jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
+                }
+                catch (TimeoutException ex)
+                {
+                    jugadoresSinConexion.Add(jugador);
+                    log.LogInfo("No se pudo encontrar al jugador ", ex);
                 }
                 catch (InvalidCastException ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
-                    Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
                     log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
                     log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
             {
-                EliminarJugadoresSinConexionJugadoresLanzamiento(jugadoresSinConexion, codigoPartida);
+                EliminarJugadoresSinConexionMientrasJugabaLanzamiento(jugadoresSinConexion, codigoPartida);
             }
         }
 
@@ -253,6 +266,27 @@ namespace ServidorSorrySliders
             var hostServicio = (ServiceHost)OperationContext.Current.Host;
             var comportamiento = hostServicio.Description.Behaviors.Find<ServiceBehaviorAttribute>();
             comportamiento.ConcurrencyMode = ConcurrencyMode.Multiple;
+        }
+
+        private void EliminarJugadoresSinConexionMientrasJugabaLanzamiento(List<ContextoJugador> jugadoresSinConexion, string codigo)
+        {
+            foreach (ContextoJugador jugador in jugadoresSinConexion)
+            {
+                SalirDelLobby(jugador.CorreoJugador, codigo);
+                ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaJuegoLanzamiento, codigo, jugador.ContextoJugadorCallBack);
+                NotificarJugadorSalioPartidaLanzamiento(jugador.CorreoJugador, codigo);
+
+                lock (_jugadoresEnLineaChat)
+                {
+                    int posicionChat = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaChat[codigo], jugador.CorreoJugador);
+                    if (posicionChat != -1)
+                    {
+                        ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaChat, codigo, _jugadoresEnLineaChat[codigo][posicionChat].ContextoJugadorCallBack);
+                        NotificarEliminarJugadorChat(codigo, jugador.CorreoJugador);
+                    }
+                    
+                }
+            }
         }
 
     }
