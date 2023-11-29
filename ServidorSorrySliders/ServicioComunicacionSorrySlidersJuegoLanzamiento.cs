@@ -51,7 +51,6 @@ namespace ServidorSorrySliders
                     try
                     {
                         jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorSalioJuegoLanzamiento(jugadorEliminado);
-                        Console.WriteLine("Notificó jugador " + jugador.CorreoJugador);
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
@@ -168,7 +167,6 @@ namespace ServidorSorrySliders
                 try
                 {
                     jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorTiroDado(numeroDado);
-                    Console.WriteLine(jugador.CorreoJugador + " notificado dado");
                 }
                 catch (CommunicationObjectAbortedException ex)
                 {
@@ -189,7 +187,6 @@ namespace ServidorSorrySliders
                     log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
-            Console.WriteLine("Jugadores sin conexion en lanzamiento dado: " + jugadoresSinConexion.Count);
             if (jugadoresSinConexion.Count > 0)
             {
                 EliminarJugadoresSinConexionMientrasJugabaLanzamiento(jugadoresSinConexion, codigoPartida);

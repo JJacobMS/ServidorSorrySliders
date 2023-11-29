@@ -91,7 +91,6 @@ namespace ServidorSorrySliders
                 {
                     diccionario.Remove(codigoPartida);
                 }
-                Console.WriteLine("Se eliminó " + jugadorAEliminar);
                 return jugadorAEliminar;
             }
             return "";

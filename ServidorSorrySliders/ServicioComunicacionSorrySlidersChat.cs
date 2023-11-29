@@ -25,19 +25,15 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
-                        Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
                         log.LogWarn("La conexión del usuario se ha perdido", ex);
 
                     }
                     catch (InvalidCastException ex)
                     {
-                        Console.WriteLine(ex.StackTrace);
-                        Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
                         log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.StackTrace);
                         log.LogFatal("Ha ocurrido un error inesperado", ex);
                     }
 
