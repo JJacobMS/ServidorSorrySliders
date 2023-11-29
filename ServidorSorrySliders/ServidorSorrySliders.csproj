@@ -117,6 +117,7 @@
     <Compile Include="IDetallesCuentaUsuario.cs" />
     <Compile Include="IInicioSesion.cs" />
     <Compile Include="IJuegoLanzamiento.cs" />
+    <Compile Include="IJuegoPuntuacion.cs" />
     <Compile Include="IListaAmigos.cs" />
     <Compile Include="ILobby.cs" />
     <Compile Include="IMenuPrincipal.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="ServicioComunicacionSorrySlidersPuntuaciones.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersUnirsePartida.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersUsuariosEnLinea.cs" />
+    <Compile Include="ServicioComunicacionSorrySlidersJuegoPuntuacion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
