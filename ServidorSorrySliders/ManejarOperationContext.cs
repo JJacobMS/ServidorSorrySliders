@@ -9,21 +9,23 @@ using System.Threading.Tasks;
 
 namespace ServidorSorrySliders
 {
-    public class ManejarOperationContext
+    public static class ManejarOperationContext
     {
-        public static bool AgregarJugadorContextoLista(Dictionary<string, List<ContextoJugador>> jugadoresEnLinea, ContextoJugador jugadorNuevo, string uid)
+        public static void AgregarOReemplazarJugadorContextoLista(Dictionary<string, List<ContextoJugador>> jugadoresEnLinea, ContextoJugador jugadorNuevo, string uid)
         {
             if (!jugadoresEnLinea.ContainsKey(uid))
             {
                 jugadoresEnLinea.Add(uid, new List<ContextoJugador>());
             }
-
-            if (!ExisteJugadorEnLista(jugadorNuevo.ContextoJugadorCallBack, jugadoresEnLinea[uid]))
+            int posicionJugador = DevolverPosicionCorreoJugador(jugadoresEnLinea[uid], jugadorNuevo.CorreoJugador);
+            if (posicionJugador == -1)
             {
                 jugadoresEnLinea[uid].Add(jugadorNuevo);
-                return true;
             }
-            return false;
+            else
+            {
+                jugadoresEnLinea[uid][posicionJugador] = jugadorNuevo;
+            }
         }
         public static bool ExisteJugadorEnLista(OperationContext contextoNuevo, List<ContextoJugador> jugadoresActuales)
         {
@@ -44,7 +46,6 @@ namespace ServidorSorrySliders
                 if (contextoAEliminar.SessionId.Equals(operationContextJugador.SessionId))
                 {
                     jugadoresExistentes.RemoveAt(i);
-                    //¿Si se eliminan todos entonces se debería eliminar el registro del diccionario?
                     return;
                 }
             }
@@ -59,7 +60,7 @@ namespace ServidorSorrySliders
                     return jugadoresExistentes[i].CorreoJugador;
                 }
             }
-            return null;
+            return "";
         }
         public static int DevolverPosicionCorreoJugador(List<ContextoJugador> jugadoresExistentes, string correo)
         {
@@ -72,5 +73,28 @@ namespace ServidorSorrySliders
             }
             return -1;
         }
+        /// <summary>
+        /// Verifica que exista la llave en el diccionario, que el jugador exista y de ahí lo elimina. Al final, checa si el código ya no tiene jugadores, y si es así, lo elimina del diccionario
+        /// </summary>
+        /// <param name="diccionario"></param>
+        /// <param name="codigoPartida"></param>
+        /// <param name="contextoActual"></param>
+        /// <returns></returns>
+        public static string EliminarJugadorDiccionario(Dictionary<string, List<ContextoJugador>> diccionario, string codigoPartida, OperationContext contextoActual)
+        {
+            if (diccionario.ContainsKey(codigoPartida))
+            {
+                string jugadorAEliminar = DevolverCorreoJugador(diccionario[codigoPartida], contextoActual);
+                EliminarJugadorLista(contextoActual, diccionario[codigoPartida]);
+
+                if (diccionario[codigoPartida].Count == 0)
+                {
+                    diccionario.Remove(codigoPartida);
+                }
+                return jugadorAEliminar;
+            }
+            return "";
+        }
+
     }
 }

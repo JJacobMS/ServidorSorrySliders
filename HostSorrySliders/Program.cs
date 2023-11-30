@@ -18,7 +18,7 @@ namespace HostSorrySliders
                 using (ServiceHost host = new ServiceHost(typeof(ServidorSorrySliders.ServicioComunicacionSorrySliders)))
                 {
                     host.Open();
-                    Console.WriteLine("Server is running");
+                    Console.WriteLine("Servidor en línea");
                     Console.ReadLine();
                 }
             }

@@ -157,12 +157,23 @@ namespace ServidorSorrySliders
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
+                    var estaBaneado = contexto.Database.SqlQuery<string>("select DISTINCT CorreoElectronicoJugadorBaneado from RelacionBaneadosSet " +
+                        "INNER JOIN RelacionPartidaCuentaSet On CorreoElectronico = CorreoElectronicoJugadorPrincipal " +
+                        "WHERE CodigoPartida = @uid AND CorreoElectronicoJugadorBaneado = @correo",
+                        new SqlParameter("@uid", uid), new SqlParameter("@correo",correoJugadorNuevo)).Any();
+
+                    if (estaBaneado)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA,-2);
+                    }
+
                     var cuentasPartida = contexto.Database.SqlQuery<CuentaSet>
                         ("Select CuentaSet.CorreoElectronico, Avatar, Nickname, Contraseña, IdUsuario from CuentaSet " +
                         "Inner Join RelacionPartidaCuentaSet ON RelacionPartidaCuentaSet.CorreoElectronico = CuentaSet.CorreoElectronico " +
                         "Where RelacionPartidaCuentaSet.CodigoPartida = @uid " +
                         "Order By RelacionPartidaCuentaSet.IdPartidaCuenta;", new SqlParameter("@uid", uid)).ToList();
 
+                    //Para verificar que otra cuenta no esté dentro de la misma partida
                     for (int i = 0; i < cuentasPartida.Count; i++)
                     {
                         if (cuentasPartida[i].CorreoElectronico.Equals(correoJugadorNuevo))
@@ -264,14 +275,5 @@ namespace ServidorSorrySliders
             }
         }
 
-        private void EliminarRelacionPartidaJugadorDesconectado(string correoElectronico, string codigoPartida)
-        {
-            SalirDelLobby(correoElectronico, codigoPartida);
-            Regex validarEsInvitadoRegex = new Regex("^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$");
-            if (validarEsInvitadoRegex.IsMatch(correoElectronico))
-            {
-                EliminarCuentaProvisional(correoElectronico);
-            }
-        }
     }
 }

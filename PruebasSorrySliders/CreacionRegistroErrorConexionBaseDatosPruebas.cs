@@ -9,27 +9,14 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    public class CreacionRegistrosErrorConsultaPruebas
+    //Estas pruebas se deben ejecutar sin conexión a la base de datos
+    public class CreacionRegistroErrorConexionBaseDatosPruebas
     {
-        //IDetallesCuenta
-        [Fact]
-        public void VerificarInsertarCuentaUsuarioIncorrectoPrueba()
-        {
-            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
-            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            UsuarioSet usuario = new UsuarioSet();
-
-            CuentaSet cuenta = new CuentaSet();
-            Constantes resultadoObtenidos = servicioComunicacion.AgregarUsuario(usuario, cuenta);
-
-            Assert.Equal(respuestaEsperado, resultadoObtenidos);
-
-        }
         //IUnirsePartida
         [Fact]
-        public void VerificarIntentarEntrarPartidaDatosIncompletosPrueba()
+        public void VerificarEntrarPartidaSinConexionBDPrueba()
         {
-            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            Constantes respuestaEsperado = Constantes.ERROR_CONEXION_BD;
             int jugadoresMaximos = -1;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
@@ -43,9 +30,9 @@ namespace PruebasSorrySliders
             Assert.Equal(jugadoresMaximos, cantidadJugadoresPrevios);
         }
         [Fact]
-        public void VerificarInsertarCuentaProvisionalDatosIncompletosPrueba()
+        public void VerificarInsertarCuentaProvisionalSinConexionBDPrueba()
         {
-            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            Constantes respuestaEsperado = Constantes.ERROR_CONEXION_BD;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
 

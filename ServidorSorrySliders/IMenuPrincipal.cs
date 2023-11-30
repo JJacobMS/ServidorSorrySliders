@@ -13,7 +13,7 @@ namespace InterfacesServidorSorrySliders
     public interface IMenuPrincipal
     {
         [OperationContract]
-        (Constantes, string, byte[], string) RecuperarDatosUsuario(string correoElectronico);
+        (Constantes, string, byte[]) RecuperarDatosUsuario(string correoElectronico);
 
     }
 }

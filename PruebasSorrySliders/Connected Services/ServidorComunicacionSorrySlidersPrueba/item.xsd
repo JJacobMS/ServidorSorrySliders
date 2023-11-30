@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/DatosSorrySliders" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DatosSorrySliders" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:5454/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:simpleType name="Constantes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ERROR_CONEXION_BD" />
+      <xs:enumeration value="ERROR_CONSULTA" />
+      <xs:enumeration value="ERROR_CONEXION_SERVIDOR" />
+      <xs:enumeration value="OPERACION_EXITOSA" />
+      <xs:enumeration value="OPERACION_EXITOSA_VACIA" />
+      <xs:enumeration value="ERROR_TIEMPO_ESPERA_SERVIDOR" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Constantes" nillable="true" type="tns:Constantes" />
+  <xs:complexType name="CuentaSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Avatar" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="Contraseña" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CorreoElectronico" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdUsuario" type="xs:int" />
+      <xs:element minOccurs="0" name="Nickname" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NotificacionSet" nillable="true" type="tns:ArrayOfNotificacionSet" />
+      <xs:element minOccurs="0" name="NotificacionSet1" nillable="true" type="tns:ArrayOfNotificacionSet" />
+      <xs:element minOccurs="0" name="PartidaSet" nillable="true" type="tns:ArrayOfPartidaSet" />
+      <xs:element minOccurs="0" name="RelacionBaneadosSet" nillable="true" type="tns:ArrayOfRelacionBaneadosSet" />
+      <xs:element minOccurs="0" name="RelacionBaneadosSet1" nillable="true" type="tns:ArrayOfRelacionBaneadosSet" />
+      <xs:element minOccurs="0" name="RelacionPartidaCuentaSet" nillable="true" type="tns:ArrayOfRelacionPartidaCuentaSet" />
+      <xs:element minOccurs="0" name="RelaciónAmigosSet" nillable="true" type="tns:ArrayOfRelaciónAmigosSet" />
+      <xs:element minOccurs="0" name="RelaciónAmigosSet1" nillable="true" type="tns:ArrayOfRelaciónAmigosSet" />
+      <xs:element minOccurs="0" name="UsuarioSet" nillable="true" type="tns:UsuarioSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+  <xs:complexType name="ArrayOfNotificacionSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="NotificacionSet" nillable="true" type="tns:NotificacionSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNotificacionSet" nillable="true" type="tns:ArrayOfNotificacionSet" />
+  <xs:complexType name="NotificacionSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CorreoElectronicoDestinatario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CorreoElectronicoRemitente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="CuentaSet1" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="IdNotificacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoNotificacion" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoNotificacion" nillable="true" type="tns:TipoNotificacion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="NotificacionSet" nillable="true" type="tns:NotificacionSet" />
+  <xs:complexType name="TipoNotificacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IdTipoNotificacion" type="xs:int" />
+      <xs:element minOccurs="0" name="NombreNotificacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NotificacionSet" nillable="true" type="tns:ArrayOfNotificacionSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TipoNotificacion" nillable="true" type="tns:TipoNotificacion" />
+  <xs:complexType name="ArrayOfPartidaSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PartidaSet" nillable="true" type="tns:PartidaSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPartidaSet" nillable="true" type="tns:ArrayOfPartidaSet" />
+  <xs:complexType name="PartidaSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CantidadJugadores" type="xs:int" />
+      <xs:element minOccurs="0" name="CodigoPartida" type="ser:guid" />
+      <xs:element minOccurs="0" name="CorreoElectronico" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="RelacionPartidaCuentaSet" nillable="true" type="tns:ArrayOfRelacionPartidaCuentaSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PartidaSet" nillable="true" type="tns:PartidaSet" />
+  <xs:complexType name="ArrayOfRelacionPartidaCuentaSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RelacionPartidaCuentaSet" nillable="true" type="tns:RelacionPartidaCuentaSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRelacionPartidaCuentaSet" nillable="true" type="tns:ArrayOfRelacionPartidaCuentaSet" />
+  <xs:complexType name="RelacionPartidaCuentaSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CodigoPartida" type="ser:guid" />
+      <xs:element minOccurs="0" name="CorreoElectronico" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="IdPartidaCuenta" type="xs:int" />
+      <xs:element minOccurs="0" name="PartidaSet" nillable="true" type="tns:PartidaSet" />
+      <xs:element minOccurs="0" name="Posicion" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RelacionPartidaCuentaSet" nillable="true" type="tns:RelacionPartidaCuentaSet" />
+  <xs:complexType name="ArrayOfRelacionBaneadosSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RelacionBaneadosSet" nillable="true" type="tns:RelacionBaneadosSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRelacionBaneadosSet" nillable="true" type="tns:ArrayOfRelacionBaneadosSet" />
+  <xs:complexType name="RelacionBaneadosSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CorreoElectronicoJugadorBaneado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CorreoElectronicoJugadorPrincipal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="CuentaSet1" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="IdRelacionBaneados" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RelacionBaneadosSet" nillable="true" type="tns:RelacionBaneadosSet" />
+  <xs:complexType name="ArrayOfRelaciónAmigosSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RelaciónAmigosSet" nillable="true" type="tns:RelaciónAmigosSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRelaciónAmigosSet" nillable="true" type="tns:ArrayOfRelaciónAmigosSet" />
+  <xs:complexType name="RelaciónAmigosSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CorreoElectronicoJugadorAmigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CorreoElectronicoJugadorPrincipal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="CuentaSet1" nillable="true" type="tns:CuentaSet" />
+      <xs:element minOccurs="0" name="IdRelaciónAmigos" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RelaciónAmigosSet" nillable="true" type="tns:RelaciónAmigosSet" />
+  <xs:complexType name="UsuarioSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Apellido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CuentaSet" nillable="true" type="tns:ArrayOfCuentaSet" />
+      <xs:element minOccurs="0" name="IdUsuario" type="xs:int" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UsuarioSet" nillable="true" type="tns:UsuarioSet" />
+  <xs:complexType name="ArrayOfCuentaSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CuentaSet" nillable="true" type="tns:CuentaSet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCuentaSet" nillable="true" type="tns:ArrayOfCuentaSet" />
+  <xs:complexType name="ArrayOfTipoNotificacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TipoNotificacion" nillable="true" type="tns:TipoNotificacion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTipoNotificacion" nillable="true" type="tns:ArrayOfTipoNotificacion" />
+</xs:schema>
