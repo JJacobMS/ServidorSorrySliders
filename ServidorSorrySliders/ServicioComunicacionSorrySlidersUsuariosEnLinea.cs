@@ -19,28 +19,49 @@ namespace ServidorSorrySliders
             CambiarSingle();
             lock (_listaContextoJugadores)
             {
-                _listaContextoJugadores.Add(jugadorNuevo);
-                Console.WriteLine("Entró al sistema " + jugadorCorreo);
+                int posicionJugador = RecuperarPosicionJugadorEnLinea(jugadorCorreo);
+                if (posicionJugador == -1)
+                {
+                    _listaContextoJugadores.Add(jugadorNuevo);
+                    Console.WriteLine("Entró al sistema " + jugadorCorreo);
+                }
+                else
+                {
+                    _listaContextoJugadores[posicionJugador] = jugadorNuevo;
+                    Console.WriteLine("Cambio de contexto " + jugadorCorreo);
+                }
+                
+                
             }
             CambiarMultiple();
         }
+
 
         public void SalirDelSistema(string jugadorCorreo)
         {
             CambiarSingle();
             lock (_listaContextoJugadores)
             {
-                for(int i= 0; i < _listaContextoJugadores.Count; i++)
-                {
-                    if (_listaContextoJugadores[i].ContextoJugadorCallBack.SessionId.Equals(OperationContext.Current.SessionId))
-                    {
-                        _listaContextoJugadores.RemoveAt(i);
-                        Console.WriteLine("Salio del sistema " + jugadorCorreo);
-                        break;
-                    }
+                int posicionJugador = RecuperarPosicionJugadorEnLinea(jugadorCorreo);
+                if (posicionJugador != -1) 
+                { 
+                    _listaContextoJugadores.RemoveAt(posicionJugador);
+                    Console.WriteLine("Salio del sistema " + jugadorCorreo);
                 }
             }
             CambiarMultiple();
+        }
+
+        private int RecuperarPosicionJugadorEnLinea(string jugadorCorreo)
+        {
+            for (int i = 0; i < _listaContextoJugadores.Count; i++)
+            {
+                if (_listaContextoJugadores[i].CorreoJugador.Equals(jugadorCorreo))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
