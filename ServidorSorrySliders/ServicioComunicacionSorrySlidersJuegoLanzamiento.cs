@@ -269,7 +269,6 @@ namespace ServidorSorrySliders
         {
             foreach (ContextoJugador jugador in jugadoresSinConexion)
             {
-                SalirDelLobby(jugador.CorreoJugador, codigo);
                 ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaJuegoLanzamiento, codigo, jugador.ContextoJugadorCallBack);
                 NotificarJugadorSalioPartidaLanzamiento(jugador.CorreoJugador, codigo);
 
@@ -285,6 +284,5 @@ namespace ServidorSorrySliders
                 }
             }
         }
-
     }
 }

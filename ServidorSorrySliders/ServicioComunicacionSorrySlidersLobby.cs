@@ -132,5 +132,9 @@ namespace ServidorSorrySliders
                 log.LogFatal("Ha ocurrido un error inesperado", ex);
             }
         }
+        private bool CodigoPartidaExiste(string codigoPartida)
+        {
+            return _jugadoresEnLineaLobby.ContainsKey(codigoPartida);
+        }
     }
 }
