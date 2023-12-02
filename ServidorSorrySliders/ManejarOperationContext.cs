@@ -96,5 +96,12 @@ namespace ServidorSorrySliders
             return "";
         }
 
+        public static void EliminarKeyDiccionario(Dictionary<string, List<ContextoJugador>> diccionario, string uid) 
+        {
+            if (diccionario.ContainsKey(uid)) 
+            {
+                diccionario.Remove(uid);
+            }
+        }
     }
 }
