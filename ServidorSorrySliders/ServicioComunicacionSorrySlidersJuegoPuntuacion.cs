@@ -78,27 +78,30 @@ namespace ServidorSorrySliders
         public void NotificarJugadores(string uid, string correoJugador, string nombrePeon, int puntosObtenidos)
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-            foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
+            lock (_diccionarioPuntuacion)
             {
-                if (contextoJugador.CorreoJugador != correoJugador)
+                foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
                 {
-                    try
+                    if (contextoJugador.CorreoJugador != correoJugador)
                     {
-                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().NotificarJugadorMovimiento(nombrePeon, puntosObtenidos);
-                    }
-                    catch (CommunicationObjectAbortedException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-                        //SACAR CONTEXTO
-                    }
-                    catch (TimeoutException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-                        //SACAR CONTEXTO
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                        try
+                        {
+                            contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().NotificarJugadorMovimiento(nombrePeon, puntosObtenidos);
+                        }
+                        catch (CommunicationObjectAbortedException ex)
+                        {
+                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            //SACAR CONTEXTO
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            //SACAR CONTEXTO
+                        }
+                        catch (InvalidCastException ex)
+                        {
+                            log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                        }
                     }
                 }
             }
@@ -144,27 +147,39 @@ namespace ServidorSorrySliders
         public void NotificarCambiarPagina(string uid)
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
+            Console.WriteLine("Diccionario" + uid);
             foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
             {
                 try
                 {
+                    Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
                     contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina();
+
                 }
                 catch (CommunicationObjectAbortedException ex)
                 {
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    //SACAR CONTEXTO
+                    Console.WriteLine("catch");
                 }
                 catch (TimeoutException ex)
                 {
+                    Console.WriteLine("catch");
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    //SACAR CONTEXTO
                 }
                 catch (InvalidCastException ex)
                 {
+                    Console.WriteLine("catch");
                     log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                 }
             }
+        }
+
+        public void EliminarDiccionariosJuego(string uid)
+        {
+            ManejarOperationContext.EliminarKeyDiccionario(_diccionarioPuntuacion, uid);
+            ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaChat, uid);
+            ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaJuegoLanzamiento, uid);
+
         }
     }
 }
