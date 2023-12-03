@@ -17,5 +17,19 @@ namespace DatosSorrySliders
         {
             ListoParaTurnoSiguiente = false;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ContextoJugador jugador)
+            {
+                if (jugador.CorreoJugador == null || !jugador.CorreoJugador.Equals(CorreoJugador))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            return false;
+        }
     }
 }

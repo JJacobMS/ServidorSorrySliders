@@ -50,5 +50,25 @@ namespace DatosSorrySliders
         public virtual ICollection<NotificacionSet> NotificacionSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NotificacionSet> NotificacionSet1 { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            CuentaSet cuentaComparar = obj as CuentaSet;
+            if (cuentaComparar != null)
+            {
+                if (cuentaComparar.CorreoElectronico == null || !cuentaComparar.CorreoElectronico.Equals(CorreoElectronico))
+                {
+                    return false;
+                }
+
+                if (cuentaComparar.Nickname == null || !cuentaComparar.Nickname.Equals(Nickname))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -73,7 +73,7 @@ namespace PruebasSorrySliders
         //IDetallesCuenta
 
         [Fact]
-        public void VerificarCambioContrasenaCuentaExistente()
+        public void VerificarCambioContrasenaCuentaExistentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
 

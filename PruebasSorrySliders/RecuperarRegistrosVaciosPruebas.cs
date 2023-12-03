@@ -11,6 +11,7 @@ namespace PruebasSorrySliders
 {
     public class RecuperarRegistrosVaciosPruebas
     {
+        //IInicioSesion
         [Fact]
         public void VerificarCorreoNoExistentePrueba()
         {
@@ -37,6 +38,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
+        
         //Pruebas Interfaces IDetallesCuentaUsuario
         [Fact]
         public void VerificarRecuperarUsuarioNoExistentePrueba()
@@ -91,12 +93,13 @@ namespace PruebasSorrySliders
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
             string informacionJugador = "amigo";
+            string correoElectronicoPrueba = "correoPrueba@gmail.com";
 
             List<CuentaSet> cuentasEsperadas = null;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
 
-            (Constantes respuestaActual, List<CuentaSet> cuentasActuales) = servicioComunicacion.RecuperarJugadoresCuenta(informacionJugador);
+            (Constantes respuestaActual, List<CuentaSet> cuentasActuales) = servicioComunicacion.RecuperarJugadoresCuenta(informacionJugador, correoElectronicoPrueba);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
@@ -117,7 +120,23 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasLobbyActuales);
         }
+        //IMenuPrincipal
+        [Fact]
+        public void VerificarRecuperarDatosUsuarioNoExistentePrueba()
+        {
+            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
+            string correoElectronicoExistente = "correoPrueba@gmail.com";
+            string nicknameEsperado = null;
+            byte[] avatarEsperado = null;
 
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            (Constantes respuestaActual, string nickname, byte[] avatar) = servicioComunicacion.RecuperarDatosUsuario(correoElectronicoExistente);
+
+            Assert.Equal(respuestaEsperada, respuestaActual);
+            Assert.Equal(nicknameEsperado, nickname);
+            Assert.Equal(avatarEsperado, avatar);
+        }
     }
 }
 

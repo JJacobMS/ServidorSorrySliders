@@ -11,26 +11,49 @@ namespace PruebasSorrySliders
 {
     public class CreacionRegistrosErrorConsultaPruebas
     {
+        //IDetallesCuenta
         [Fact]
         public void VerificarInsertarCuentaUsuarioIncorrectoPrueba()
         {
             Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            UsuarioSet usuario = new UsuarioSet
-            {
-                Nombre = "Sulem",
-                Apellido = "Martinez",
-            };
+            UsuarioSet usuario = new UsuarioSet();
 
-            CuentaSet cuenta = new CuentaSet
-            {
-                CorreoElectronico = "correoEjemplo@gmail.com",
-                Contraseña = "password12345"
-            };
+            CuentaSet cuenta = new CuentaSet();
             Constantes resultadoObtenidos = servicioComunicacion.AgregarUsuario(usuario, cuenta);
 
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
 
+        }
+        //IUnirsePartida
+        [Fact]
+        public void VerificarIntentarEntrarPartidaDatosIncompletosPrueba()
+        {
+            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            int jugadoresMaximos = -1;
+
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            string correoExistente = null;
+            string uidExistente = null;
+
+            (Constantes resultadoObtenidos, int cantidadJugadoresPrevios) = servicioComunicacion.UnirseAlLobby(uidExistente, correoExistente);
+
+            Assert.Equal(respuestaEsperado, resultadoObtenidos);
+            Assert.Equal(jugadoresMaximos, cantidadJugadoresPrevios);
+        }
+        [Fact]
+        public void VerificarInsertarCuentaProvisionalDatosIncompletosPrueba()
+        {
+            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            CuentaSet cuentaProvisional = new CuentaSet();
+
+            Constantes resultadoObtenidos = servicioComunicacion.CrearCuentaProvisionalInvitado(cuentaProvisional);
+
+            Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
     }
 }

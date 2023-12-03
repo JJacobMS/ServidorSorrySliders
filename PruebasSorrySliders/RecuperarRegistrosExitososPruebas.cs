@@ -210,6 +210,7 @@ namespace PruebasSorrySliders
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
             string informacionJugador = "amigo";
+            string correoBuscar = "correoPruebas@gmail.com";
 
             List<CuentaSet> cuentasEsperadas = new List<CuentaSet>
             {
@@ -219,7 +220,7 @@ namespace PruebasSorrySliders
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
 
-            (Constantes respuestaActual, List<CuentaSet> cuentasActuales) = servicioComunicacion.RecuperarJugadoresCuenta(informacionJugador);
+            (Constantes respuestaActual, List<CuentaSet> cuentasActuales) = servicioComunicacion.RecuperarJugadoresCuenta(informacionJugador, correoBuscar);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
@@ -265,6 +266,23 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(partidaEsperada, partidaRecuperada);
+        }
+        //IMenuPrincipal
+        [Fact]
+        public void VerificarRecuperarDatosUsuarioExitosamentePrueba()
+        {
+            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
+            string correoElectronicoExistente = "correoPrueba@gmail.com";
+            string nicknameEsperado = "nicknamePrueba";
+            byte[] avatarEsperado = BitConverter.GetBytes(0102030405);
+
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            (Constantes respuestaActual, string nickname, byte[] avatar) = servicioComunicacion.RecuperarDatosUsuario(correoElectronicoExistente);
+
+            Assert.Equal(respuestaEsperada, respuestaActual);
+            Assert.Equal(nicknameEsperado, nickname);
+            Assert.Equal(avatarEsperado, avatar);
         }
     }
 }

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Contexts;
 using System.ServiceModel;
 using System.Text;
@@ -61,7 +64,7 @@ namespace ServidorSorrySliders
             }
         }
 
-        public (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador)
+        public (Constantes, List<CuentaSet>) RecuperarJugadoresCuenta(string informacionJugador, string correoJugador)
         {
             Logger log = new Logger(this.GetType(), "IListaAmigos");
             try
@@ -70,9 +73,11 @@ namespace ServidorSorrySliders
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
                     var jugadores = contexto.Database.SqlQuery<CuentaSet>
-                        ("Select * From CuentaSet Where Nickname Like '%' + @nickname + '%' Or CorreoElectronico Like '%' + @correo + '%' " +
-                        "AND CorreoElectronico Like '%@%' ORDER BY CorreoElectronico DESC",
-                        new SqlParameter("@nickname", informacionJugador), new SqlParameter("@correo", informacionJugador)).ToList();
+                        ("Select * From CuentaSet Where (CorreoElectronico Like '%' + @correo + '%' OR Nickname Like '%' + @correo +'%') " +
+                        "AND CorreoElectronico Like '%@%' AND CorreoElectronico != @correoJugadorOriginal " +
+                        "ORDER BY CorreoElectronico DESC ",
+                        new SqlParameter("@nickname", informacionJugador), new SqlParameter("@correo", informacionJugador),
+                        new SqlParameter("@correoJugadorOriginal", correoJugador)).ToList();
 
                     if (jugadores == null || jugadores.Count <= 0)
                     {
@@ -191,7 +196,12 @@ namespace ServidorSorrySliders
             }
         }
 
-        public void NotificarJugadorInvitado(string correoElectronico)
+        public void NotificarUsuario(string correoElectronico)
+        {
+            LlamarCallback(correoElectronico);
+        }
+
+        public void LlamarCallback(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "INotificarJugadores");
             try
@@ -203,9 +213,10 @@ namespace ServidorSorrySliders
             }
             catch (CommunicationObjectAbortedException ex)
             {
-                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                log.LogWarn("La conexión del usuario se ha perdido", ex);
 
+                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
+                EliminarProxy(correoElectronico);
+                log.LogWarn("La conexión del usuario se ha perdido", ex);
             }
             catch (InvalidCastException ex)
             {
@@ -263,6 +274,7 @@ namespace ServidorSorrySliders
 
         public void EliminarProxy(string correoElectronico)
         {
+            Console.WriteLine("Eliminar proxy");
             if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
             {
                 _jugadoresEnLineaListaAmigos.Remove(correoElectronico);
@@ -317,6 +329,363 @@ namespace ServidorSorrySliders
                 Console.WriteLine(ex.StackTrace);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+        public Constantes EliminarNotificacionJugador(string correoElectronico, int idNotificacion)
+        {
+            Logger log = new Logger(GetType(), "IListaAmigos");
+            try
+            {
+                using (var context = new BaseDeDatosSorrySlidersEntities()) {
+                    var filasAfectadas = context.Database.ExecuteSqlCommand("DELETE FROM NotificacionSet where IdNotificacion=@idNotificacion AND " +
+                        "CorreoElectronicoDestinatario=@correoElectronico;", new SqlParameter("@idNotificacion", idNotificacion), 
+                        new SqlParameter("@correoElectronico", correoElectronico));
+                    if (filasAfectadas > 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                    else
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex) 
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public Constantes GuardarAmistad(string correoElectronicoDestinatario, string correoElectronicoRemitente)
+        {
+            Logger log = new Logger(this.GetType(),"IListaAmgos");
+            using (var contexto = new BaseDeDatosSorrySlidersEntities()) 
+            {
+                try
+                {
+                    var filasAfectadas = contexto.Database.ExecuteSqlCommand("INSERT INTO RelaciónAmigosSet (CorreoElectronicoJugadorPrincipal, CorreoElectronicoJugadorAmigo) " +
+                        "VALUES (@correoDestinatario,@correoRemitente), (@correoRemitente, @correoDestinatario);", 
+                        new SqlParameter("@correoDestinatario",correoElectronicoDestinatario), new SqlParameter("@correoRemitente", correoElectronicoRemitente));
+                    if (filasAfectadas > 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                    else 
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    log.LogError("Error al ejecutar consulta SQL", ex);
+                    return Constantes.ERROR_CONSULTA;
+                }
+                catch (EntityException ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    log.LogError("Error de conexión a la base de datos", ex);
+                    return Constantes.ERROR_CONEXION_BD;
+                }
+            }
+        }
+
+        public (Constantes, List<CuentaSet>) RecuperarAmigos(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var amigosJugador = contexto.Database.SqlQuery<CuentaSet>("SELECT CuentaSet.CorreoElectronico, CuentaSet.Nickname, CuentaSet.Avatar, CuentaSet.Contraseña, CuentaSet.IdUsuario " +
+                        "FROM CuentaSet INNER JOIN RelaciónAmigosSet on CuentaSet.CorreoElectronico = RelaciónAmigosSet.CorreoElectronicoJugadorAmigo AND " +
+                        "RelaciónAmigosSet.CorreoElectronicoJugadorPrincipal=@correo;", new SqlParameter("@correo", correoElectronico)).ToList();
+
+                    List<CuentaSet> listaAmigos = new List<CuentaSet>();
+
+                    foreach (var amigo in amigosJugador)
+                    {
+                        CuentaSet amigoNuevo = new CuentaSet()
+                        {
+                            CorreoElectronico = amigo.CorreoElectronico,
+                            Nickname = amigo.Nickname
+                        };
+                        listaAmigos.Add(amigoNuevo);
+                    }
+
+                    if (listaAmigos == null || listaAmigos.Count <= 0)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+                    else
+                    {
+                        return (Constantes.OPERACION_EXITOSA, listaAmigos);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+        public Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var filasAfectadas = contexto.Database.ExecuteSqlCommand("DELETE FROM RelaciónAmigosSet where " +
+                        "(CorreoElectronicoJugadorPrincipal = @correoPrincipal AND CorreoElectronicoJugadorAmigo = @correoAmigo) OR " +
+                        "(CorreoElectronicoJugadorPrincipal = @correoAmigo AND CorreoElectronicoJugadorAmigo = @correoPrincipal);", 
+                        new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), new SqlParameter("@correoAmigo",correoElectronicoAmigo));
+
+                    if (filasAfectadas <= 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+                    else
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public (Constantes, List<CuentaSet>) RecuperarBaneados(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var baneadosJugador = contexto.Database.SqlQuery<CuentaSet>("SELECT CuentaSet.CorreoElectronico, CuentaSet.Nickname, CuentaSet.Avatar, CuentaSet.Contraseña, CuentaSet.IdUsuario " +
+                        "FROM CuentaSet INNER JOIN RelacionBaneadosSet on CuentaSet.CorreoElectronico = RelacionBaneadosSet.CorreoElectronicoJugadorBaneado AND " +
+                        "RelacionBaneadosSet.CorreoElectronicoJugadorPrincipal=@correo;", new SqlParameter("@correo", correoElectronico)).ToList();
+                    List<CuentaSet> listaBaneados = new List<CuentaSet>();
+                    foreach (var amigo in baneadosJugador)
+                    {
+                        CuentaSet baneado = new CuentaSet()
+                        {
+                            CorreoElectronico = amigo.CorreoElectronico,
+                            Nickname = amigo.Nickname
+                        };
+                        listaBaneados.Add(baneado);
+                    }
+                    if (listaBaneados == null || listaBaneados.Count <= 0)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+                    else
+                    {
+                        return (Constantes.OPERACION_EXITOSA, listaBaneados);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+        public (Constantes, List<CuentaSet>) RecuperarSolicitudesAmistad(string correoElectronico)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var jugadoresSolicitudAmigos = contexto.Database.SqlQuery<CuentaSet>("SELECT CuentaSet.CorreoElectronico, CuentaSet.Nickname, CuentaSet.Avatar, CuentaSet.Contraseña, CuentaSet.IdUsuario " +
+                        "FROM CuentaSet INNER JOIN NotificacionSet ON " +
+                        "((CuentaSet.CorreoElectronico = NotificacionSet.CorreoElectronicoDestinatario OR CuentaSet.CorreoElectronico = NotificacionSet.CorreoElectronicoRemitente) " +
+                        "AND NotificacionSet.IdTipoNotificacion = 2) AND (CorreoElectronicoRemitente=@correo OR CorreoElectronicoDestinatario=@correo) " +
+                        "AND CuentaSet.CorreoElectronico!=@correo;", new SqlParameter("@correo", correoElectronico)).ToList();
+                    List<CuentaSet> listaSolicitudes = new List<CuentaSet>();
+                    foreach (var jugador in jugadoresSolicitudAmigos)
+                    {
+                        CuentaSet jugadorSolicitado = new CuentaSet()
+                        {
+                            CorreoElectronico = jugador.CorreoElectronico,
+                            Nickname = jugador.Nickname
+                        };
+                        listaSolicitudes.Add(jugadorSolicitado);
+                    }
+                    if (listaSolicitudes == null || listaSolicitudes.Count <= 0)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, null);
+                    }
+                    else
+                    {
+                        return (Constantes.OPERACION_EXITOSA, listaSolicitudes);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return (Constantes.ERROR_CONSULTA, null);
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return (Constantes.ERROR_CONEXION_BD, null);
+            }
+        }
+
+
+
+        public Constantes BanearJugador(string correoElectronicoPrincipal, string correoElectronicoBaneado)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    RelacionBaneadosSet relacionBaneo = new RelacionBaneadosSet()
+                    {
+                        CorreoElectronicoJugadorPrincipal = correoElectronicoPrincipal,
+                        CorreoElectronicoJugadorBaneado = correoElectronicoBaneado
+                    };
+                    contexto.RelacionBaneadosSet.Add(relacionBaneo);
+                    int filasAfectadas = contexto.SaveChanges();
+                    if (filasAfectadas > 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                    else 
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+                }
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public Constantes EliminarBaneo(string correoElectronicoPrincipal, string correoElectronicoBaneado)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var filasAfectadas = contexto.Database.ExecuteSqlCommand("DELETE FROM RelacionBaneadosSet where " +
+                        "CorreoElectronicoJugadorPrincipal=@correoPrincipal AND CorreoElectronicoJugadorBaneado=@correoBaneado;",
+                        new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), new SqlParameter("@correoBaneado", correoElectronicoBaneado));
+
+                    if (filasAfectadas <= 0)
+                    {
+                        return Constantes.OPERACION_EXITOSA_VACIA;
+                    }
+                    else
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (EntityException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                log.LogError("Error de conexión a la base de datos", ex);
+                return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public Constantes EnviarCorreo(string correoElectronicoDestinatario, string asuntoCorreo, string cuerpoCorreo)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+
+                    MailMessage correo = new MailMessage();
+                    string correoJuego = "TheSorrySliders@gmail.com";
+                    string contraseñaAplicacion = "nsnd wsuu kqeb qayk";
+                    correo.From = new MailAddress(correoJuego);
+                    correo.To.Add(correoElectronicoDestinatario);
+                    correo.Subject = asuntoCorreo;
+                    correo.Body = cuerpoCorreo;
+                    correo.IsBodyHtml = true;
+                    SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com");
+                    clienteSmtp.Port = 587;
+                    clienteSmtp.Credentials = new NetworkCredential(correoJuego, contraseñaAplicacion);
+                    clienteSmtp.EnableSsl = true;
+                    clienteSmtp.Send(correo);
+                    return Constantes.OPERACION_EXITOSA;
+                }
+                else
+                {
+                    return Constantes.OPERACION_EXITOSA_VACIA;
+                }
+            }
+            catch (System.FormatException ex)
+            {
+                Console.WriteLine("El correo no tiene forma de coreo elecronico: " + ex.StackTrace);
+                log.LogWarn("Ha ocurrido un error inesperado", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (SmtpFailedRecipientException ex)
+            {
+                Console.WriteLine("Error al enviar el correo electronico al destinatarip: " + ex.StackTrace);
+                log.LogWarn("Ha al enviar el correo electronico al destinatarip", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (SmtpException ex)
+            {
+                Console.WriteLine("Error de autenticación:" + ex.Message);
+                log.LogWarn("Ha ocurrido un error de autenticacion", ex);
+                return Constantes.ERROR_CONSULTA;
             }
         }
     }

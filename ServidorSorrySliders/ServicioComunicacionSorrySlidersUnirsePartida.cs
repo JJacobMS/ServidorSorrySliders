@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 
 namespace ServidorSorrySliders
@@ -157,23 +158,33 @@ namespace ServidorSorrySliders
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
+                    int partidaTerminada = -3;
+                    if (!CodigoPartidaExiste(uid))
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA, partidaTerminada);
+                    }
+
+                    var estaBaneado = contexto.Database.SqlQuery<string>("select DISTINCT CorreoElectronicoJugadorBaneado from RelacionBaneadosSet " +
+                        "INNER JOIN RelacionPartidaCuentaSet On CorreoElectronico = CorreoElectronicoJugadorPrincipal " +
+                        "WHERE CodigoPartida = @uid AND CorreoElectronicoJugadorBaneado = @correo",
+                        new SqlParameter("@uid", uid), new SqlParameter("@correo",correoJugadorNuevo)).Any();
+
+                    int jugadorBaneado = -2;
+                    if (estaBaneado)
+                    {
+                        return (Constantes.OPERACION_EXITOSA_VACIA,jugadorBaneado);
+                    }
+
                     var cuentasPartida = contexto.Database.SqlQuery<CuentaSet>
                         ("Select CuentaSet.CorreoElectronico, Avatar, Nickname, Contraseña, IdUsuario from CuentaSet " +
                         "Inner Join RelacionPartidaCuentaSet ON RelacionPartidaCuentaSet.CorreoElectronico = CuentaSet.CorreoElectronico " +
                         "Where RelacionPartidaCuentaSet.CodigoPartida = @uid " +
                         "Order By RelacionPartidaCuentaSet.IdPartidaCuenta;", new SqlParameter("@uid", uid)).ToList();
 
-                    for (int i = 0; i < cuentasPartida.Count; i++)
-                    {
-                        if (cuentasPartida[i].CorreoElectronico.Equals(correoJugadorNuevo))
-                        {
-                            return (Constantes.OPERACION_EXITOSA_VACIA, -1);
-                        }
-                    }
-
+                    int partidaInexistente = 0;
                     if (cuentasPartida == null)
                     {
-                        return (Constantes.OPERACION_EXITOSA_VACIA, 0);
+                        return (Constantes.OPERACION_EXITOSA_VACIA, partidaInexistente);
                     }
 
                     numeroMaximoJugadores = contexto.Database.SqlQuery<int>
@@ -183,6 +194,15 @@ namespace ServidorSorrySliders
                     if (numeroMaximoJugadores <= cuentasPartida.Count)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, numeroMaximoJugadores);
+                    }
+
+                    int jugadorEnPartida = -1;
+                    for (int i = 0; i < cuentasPartida.Count; i++)
+                    {
+                        if (cuentasPartida[i].CorreoElectronico.Equals(correoJugadorNuevo))
+                        {
+                            return (Constantes.OPERACION_EXITOSA_VACIA, jugadorEnPartida);
+                        }
                     }
 
                     contexto.Database.ExecuteSqlCommand("Insert into RelacionPartidaCuentaSet(Posicion,CodigoPartida, CorreoElectronico) " +
@@ -204,6 +224,7 @@ namespace ServidorSorrySliders
                 return (Constantes.ERROR_CONEXION_BD, numeroMaximoJugadores);
             }
         }
+
         public Constantes CrearCuentaProvisionalInvitado(CuentaSet cuentaProvisionalInvitado)
         {
             Logger log = new Logger(this.GetType(), "IUnirsePartida");
@@ -264,14 +285,5 @@ namespace ServidorSorrySliders
             }
         }
 
-        private void EliminarRelacionPartidaJugadorDesconectado(string correoElectronico, string codigoPartida)
-        {
-            SalirDelLobby(correoElectronico, codigoPartida);
-            Regex validarEsInvitadoRegex = new Regex("^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$");
-            if (validarEsInvitadoRegex.IsMatch(correoElectronico))
-            {
-                EliminarCuentaProvisional(correoElectronico);
-            }
-        }
     }
 }

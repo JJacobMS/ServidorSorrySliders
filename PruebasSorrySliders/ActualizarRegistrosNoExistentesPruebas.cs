@@ -12,7 +12,7 @@ namespace PruebasSorrySliders
     public class ActualizarRegistrosNoExistentesPruebas
     {
         [Fact]
-        public void VerificarCambioContrasenaCuentaNoExistente()
+        public void VerificarCambioContrasenaCuentaNoExistentePrueba()
         {
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
 

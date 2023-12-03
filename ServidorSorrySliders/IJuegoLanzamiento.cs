@@ -26,13 +26,13 @@ namespace InterfacesServidorSorrySliders
     [ServiceContract]
     public interface IJuegoLanzamientoCallback
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void JugadorTiroDado(int numeroDado);
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void JugadorDetuvoLinea(double posicionX, double posicionY);
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void JugadorSalioJuegoLanzamiento(string correoElectronicoSalido);
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void JugadoresListosParaSiguienteTurno();
     }
 }

@@ -155,7 +155,7 @@ namespace PruebasSorrySliders
 
         //IUnirsePartida
         [Fact]
-        public void VerificarInsertarJugadorPartidaExitosamente()
+        public void VerificarInsertarJugadorPartidaExitosamentePrueba()
         {
             Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
             int jugadoresMaximos = 4;
@@ -172,7 +172,7 @@ namespace PruebasSorrySliders
         }
 
         [Fact]
-        public void VerificarInsertarCuentaProvisionalInvitado()
+        public void VerificarInsertarCuentaProvisionalInvitadoPrueba()
         {
             Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
 
