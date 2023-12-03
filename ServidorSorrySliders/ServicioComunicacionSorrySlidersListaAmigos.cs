@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Contexts;
 using System.ServiceModel;
 using System.Text;
@@ -635,6 +638,54 @@ namespace ServidorSorrySliders
                 Console.WriteLine(ex.StackTrace);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
+            }
+        }
+
+        public Constantes EnviarCorreo(string correoElectronicoDestinatario, string asuntoCorreo, string cuerpoCorreo)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+
+                    MailMessage correo = new MailMessage();
+                    string correoJuego = "TheSorrySliders@gmail.com";
+                    string contraseñaAplicacion = "nsnd wsuu kqeb qayk";
+                    correo.From = new MailAddress(correoJuego);
+                    correo.To.Add(correoElectronicoDestinatario);
+                    correo.Subject = asuntoCorreo;
+                    correo.Body = cuerpoCorreo;
+                    correo.IsBodyHtml = true;
+                    SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com");
+                    clienteSmtp.Port = 587;
+                    clienteSmtp.Credentials = new NetworkCredential(correoJuego, contraseñaAplicacion);
+                    clienteSmtp.EnableSsl = true;
+                    clienteSmtp.Send(correo);
+                    return Constantes.OPERACION_EXITOSA;
+                }
+                else
+                {
+                    return Constantes.OPERACION_EXITOSA_VACIA;
+                }
+            }
+            catch (System.FormatException ex)
+            {
+                Console.WriteLine("El correo no tiene forma de coreo elecronico: " + ex.StackTrace);
+                log.LogWarn("Ha ocurrido un error inesperado", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (SmtpFailedRecipientException ex)
+            {
+                Console.WriteLine("Error al enviar el correo electronico al destinatarip: " + ex.StackTrace);
+                log.LogWarn("Ha al enviar el correo electronico al destinatarip", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (SmtpException ex)
+            {
+                Console.WriteLine("Error de autenticación:" + ex.Message);
+                log.LogWarn("Ha ocurrido un error de autenticacion", ex);
+                return Constantes.ERROR_CONSULTA;
             }
         }
     }
