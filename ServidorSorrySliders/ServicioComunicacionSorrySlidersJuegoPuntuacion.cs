@@ -35,14 +35,19 @@ namespace ServidorSorrySliders
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
-                ManejarOperationContext.EliminarJugadorDiccionario(_diccionarioPuntuacion, uid, OperationContext.Current);
+                Console.WriteLine("EliminarJugador " + correoElectronico);
+                if (_diccionarioPuntuacion.ContainsKey(uid)) 
+                {
+                    int posicionJugador = ManejarOperationContext.DevolverPosicionCorreoJugador(_diccionarioPuntuacion[uid], correoElectronico);
+                    _diccionarioPuntuacion[uid].RemoveAt(posicionJugador);
+                }
             }
-            Console.WriteLine("EliminarJugador " + correoElectronico);
             CambiarMultiple();
-            //NotificarEliminarJugador(uid, correoElectronico);
+            NotificarEliminarJugador(uid, correoElectronico);
         }
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
+            Console.WriteLine("Notificar eliminacion");
             foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
             {
                 contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().EliminarTurnoJugador(correoElectronico);
@@ -61,12 +66,12 @@ namespace ServidorSorrySliders
                 catch (CommunicationObjectAbortedException ex)
                 {
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    //SACAR CONTEXTO
+                    EliminarJugador(uid, contextoJugador.CorreoJugador);
                 }
                 catch (TimeoutException ex)
                 {
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    //SACAR CONTEXTO
+                    EliminarJugador(uid, contextoJugador.CorreoJugador);
                 }
                 catch (InvalidCastException ex)
                 {
@@ -86,17 +91,20 @@ namespace ServidorSorrySliders
                     {
                         try
                         {
-                            contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().NotificarJugadorMovimiento(nombrePeon, puntosObtenidos);
+                            Console.WriteLine("Notificar a "+contextoJugador.CorreoJugador);
+                            contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().NotificarJugadorMovimiento(nombrePeon, puntosObtenidos);   
                         }
                         catch (CommunicationObjectAbortedException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            //SACAR CONTEXTO
+                            Console.WriteLine("ESTA DESCONECTADO " + contextoJugador.CorreoJugador);
+                            EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (TimeoutException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            //SACAR CONTEXTO
+                            Console.WriteLine("ESTA DESCONECTADO " + contextoJugador.CorreoJugador);
+                            EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (InvalidCastException ex)
                         {
