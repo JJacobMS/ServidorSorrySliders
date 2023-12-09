@@ -1,5 +1,8 @@
 {
   "ConfiguracionesCorreo": {
-    //Cifrar Contraseña, y un método para desencriptar la contraseña 
+    "CorreoJuego": "TheSorrySliders@gmail.com",
+    "ContrasenaJuego": "AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAjGTM4a+mFEar8sChXto70wAAAAACAAAAAAAQZgAAAAEAACAAAACXhcgdkj0U9qxcAx9b561IBASzCa4M+Sl468vX/QI4ogAAAAAOgAAAAAIAACAAAADD/AXp0Y+1UaukleoGSRpqrYiL9uyVSw6VzAIjtWrjPSAAAADSkhfLz4QDPtkPSAFbERpzJ9NL6hN94CacobAySBcc3UAAAAC5aEoUVNYakN7jF3ltgPYz+8jWgrZ9UjxaMZhhGMsgPdl3K/nWKKRhhV7uQjV0Xbf+OS+HyIG1Lqg8FK0MLTuJ",
+    "ClienteSmtp": "smtp.gmail.com",
+    "PuertoSmtp": 587
   }
 }

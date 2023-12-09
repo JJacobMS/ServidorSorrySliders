@@ -1,14 +1,17 @@
 ﻿using DatosSorrySliders;
 using InterfacesServidorSorrySliders;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Contexts;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,7 +81,7 @@ namespace ServidorSorrySliders
                         "ORDER BY CorreoElectronico DESC ",
                         new SqlParameter("@nickname", informacionJugador), new SqlParameter("@correo", informacionJugador),
                         new SqlParameter("@correoJugadorOriginal", correoJugador)).ToList();
-
+                    
                     if (jugadores == null || jugadores.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
@@ -644,21 +647,38 @@ namespace ServidorSorrySliders
         public Constantes EnviarCorreo(string correoElectronicoDestinatario, string asuntoCorreo, string cuerpoCorreo)
         {
             Logger log = new Logger(this.GetType(), "IListaAmigos");
+
+            IConfiguration configuracion;
+            try
+            {
+                configuracion = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "recursos"))
+                .AddJsonFile("ConfiguracionesAplicacion.json").Build();
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("No se pudieron encontrar las credenciales para enviar el archivo: " + ex.StackTrace);
+                log.LogWarn("No se ha podido recuperar el archivo", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+
             try
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
 
                     MailMessage correo = new MailMessage();
-                    string correoJuego = "TheSorrySliders@gmail.com";
-                    string contraseñaAplicacion = "nsnd wsuu kqeb qayk";
+                    string correoJuego = configuracion["ConfiguracionesCorreo:CorreoJuego"];
+                    string contraseñaAplicacion = Descifrador.Descrifrar(configuracion["ConfiguracionesCorreo:ContrasenaJuego"]);
                     correo.From = new MailAddress(correoJuego);
                     correo.To.Add(correoElectronicoDestinatario);
                     correo.Subject = asuntoCorreo;
                     correo.Body = cuerpoCorreo;
                     correo.IsBodyHtml = true;
-                    SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com");
-                    clienteSmtp.Port = 587;
+                    SmtpClient clienteSmtp = new SmtpClient(configuracion["ConfiguracionesCorreo:ClienteSmtp"]);
+
+                    string puerto = configuracion.GetSection("ConfiguracionesCorreo")["PuertoSmtp"];
+                    clienteSmtp.Port = int.Parse(puerto);
                     clienteSmtp.Credentials = new NetworkCredential(correoJuego, contraseñaAplicacion);
                     clienteSmtp.EnableSsl = true;
                     clienteSmtp.Send(correo);
@@ -669,7 +689,7 @@ namespace ServidorSorrySliders
                     return Constantes.OPERACION_EXITOSA_VACIA;
                 }
             }
-            catch (System.FormatException ex)
+            catch (FormatException ex)
             {
                 Console.WriteLine("El correo no tiene forma de coreo elecronico: " + ex.StackTrace);
                 log.LogWarn("Ha ocurrido un error inesperado", ex);
@@ -678,15 +698,22 @@ namespace ServidorSorrySliders
             catch (SmtpFailedRecipientException ex)
             {
                 Console.WriteLine("Error al enviar el correo electronico al destinatarip: " + ex.StackTrace);
-                log.LogWarn("Ha al enviar el correo electronico al destinatarip", ex);
+                log.LogWarn("Ha al enviar el correo electronico al destinatario", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (SmtpException ex)
             {
                 Console.WriteLine("Error de autenticación:" + ex.Message);
-                log.LogWarn("Ha ocurrido un error de autenticacion", ex);
+                log.LogWarn("Ha ocurrido un error de autenticación", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (CryptographicException ex)
+            {
+                Console.WriteLine("Error de cifrado:" + ex.Message);
+                log.LogWarn("Ha ocurrido un error de cifrado", ex);
                 return Constantes.ERROR_CONSULTA;
             }
         }
+
     }
 }
