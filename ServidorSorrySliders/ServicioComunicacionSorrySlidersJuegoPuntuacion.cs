@@ -203,10 +203,20 @@ namespace ServidorSorrySliders
 
         public void EliminarDiccionariosJuego(string uid)
         {
-            ManejarOperationContext.EliminarKeyDiccionario(_diccionarioPuntuacion, uid);
-            ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaChat, uid);
-            ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaJuegoLanzamiento, uid);
-
+            CambiarSingle();
+            lock (_diccionarioPuntuacion)
+            {
+                ManejarOperationContext.EliminarKeyDiccionario(_diccionarioPuntuacion, uid);
+            }
+            lock (_jugadoresEnLineaChat)
+            {
+                ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaChat, uid);
+            }
+            lock (_jugadoresEnLineaJuegoLanzamiento)
+            {
+                ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaJuegoLanzamiento, uid);
+            }
+            CambiarMultiple();
         }
     }
 }
