@@ -62,14 +62,6 @@ namespace ServidorSorrySliders
                         jugadoresSinConexion.Add(jugador);
                         log.LogInfo("No se pudo encontrar al jugador ", ex);
                     }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogFatal("Ha ocurrido un error inesperado", ex);
-                    }
                 }
                 if (jugadoresSinConexion.Count > 0)
                 {
@@ -131,15 +123,6 @@ namespace ServidorSorrySliders
                     jugadoresSinConexion.Add(jugador);
                     log.LogInfo("No se pudo encontrar al jugador ", ex);
                 }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    jugadoresSinConexion.Add(jugador);
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                }
             }
             if (jugadoresSinConexion.Count > 0)
             {
@@ -178,14 +161,6 @@ namespace ServidorSorrySliders
                     jugadoresSinConexion.Add(jugador);
                     log.LogInfo("No se pudo encontrar al jugador ", ex);
                 }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                }
             }
             if (jugadoresSinConexion.Count > 0)
             {
@@ -223,14 +198,6 @@ namespace ServidorSorrySliders
                 {
                     jugadoresSinConexion.Add(jugador);
                     log.LogInfo("No se pudo encontrar al jugador ", ex);
-                }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)

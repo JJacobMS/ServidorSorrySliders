@@ -232,18 +232,24 @@ namespace ServidorSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    int idUsuarioInvitado = 10;
+                    int idUsuarioInvitado = RecuperarUsuarioInvitado();
 
-                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                    if (idUsuarioInvitado != -1)
+                    {
+                        context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
                         "VALUES(@correo, @avatar,'', @nickname, @idUsuario)",
                         new SqlParameter("@correo", cuentaProvisionalInvitado.CorreoElectronico),
                         new SqlParameter("@avatar", cuentaProvisionalInvitado.Avatar),
                         new SqlParameter("@nickname", cuentaProvisionalInvitado.Nickname),
                         new SqlParameter("@idUsuario", idUsuarioInvitado));
 
-                    Console.WriteLine("Inserción exitosa Invitado");
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                    else
+                    {
+                        return Constantes.OPERACION_EXITOSA;
+                    }
                 }
-                return Constantes.OPERACION_EXITOSA;
             }
             catch (SqlException ex)
             {
@@ -285,5 +291,39 @@ namespace ServidorSorrySliders
             }
         }
 
+        private int RecuperarUsuarioInvitado()
+        {
+            int idUsuario = -1;
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var usuarioInvitado = contexto.Database.SqlQuery<UsuarioSet>
+                        ("SELECT * FROM UsuarioSet WHERE Apellido = '' AND Nombre = ''").FirstOrDefault();
+
+                    if (usuarioInvitado == null)
+                    {
+                        idUsuario = contexto.Database.SqlQuery<int>
+                            ("INSERT INTO UsuarioSet(Nombre, Apellido) VALUES('', '') SELECT CAST(SCOPE_IDENTITY() AS int)").Single();
+                    }
+                    else
+                    {
+                        idUsuario = usuarioInvitado.IdUsuario;
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                log.LogError("Error al ejecutar consulta SQL", ex);
+            }
+            catch (EntityException ex)
+            {
+                log.LogError("Error de conexión a la base de datos", ex);
+            }
+
+            return idUsuario;
+        }
     }
 }

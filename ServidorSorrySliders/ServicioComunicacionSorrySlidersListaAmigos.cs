@@ -126,7 +126,7 @@ namespace ServidorSorrySliders
                     var notificacionesRecuperadas = contexto.Database.SqlQuery<TipoNotificacion>
                         ("SELECT IdTipoNotificacion, NombreNotificacion from TipoNotificacion").ToList();
 
-                    if (notificacionesRecuperadas == null || notificacionesRecuperadas.Count() <= 0)
+                    if (notificacionesRecuperadas == null || notificacionesRecuperadas.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -311,7 +311,7 @@ namespace ServidorSorrySliders
                         listaNotificaciones.Add(notificacionNueva);
                     }
 
-                    if (listaNotificaciones == null || listaNotificaciones.Count <= 0)
+                    if (listaNotificaciones.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -425,7 +425,7 @@ namespace ServidorSorrySliders
                         listaAmigos.Add(amigoNuevo);
                     }
 
-                    if (listaAmigos == null || listaAmigos.Count <= 0)
+                    if (listaAmigos.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -505,7 +505,7 @@ namespace ServidorSorrySliders
                         };
                         listaBaneados.Add(baneado);
                     }
-                    if (listaBaneados == null || listaBaneados.Count <= 0)
+                    if (listaBaneados.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -551,7 +551,7 @@ namespace ServidorSorrySliders
                         };
                         listaSolicitudes.Add(jugadorSolicitado);
                     }
-                    if (listaSolicitudes == null || listaSolicitudes.Count <= 0)
+                    if (listaSolicitudes.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }

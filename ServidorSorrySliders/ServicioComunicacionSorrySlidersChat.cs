@@ -79,6 +79,32 @@ namespace ServidorSorrySliders
                     }
                 }
             }
+            EliminarJugadorDiccionarioJuegoPorExpulsion(uid, correo);
+        }
+
+        private void EliminarJugadorDiccionarioJuegoPorExpulsion(string codigoPartida, string correoJugador)
+        {
+            SalirDelLobby(correoJugador, codigoPartida);
+            if (!correoJugador.Contains("@"))
+            {
+                EliminarCuentaProvisional(correoJugador);
+            }
+            lock (_diccionarioPuntuacion)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_diccionarioPuntuacion, codigoPartida, correoJugador);
+            }
+            lock (_jugadoresEnLineaJuegoLanzamiento)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaJuegoLanzamiento, codigoPartida, correoJugador);
+            }
+            lock (_jugadoresEnLineaChat)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaChat, codigoPartida, correoJugador);
+            }
+            lock (_listaContextoJugadores)
+            {
+                SalirDelSistema(correoJugador);
+            }
         }
 
         public void SalirChatListaJugadores(string uid, string correo)
@@ -106,23 +132,22 @@ namespace ServidorSorrySliders
         private void NotificarEliminarJugadorChat(string uid, string correo)
         {
             Logger log = new Logger(this.GetType(), "IChat");
-            foreach (ContextoJugador jugador in _jugadoresEnLineaChat[uid])
+            lock (_jugadoresEnLineaChat)
             {
-                try
+                if (!_jugadoresEnLineaChat.ContainsKey(uid))
                 {
-                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().JugadorSalioListaJugadores(correo);
+                    return;
                 }
-                catch (CommunicationObjectAbortedException ex)
+                foreach (ContextoJugador jugador in _jugadoresEnLineaChat[uid])
                 {
-                    log.LogWarn("La conexión del usuario se ha perdido", ex);
-                }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
+                    try
+                    {
+                        jugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().JugadorSalioListaJugadores(correo);
+                    }
+                    catch (CommunicationObjectAbortedException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    }
                 }
             }
         }
