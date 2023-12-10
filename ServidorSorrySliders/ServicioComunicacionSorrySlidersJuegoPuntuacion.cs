@@ -42,11 +42,11 @@ namespace ServidorSorrySliders
                     if (posicionJugador >= 0) 
                     {
                         _diccionarioPuntuacion[uid].RemoveAt(posicionJugador);
+                        NotificarEliminarJugador(uid, correoElectronico);
                     }
                 }
             }
             CambiarMultiple();
-            NotificarEliminarJugador(uid, correoElectronico);
         }
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
