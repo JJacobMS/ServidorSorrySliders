@@ -1,4 +1,5 @@
 ﻿using DatosSorrySliders;
+using ServidorSorrySliders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +25,10 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         Constantes ActualizarGanador(string uid, string correoElectronico, int posicion);
         [OperationContract(IsOneWay = true)]
-        void NotificarCambiarPagina(string uid);
+        void NotificarCambiarPagina(string uid, List<JugadorGanador> listaGanadores);
         [OperationContract(IsOneWay = true)]
         void EliminarDiccionariosJuego(string uid);
+
     }
 
     [ServiceContract]
@@ -39,6 +41,6 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         void EliminarTurnoJugador(string correoElectronico);
         [OperationContract(IsOneWay = true)]
-        void CambiarPagina();
+        void CambiarPagina(List<JugadorGanador> listaGanadores);
     }
 }
