@@ -18,47 +18,35 @@ namespace ServidorSorrySliders
     public partial class ServicioComunicacionSorrySliders : ILobby, IChat
     {
         private Dictionary<string, List<ContextoJugador>> _jugadoresEnLineaLobby = new Dictionary<string, List<ContextoJugador>>();
-        public void EntrarPartida(string uid, string cuentaCorreo)
+        public void EntrarPartida(string uid, string jugadorCorreo)
         {
             CambiarSingle();
             Logger log = new Logger(this.GetType(), "ILobby");
-            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = cuentaCorreo, ContextoJugadorCallBack = OperationContext.Current};
+            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = jugadorCorreo, ContextoJugadorCallBack = OperationContext.Current};
             lock (_jugadoresEnLineaLobby)
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaLobby, jugadorNuevo, uid);
 
                 foreach (ContextoJugador jugadorOperation in _jugadoresEnLineaLobby[uid])
                 {
-                    bool huboError = false;
                     try
                     {
                         jugadorOperation.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
                     }
-                    catch (CommunicationObjectAbortedException ex)
+                    catch (CommunicationException ex)
                     {
-                        huboError = true;
-                        Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
                     }
-                    catch (InvalidCastException ex)
+                    catch (TimeoutException ex)
                     {
-                        huboError = true;
-                        Console.WriteLine(ex.StackTrace);
-                        Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
                     }
-                    catch (Exception ex)
-                    {
-                        huboError = true;
-                        Console.WriteLine(ex.StackTrace);
-                        log.LogFatal("Ha ocurrido un error inesperado", ex);
-                    }
-                    if (huboError)
+                    /*if (huboError)
                     {
                         //COMPROBAR JUGADORES
                         /*ManejarOperationContext.EliminarJugadorLista(jugadorOperation.ContextoJugadorCallBack, _jugadoresEnLineaLobby[uid]);
-                        EliminarRelacionPartidaJugadorDesconectado(jugadorOperation.CorreoJugador, uid);*/
-                    }
+                        EliminarRelacionPartidaJugadorDesconectado(jugadorOperation.CorreoJugador, uid);
+                    }*/
                 }
             }
             CambiarMultiple();
@@ -79,21 +67,13 @@ namespace ServidorSorrySliders
                         {
                             jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
                         }
-                        catch (CommunicationObjectAbortedException ex)
+                        catch (CommunicationException ex)
                         {
-                            Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
                         }
-                        catch (InvalidCastException ex)
+                        catch (TimeoutException ex)
                         {
-                            Console.WriteLine(ex.StackTrace);
-                            Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                            log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.StackTrace);
-                            log.LogFatal("Ha ocurrido un error inesperado", ex);
+                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
                         }
                     }
                 }
@@ -115,25 +95,21 @@ namespace ServidorSorrySliders
                     }
                 }
             }
-            catch (CommunicationObjectAbortedException ex)
+            catch (CommunicationException ex)
             {
-                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                log.LogWarn("La conexión del usuario se ha perdido", ex);
+                log.LogWarn("Hubo un error de comunicación con el cliente", ex);
             }
-            catch (InvalidCastException ex)
+            catch (TimeoutException ex)
             {
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                log.LogFatal("Ha ocurrido un error inesperado", ex);
+                log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
             }
         }
         private bool CodigoPartidaExiste(string codigoPartida)
         {
+            if (codigoPartida == null)
+            {
+                return false;
+            }
             return _jugadoresEnLineaLobby.ContainsKey(codigoPartida);
         }
     }

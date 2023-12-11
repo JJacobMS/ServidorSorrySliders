@@ -1,4 +1,5 @@
 ﻿
+using DatosSorrySliders;
 using PruebasSorrySliders.ServidorComunicacionSorrySlidersPrueba;
 using ServidorSorrySliders;
 using System;
@@ -91,86 +92,74 @@ namespace PruebasSorrySliders
             Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.PosicionX, posicionX);
             Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.PosicionY, posicionY);
         }
+        [Fact]
+        public async void NotificarCambiarPosicionPeonesTableroYContinuarPrueba()
+        {
+            string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3301";
+            string correoJugador = "jazmin@gmail.com";
+            PeonesTablero peones = new PeonesTablero();
+
+            _proxyJuegoLanzamiento.NotificarPosicionFichasFinales(codigoPartida, correoJugador, peones);
+
+            await Task.Delay(2000);
+            Assert.True(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoCambiarPosiciones);
+        }
 
     }
 
     public class ImplementacionPruebaCallbackJuegoLanzamiento : IJuegoLanzamientoCallback
     {
-        private bool _haActivadoEventoEliminarJugador;
-        private bool _haActivadoEventoNotificarSiguienteTurno;
-        private string _correoElectronicoSalido;
-        private bool _haActivadoEventoJugadorTirarDado;
-        private int _numeroDadoNotificado;
-        private double _posicionX;
-        private double _posicionY;
-        private bool _haActivadoEventoJugadorLanzoPeon;
-        public bool HaActivadoEventoEliminarJugador 
-        { 
-            get => _haActivadoEventoEliminarJugador; 
-        }
-        public bool HaActivadoEventoNotificarSiguienteTurno 
-        { 
-            get => _haActivadoEventoNotificarSiguienteTurno;  
-        }
-        public string CorreoElectronicoSalido 
-        { 
-            get => _correoElectronicoSalido;    
-        }
-        public bool HaActivadoEventoJugadorTirarDado 
-        { 
-            get => _haActivadoEventoJugadorTirarDado; 
-        }
-        public int NumeroDadoNotificado 
-        { 
-            get => _numeroDadoNotificado;
-        }
-        public double PosicionX 
-        { 
-            get => _posicionX; 
-        }
-        public double PosicionY 
-        { 
-            get => _posicionY; 
-        }
-        public bool HaActivadoEventoJugadorLanzoPeon 
-        { 
-            get => _haActivadoEventoJugadorLanzoPeon; 
-        }
+        private PeonesTablero _peones;
+        public bool HaActivadoEventoEliminarJugador { get; set; }
+        public bool HaActivadoEventoNotificarSiguienteTurno { get; set; }
+        public string CorreoElectronicoSalido { get; set; }
+        public bool HaActivadoEventoJugadorTirarDado { get; set; }
+        public int NumeroDadoNotificado { get; set; }
+        public double PosicionX { get; set; }
+        public double PosicionY { get; set; }
+        public bool HaActivadoEventoJugadorLanzoPeon { get; set; }
+        public bool HaActivadoEventoCambiarPosiciones { get; set; }
 
         public ImplementacionPruebaCallbackJuegoLanzamiento()
         {
-            _haActivadoEventoEliminarJugador = false;
-            _haActivadoEventoNotificarSiguienteTurno = false;
-            _haActivadoEventoJugadorTirarDado = false;
-            _haActivadoEventoJugadorLanzoPeon = false;
+            HaActivadoEventoEliminarJugador = false;
+            HaActivadoEventoNotificarSiguienteTurno = false;
+            HaActivadoEventoJugadorTirarDado = false;
+            HaActivadoEventoJugadorLanzoPeon = false;
+            HaActivadoEventoCambiarPosiciones = false;
 
-            _correoElectronicoSalido = "";
-            _numeroDadoNotificado = -1;
-            _posicionX = -1;
-            _posicionY = -1;
+            CorreoElectronicoSalido = "";
+            NumeroDadoNotificado = -1;
+            PosicionX = -1;
+            PosicionY = -1;
         }
         public void JugadorDetuvoLinea(double posicionX, double posicionY)
         {
-            _posicionX = posicionX;
-            _posicionY = posicionY;
-            _haActivadoEventoJugadorLanzoPeon = true;
+            this.PosicionX = posicionX;
+            PosicionY = posicionY;
+            HaActivadoEventoJugadorLanzoPeon = true;
         }
 
         public void JugadoresListosParaSiguienteTurno()
         {
-            _haActivadoEventoNotificarSiguienteTurno = true;
+            HaActivadoEventoNotificarSiguienteTurno = true;
         }
 
         public void JugadorSalioJuegoLanzamiento(string correoElectronicoSalido)
         {
-            _haActivadoEventoEliminarJugador = true;
-            _correoElectronicoSalido = correoElectronicoSalido;
+            HaActivadoEventoEliminarJugador = true;
+            CorreoElectronicoSalido = correoElectronicoSalido;
         }
 
         public void JugadorTiroDado(int numeroDado)
         {
-            _haActivadoEventoJugadorTirarDado = true;
-            _numeroDadoNotificado = numeroDado;
+            HaActivadoEventoJugadorTirarDado = true;
+            NumeroDadoNotificado = numeroDado;
+        }
+
+        public void CambiarPosicionPeonesTableroYContinuar(PeonesTablero peones)
+        {
+            HaActivadoEventoCambiarPosiciones = true;
         }
     }
 }

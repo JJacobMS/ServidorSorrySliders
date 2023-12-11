@@ -1,4 +1,5 @@
-﻿using ServidorSorrySliders;
+﻿using DatosSorrySliders;
+using ServidorSorrySliders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace InterfacesServidorSorrySliders
         void NotificarLanzamientoLinea(string codigoPartida, string correo, double posicionX, double posicionY);
         [OperationContract(IsOneWay = true)]
         void NotificarFinalizarLanzamiento(string codigoPartida, string correo);
+        [OperationContract(IsOneWay = true)]
+        void NotificarPosicionFichasFinales(string codigoPartida, string correo, PeonesTablero peones);
     }
 
     [ServiceContract]
@@ -34,5 +37,7 @@ namespace InterfacesServidorSorrySliders
         void JugadorSalioJuegoLanzamiento(string correoElectronicoSalido);
         [OperationContract]
         void JugadoresListosParaSiguienteTurno();
+        [OperationContract]
+        void CambiarPosicionPeonesTableroYContinuar(PeonesTablero peones);
     }
 }

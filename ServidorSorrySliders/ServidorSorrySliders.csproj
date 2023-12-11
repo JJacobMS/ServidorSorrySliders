@@ -112,7 +112,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CorreoSorrySliders.cs" />
     <Compile Include="Descifrador.cs" />
     <Compile Include="IChat.cs" />
     <Compile Include="ICrearLobby.cs" />

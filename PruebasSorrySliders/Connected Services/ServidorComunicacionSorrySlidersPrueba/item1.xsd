@@ -149,4 +149,26 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ValueTupleOfConstantesArrayOfPuntuacionK_Pmi0k2_P" nillable="true" type="tns:ValueTupleOfConstantesArrayOfPuntuacionK_Pmi0k2_P" />
+  <xs:complexType name="ArrayOfValueTupleOfdoubledouble">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ValueTupleOfdoubledouble" type="tns:ValueTupleOfdoubledouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfValueTupleOfdoubledouble" nillable="true" type="tns:ArrayOfValueTupleOfdoubledouble" />
+  <xs:complexType name="ValueTupleOfdoubledouble">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ValueTupleOf{0}{1}{#}" Namespace="http://schemas.datacontract.org/2004/07/System" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="double" Namespace="http://www.w3.org/2001/XMLSchema" />
+          <GenericParameter Name="double" Namespace="http://www.w3.org/2001/XMLSchema" />
+        </GenericType>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Item1" type="xs:double" />
+      <xs:element name="Item2" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ValueTupleOfdoubledouble" nillable="true" type="tns:ValueTupleOfdoubledouble" />
 </xs:schema>

@@ -51,6 +51,7 @@ namespace ServidorSorrySliders
         }
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
+            Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
             Console.WriteLine("Notificar eliminacion");
             var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
             CambiarSingle();
@@ -58,7 +59,20 @@ namespace ServidorSorrySliders
             {
                 foreach (ContextoJugador contextoJugador in contextosJugadoresDiccionario)
                 {
-                    contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().EliminarTurnoJugador(correoElectronico);
+                    try
+                    {
+                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().EliminarTurnoJugador(correoElectronico);
+                    }
+                    catch (CommunicationObjectAbortedException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        EliminarJugador(uid, contextoJugador.CorreoJugador);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        EliminarJugador(uid, contextoJugador.CorreoJugador);
+                    }
                 }
             }
             CambiarMultiple();
@@ -109,19 +123,16 @@ namespace ServidorSorrySliders
                     {
                         try
                         {
-                            Console.WriteLine("Notificar a "+contextoJugador.CorreoJugador);
                             contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().NotificarJugadorMovimiento(nombrePeon, puntosObtenidos);   
                         }
                         catch (CommunicationObjectAbortedException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            Console.WriteLine("ESTA DESCONECTADO " + contextoJugador.CorreoJugador);
                             EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (TimeoutException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            Console.WriteLine("ESTA DESCONECTADO " + contextoJugador.CorreoJugador);
                             EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (InvalidCastException ex)
