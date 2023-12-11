@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -181,37 +182,7 @@ namespace ServidorSorrySliders
             }
         }
 
-        public void NotificarCambiarPagina(string uid)
-        {
-            Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-            Console.WriteLine("Diccionario" + uid);
-            CambiarSingle();
-            lock (_diccionarioPuntuacion)
-            {
-                foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
-                {
-                    try
-                    {
-                        Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
-                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina();
-
-                    }
-                    catch (CommunicationObjectAbortedException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    }
-                    catch (TimeoutException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                    }
-                }
-            }
-            CambiarMultiple();
-        }
+       
 
         public void EliminarDiccionariosJuego(string uid)
         {
@@ -227,6 +198,43 @@ namespace ServidorSorrySliders
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
                 ManejarOperationContext.EliminarKeyDiccionario(_jugadoresEnLineaJuegoLanzamiento, uid);
+            }
+            CambiarMultiple();
+        }
+
+        public void NotificarCambiarPagina(string uid, List<JugadorGanador> listaGanadores)
+        {
+            Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
+            Console.WriteLine("Diccionario" + uid);
+            CambiarSingle();
+            foreach (var item in listaGanadores)
+            {
+                Console.WriteLine(item.Nickname);
+                Console.WriteLine(item.Posicion);
+            }
+            lock (_diccionarioPuntuacion)
+            {
+                foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
+                {
+                    try
+                    {
+                        Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
+                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina(listaGanadores);
+
+                    }
+                    catch (CommunicationObjectAbortedException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                    }
+                }
             }
             CambiarMultiple();
         }

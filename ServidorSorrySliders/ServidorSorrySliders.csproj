@@ -126,6 +126,7 @@
     <Compile Include="IRegistroUsuario.cs" />
     <Compile Include="IUnirsePartida.cs" />
     <Compile Include="IUsuariosEnLinea.cs" />
+    <Compile Include="JugadorGanador.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ManejarOperationContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
