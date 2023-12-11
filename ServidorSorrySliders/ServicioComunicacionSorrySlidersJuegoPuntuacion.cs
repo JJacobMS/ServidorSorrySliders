@@ -118,19 +118,16 @@ namespace ServidorSorrySliders
                     {
                         try
                         {
-                            Console.WriteLine("Notificar a "+contextoJugador.CorreoJugador);
                             contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().NotificarJugadorMovimiento(nombrePeon, puntosObtenidos);   
                         }
                         catch (CommunicationObjectAbortedException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            Console.WriteLine("ESTA DESCONECTADO " + contextoJugador.CorreoJugador);
                             EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (TimeoutException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
-                            Console.WriteLine("ESTA DESCONECTADO " + contextoJugador.CorreoJugador);
                             EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (InvalidCastException ex)

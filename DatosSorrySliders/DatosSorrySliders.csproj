@@ -80,6 +80,7 @@
     <Compile Include="PartidaSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
     </Compile>
+    <Compile Include="PeonesTablero.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelacionBaneadosSet.cs">
       <DependentUpon>ModeloSorrySliders.tt</DependentUpon>
