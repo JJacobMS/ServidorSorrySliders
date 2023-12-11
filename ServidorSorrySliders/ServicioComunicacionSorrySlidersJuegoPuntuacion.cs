@@ -50,16 +50,27 @@ namespace ServidorSorrySliders
         }
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
-            Console.WriteLine("Notificar eliminacion");
-            CambiarSingle();
+            Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
             lock (_diccionarioPuntuacion)
             {
                 foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
                 {
-                    contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().EliminarTurnoJugador(correoElectronico);
+                    try
+                    {
+                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().EliminarTurnoJugador(correoElectronico);
+                    }
+                    catch (CommunicationObjectAbortedException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        EliminarJugador(uid, contextoJugador.CorreoJugador);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        EliminarJugador(uid, contextoJugador.CorreoJugador);
+                    }
                 }
             }
-            CambiarMultiple();
         }
 
         public void NotificarCambioTurno(string uid)

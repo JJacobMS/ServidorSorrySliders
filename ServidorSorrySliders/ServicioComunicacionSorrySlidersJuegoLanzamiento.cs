@@ -27,6 +27,7 @@ namespace ServidorSorrySliders
 
         public void EliminarJugadorJuegoLanzamiento(string codigoPartida)
         {
+            Console.WriteLine("Se eliminooooo");
             CambiarSingle();
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {

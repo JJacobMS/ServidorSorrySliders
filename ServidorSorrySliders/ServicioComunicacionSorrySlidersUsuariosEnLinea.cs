@@ -63,5 +63,21 @@ namespace ServidorSorrySliders
             }
             return -1;
         }
+
+        public void SalirJuegoCompleto(string uid, string correo)
+        {
+            lock (_diccionarioPuntuacion)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_diccionarioPuntuacion, uid, correo);
+            }
+            lock (_jugadoresEnLineaJuegoLanzamiento)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaJuegoLanzamiento, uid, correo);
+            }
+            lock (_jugadoresEnLineaChat)
+            {
+                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaChat, uid, correo);
+            }
+        }
     }
 }

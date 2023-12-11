@@ -55,6 +55,7 @@ namespace ServidorSorrySliders
         }
         public void ExpulsarJugadorPartida(string uid, string correo)
         {
+            CambiarSingle();
             Logger log = new Logger(this.GetType(), "IChat");
             lock (_jugadoresEnLineaChat)
             {
@@ -79,11 +80,13 @@ namespace ServidorSorrySliders
                     }
                 }
             }
+            CambiarMultiple();
             EliminarJugadorDiccionarioJuegoPorExpulsion(uid, correo);
         }
 
         private void EliminarJugadorDiccionarioJuegoPorExpulsion(string codigoPartida, string correoJugador)
         {
+            CambiarSingle();
             SalirDelLobby(correoJugador, codigoPartida);
             if (!correoJugador.Contains("@"))
             {
@@ -91,11 +94,12 @@ namespace ServidorSorrySliders
             }
             lock (_diccionarioPuntuacion)
             {
-                ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_diccionarioPuntuacion, codigoPartida, correoJugador);
+                EliminarJugador(codigoPartida, correoJugador);
             }
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
                 ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaJuegoLanzamiento, codigoPartida, correoJugador);
+                NotificarJugadorSalioPartidaLanzamiento(correoJugador, codigoPartida);
             }
             lock (_jugadoresEnLineaChat)
             {
@@ -105,6 +109,7 @@ namespace ServidorSorrySliders
             {
                 SalirDelSistema(correoJugador);
             }
+            CambiarMultiple();
         }
 
         public void SalirChatListaJugadores(string uid, string correo)

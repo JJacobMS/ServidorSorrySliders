@@ -14,6 +14,8 @@ namespace InterfacesServidorSorrySliders
         void EntrarConCuenta(string jugadorCorreo);
         [OperationContract(IsOneWay = true)]
         void SalirDelSistema(string jugadorCorreo);
+        [OperationContract(IsOneWay = true)]
+        void SalirJuegoCompleto(string uid, string correo);
     }
 
     [ServiceContract]
