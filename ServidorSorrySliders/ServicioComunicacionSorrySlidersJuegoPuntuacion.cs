@@ -50,10 +50,12 @@ namespace ServidorSorrySliders
         }
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
-            Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
+            Console.WriteLine("Notificar eliminacion");
+            var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
+            CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
-                foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
+                foreach (ContextoJugador contextoJugador in contextosJugadoresDiccionario)
                 {
                     try
                     {
@@ -71,6 +73,7 @@ namespace ServidorSorrySliders
                     }
                 }
             }
+            CambiarMultiple();
         }
 
         public void NotificarCambioTurno(string uid)
