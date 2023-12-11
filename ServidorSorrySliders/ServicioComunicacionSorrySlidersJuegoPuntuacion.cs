@@ -51,10 +51,11 @@ namespace ServidorSorrySliders
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
             Console.WriteLine("Notificar eliminacion");
+            var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
-                foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
+                foreach (ContextoJugador contextoJugador in contextosJugadoresDiccionario)
                 {
                     contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().EliminarTurnoJugador(correoElectronico);
                 }
