@@ -50,6 +50,7 @@ namespace ServidorSorrySliders
         }
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
+            Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
             Console.WriteLine("Notificar eliminacion");
             var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
             CambiarSingle();

@@ -33,13 +33,13 @@ namespace ServidorSorrySliders
                     {
                         jugadorOperation.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
                     }
-                    catch (CommunicationObjectAbortedException ex)
+                    catch (CommunicationException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
                     }
-                    catch (InvalidCastException ex)
+                    catch (TimeoutException ex)
                     {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
                     }
                     /*if (huboError)
                     {
@@ -67,21 +67,13 @@ namespace ServidorSorrySliders
                         {
                             jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
                         }
-                        catch (CommunicationObjectAbortedException ex)
+                        catch (CommunicationException ex)
                         {
-                            Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
                         }
-                        catch (InvalidCastException ex)
+                        catch (TimeoutException ex)
                         {
-                            Console.WriteLine(ex.StackTrace);
-                            Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                            log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.StackTrace);
-                            log.LogFatal("Ha ocurrido un error inesperado", ex);
+                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
                         }
                     }
                 }
@@ -103,25 +95,21 @@ namespace ServidorSorrySliders
                     }
                 }
             }
-            catch (CommunicationObjectAbortedException ex)
+            catch (CommunicationException ex)
             {
-                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                log.LogWarn("La conexión del usuario se ha perdido", ex);
+                log.LogWarn("Hubo un error de comunicación con el cliente", ex);
             }
-            catch (InvalidCastException ex)
+            catch (TimeoutException ex)
             {
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                log.LogFatal("Ha ocurrido un error inesperado", ex);
+                log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
             }
         }
         private bool CodigoPartidaExiste(string codigoPartida)
         {
+            if (codigoPartida == null)
+            {
+                return false;
+            }
             return _jugadoresEnLineaLobby.ContainsKey(codigoPartida);
         }
     }

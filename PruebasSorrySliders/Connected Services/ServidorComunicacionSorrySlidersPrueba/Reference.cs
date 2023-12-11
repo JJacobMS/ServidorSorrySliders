@@ -1031,6 +1031,12 @@ namespace PruebasSorrySliders.ServidorComunicacionSorrySlidersPrueba {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IJuegoLanzamiento/NotificarFinalizarLanzamiento")]
         System.Threading.Tasks.Task NotificarFinalizarLanzamientoAsync(string codigoPartida, string correo);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IJuegoLanzamiento/NotificarPosicionFichasFinales")]
+        void NotificarPosicionFichasFinales(string codigoPartida, string correo, DatosSorrySliders.PeonesTablero peones);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IJuegoLanzamiento/NotificarPosicionFichasFinales")]
+        System.Threading.Tasks.Task NotificarPosicionFichasFinalesAsync(string codigoPartida, string correo, DatosSorrySliders.PeonesTablero peones);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1047,6 +1053,10 @@ namespace PruebasSorrySliders.ServidorComunicacionSorrySlidersPrueba {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJuegoLanzamiento/JugadoresListosParaSiguienteTurno", ReplyAction="http://tempuri.org/IJuegoLanzamiento/JugadoresListosParaSiguienteTurnoResponse")]
         void JugadoresListosParaSiguienteTurno();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJuegoLanzamiento/CambiarPosicionPeonesTableroYContinuar", ReplyAction="http://tempuri.org/IJuegoLanzamiento/CambiarPosicionPeonesTableroYContinuarRespon" +
+            "se")]
+        void CambiarPosicionPeonesTableroYContinuar(DatosSorrySliders.PeonesTablero peones);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1115,6 +1125,14 @@ namespace PruebasSorrySliders.ServidorComunicacionSorrySlidersPrueba {
         
         public System.Threading.Tasks.Task NotificarFinalizarLanzamientoAsync(string codigoPartida, string correo) {
             return base.Channel.NotificarFinalizarLanzamientoAsync(codigoPartida, correo);
+        }
+        
+        public void NotificarPosicionFichasFinales(string codigoPartida, string correo, DatosSorrySliders.PeonesTablero peones) {
+            base.Channel.NotificarPosicionFichasFinales(codigoPartida, correo, peones);
+        }
+        
+        public System.Threading.Tasks.Task NotificarPosicionFichasFinalesAsync(string codigoPartida, string correo, DatosSorrySliders.PeonesTablero peones) {
+            return base.Channel.NotificarPosicionFichasFinalesAsync(codigoPartida, correo, peones);
         }
     }
     

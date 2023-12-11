@@ -615,6 +615,15 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="NotificarPosicionFichasFinales">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="codigoPartida" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="correo" nillable="true" type="xs:string" />
+        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/DatosSorrySliders" minOccurs="0" name="peones" nillable="true" type="q39:PeonesTablero" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="JugadorTiroDado">
     <xs:complexType>
       <xs:sequence>
@@ -658,6 +667,18 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="JugadoresListosParaSiguienteTurnoResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CambiarPosicionPeonesTableroYContinuar">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/DatosSorrySliders" minOccurs="0" name="peones" nillable="true" type="q40:PeonesTablero" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CambiarPosicionPeonesTableroYContinuarResponse">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>
@@ -734,7 +755,7 @@
   <xs:element name="ActualizarGanadorResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/DatosSorrySliders" minOccurs="0" name="ActualizarGanadorResult" type="q39:Constantes" />
+        <xs:element xmlns:q41="http://schemas.datacontract.org/2004/07/DatosSorrySliders" minOccurs="0" name="ActualizarGanadorResult" type="q41:Constantes" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

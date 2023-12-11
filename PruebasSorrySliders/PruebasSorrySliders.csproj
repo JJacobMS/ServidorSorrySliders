@@ -90,7 +90,7 @@
     <Compile Include="CreacionRegistroErrorConexionBaseDatosPruebas.cs" />
     <Compile Include="CreacionRegistrosErrorConsultaPruebas.cs" />
     <Compile Include="CreacionRegistrosExitososPruebas.cs" />
-    <Compile Include="CreacionRegistrosErrorPruebas.cs" />
+    <Compile Include="CreacionRegistrosErrorExitosoServidorPruebas.cs" />
     <Compile Include="LlamadaCallBackJuegoLanzamientoPruebas.cs" />
     <Compile Include="LlamadaCallBackUsuarioEnLineaPruebas.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,6 +115,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ServidorComunicacionSorrySlidersPrueba\item4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServidorComunicacionSorrySlidersPrueba\item5.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ServidorComunicacionSorrySlidersPrueba\ServicioComunicacionSorrySliders.wsdl" />

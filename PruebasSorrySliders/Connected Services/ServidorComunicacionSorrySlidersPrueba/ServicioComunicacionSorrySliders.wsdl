@@ -469,6 +469,7 @@
       <xsd:import schemaLocation="http://localhost:5454/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/DatosSorrySliders" />
       <xsd:import schemaLocation="http://localhost:5454/?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System" />
       <xsd:import schemaLocation="http://localhost:5454/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/ServidorSorrySliders" />
+      <xsd:import schemaLocation="http://localhost:5454/?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IInicioSesion_VerificarExistenciaCorreoCuenta_InputMessage">
@@ -729,6 +730,9 @@
   <wsdl:message name="IJuegoLanzamiento_NotificarFinalizarLanzamiento_InputMessage">
     <wsdl:part name="parameters" element="tns:NotificarFinalizarLanzamiento" />
   </wsdl:message>
+  <wsdl:message name="IJuegoLanzamiento_NotificarPosicionFichasFinales_InputMessage">
+    <wsdl:part name="parameters" element="tns:NotificarPosicionFichasFinales" />
+  </wsdl:message>
   <wsdl:message name="IJuegoLanzamiento_JugadorTiroDado_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:JugadorTiroDado" />
   </wsdl:message>
@@ -752,6 +756,12 @@
   </wsdl:message>
   <wsdl:message name="IJuegoLanzamiento_JugadoresListosParaSiguienteTurno_InputCallbackMessage">
     <wsdl:part name="parameters" element="tns:JugadoresListosParaSiguienteTurnoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJuegoLanzamiento_CambiarPosicionPeonesTableroYContinuar_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:CambiarPosicionPeonesTableroYContinuar" />
+  </wsdl:message>
+  <wsdl:message name="IJuegoLanzamiento_CambiarPosicionPeonesTableroYContinuar_InputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:CambiarPosicionPeonesTableroYContinuarResponse" />
   </wsdl:message>
   <wsdl:message name="IUsuariosEnLinea_EntrarConCuenta_InputMessage">
     <wsdl:part name="parameters" element="tns:EntrarConCuenta" />
@@ -1027,6 +1037,9 @@
     <wsdl:operation name="NotificarFinalizarLanzamiento">
       <wsdl:input wsaw:Action="http://tempuri.org/IJuegoLanzamiento/NotificarFinalizarLanzamiento" message="tns:IJuegoLanzamiento_NotificarFinalizarLanzamiento_InputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="NotificarPosicionFichasFinales">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJuegoLanzamiento/NotificarPosicionFichasFinales" message="tns:IJuegoLanzamiento_NotificarPosicionFichasFinales_InputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="JugadorTiroDado">
       <wsdl:output wsaw:Action="http://tempuri.org/IJuegoLanzamiento/JugadorTiroDado" message="tns:IJuegoLanzamiento_JugadorTiroDado_OutputCallbackMessage" />
       <wsdl:input wsaw:Action="http://tempuri.org/IJuegoLanzamiento/JugadorTiroDadoResponse" message="tns:IJuegoLanzamiento_JugadorTiroDado_InputCallbackMessage" />
@@ -1042,6 +1055,10 @@
     <wsdl:operation name="JugadoresListosParaSiguienteTurno">
       <wsdl:output wsaw:Action="http://tempuri.org/IJuegoLanzamiento/JugadoresListosParaSiguienteTurno" message="tns:IJuegoLanzamiento_JugadoresListosParaSiguienteTurno_OutputCallbackMessage" />
       <wsdl:input wsaw:Action="http://tempuri.org/IJuegoLanzamiento/JugadoresListosParaSiguienteTurnoResponse" message="tns:IJuegoLanzamiento_JugadoresListosParaSiguienteTurno_InputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CambiarPosicionPeonesTableroYContinuar">
+      <wsdl:output wsaw:Action="http://tempuri.org/IJuegoLanzamiento/CambiarPosicionPeonesTableroYContinuar" message="tns:IJuegoLanzamiento_CambiarPosicionPeonesTableroYContinuar_OutputCallbackMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IJuegoLanzamiento/CambiarPosicionPeonesTableroYContinuarResponse" message="tns:IJuegoLanzamiento_CambiarPosicionPeonesTableroYContinuar_InputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:portType name="IUsuariosEnLinea">
@@ -1564,6 +1581,12 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
+    <wsdl:operation name="NotificarPosicionFichasFinales">
+      <soap12:operation soapAction="http://tempuri.org/IJuegoLanzamiento/NotificarPosicionFichasFinales" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
     <wsdl:operation name="JugadorTiroDado">
       <soap12:operation soapAction="http://tempuri.org/IJuegoLanzamiento/JugadorTiroDado" style="document" />
       <wsdl:input>
@@ -1593,6 +1616,15 @@
     </wsdl:operation>
     <wsdl:operation name="JugadoresListosParaSiguienteTurno">
       <soap12:operation soapAction="http://tempuri.org/IJuegoLanzamiento/JugadoresListosParaSiguienteTurno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CambiarPosicionPeonesTableroYContinuar">
+      <soap12:operation soapAction="http://tempuri.org/IJuegoLanzamiento/CambiarPosicionPeonesTableroYContinuar" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

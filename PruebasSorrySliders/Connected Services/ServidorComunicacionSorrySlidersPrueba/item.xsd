@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/DatosSorrySliders" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DatosSorrySliders" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://localhost:5454/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:5454/?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:simpleType name="Constantes">
     <xs:restriction base="xs:string">
       <xs:enumeration value="ERROR_CONEXION_BD" />
@@ -144,4 +145,10 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfTipoNotificacion" nillable="true" type="tns:ArrayOfTipoNotificacion" />
+  <xs:complexType name="PeonesTablero">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="PeonesActualmenteTablero" nillable="true" type="q1:ArrayOfKeyValueOfintArrayOfValueTupleOfdoubledoubleU6ho3Bhd" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PeonesTablero" nillable="true" type="tns:PeonesTablero" />
 </xs:schema>
