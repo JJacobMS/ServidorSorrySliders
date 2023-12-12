@@ -28,6 +28,11 @@ namespace ServidorSorrySliders
                         log.LogWarn("La conexión del usuario se ha perdido", ex);
 
                     }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+
+                    }
                     catch (InvalidCastException ex)
                     {
                         log.LogWarn("el callback no pertenece a dicho contexto ", ex);

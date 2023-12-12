@@ -202,16 +202,17 @@ namespace ServidorSorrySliders
             CambiarMultiple();
         }
 
-        public void NotificarCambiarPagina(string uid, List<JugadorGanador> listaGanadores)
+        public void NotificarCambiarPagina(string uid, int[] arrayPosiciones, string[] arrayNickname)
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
             Console.WriteLine("Diccionario" + uid);
-            CambiarSingle();
-            foreach (var item in listaGanadores)
+            for (int i = 0; i < arrayPosiciones.Count(); i++)
             {
-                Console.WriteLine(item.Nickname);
-                Console.WriteLine(item.Posicion);
+                Console.WriteLine(arrayPosiciones[i]);
+                Console.WriteLine(arrayNickname[i]);
+
             }
+            CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
                 foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
@@ -219,7 +220,7 @@ namespace ServidorSorrySliders
                     try
                     {
                         Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
-                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina(listaGanadores);
+                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina(arrayPosiciones, arrayNickname);
 
                     }
                     catch (CommunicationObjectAbortedException ex)
@@ -238,5 +239,42 @@ namespace ServidorSorrySliders
             }
             CambiarMultiple();
         }
+        /*
+public void NotificarCambiarPagina(string uid, JugadorGanador[] listaPuntuaciones)
+{
+   Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
+   Console.WriteLine("Diccionario" + uid);
+   for (int i = 0; i < listaPuntuaciones.Count(); i++)
+   {
+
+   }
+   CambiarSingle();
+   lock (_diccionarioPuntuacion)
+   {
+       foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
+       {
+           try
+           {
+               Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
+               contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina(listaPuntuaciones);
+
+           }
+           catch (CommunicationObjectAbortedException ex)
+           {
+               log.LogWarn("La conexión del usuario se ha perdido", ex);
+           }
+           catch (TimeoutException ex)
+           {
+               log.LogWarn("La conexión del usuario se ha perdido", ex);
+           }
+           catch (InvalidCastException ex)
+           {
+               log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+           }
+       }
+   }
+   CambiarMultiple();
+}
+*/
     }
 }
