@@ -261,5 +261,7 @@ namespace PruebasSorrySliders
             resultadoObtenido = servicioComunicacion.BanearJugador(CorreoElectronicoDestinatario, CorreoElectronicoRemitente);
             Assert.Equal(respuestaEsperado, resultadoObtenido);
         }
+
+
     }
 }

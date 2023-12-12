@@ -21,8 +21,10 @@ namespace PruebasSorrySliders
                 {
                     UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
                     context.UsuarioSet.Add(usuario);
-                    UsuarioSet usuario2 = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    UsuarioSet usuario2 = new UsuarioSet { Nombre = "UsuarioDePrueba", Apellido = "ApellidoDePrueba", };
                     context.UsuarioSet.Add(usuario2);
+                    UsuarioSet usuario3 = new UsuarioSet { Nombre = "UsuarioDePrueba2", Apellido = "ApellidoDePrueba2", };
+                    context.UsuarioSet.Add(usuario3);
                     context.SaveChanges();
 
                     context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
@@ -32,6 +34,18 @@ namespace PruebasSorrySliders
                     context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
                         "VALUES('correoPrueba2@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'nicknamePrueba', @idUsuario)",
                         new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuario2.IdUsuario));
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                        "VALUES('correoPrueba3@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'nicknamePrueba', @idUsuario)",
+                        new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuario3.IdUsuario));
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO PartidaSet (CodigoPartida, CantidadJugadores, CorreoElectronico) VALUES ('00000000-0000-0000-0000-000000000000',4,'correoPrueba3@gmail.com');");
+
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO RelacionPartidaCuentaSet (CodigoPartida, CorreoElectronico, Posicion) VALUES ('00000000-0000-0000-0000-000000000000','correoPrueba3@gmail.com',0);");
+                    
+                    context.SaveChanges();
+
                 }
             }
             catch (SqlException ex)
@@ -56,6 +70,8 @@ namespace PruebasSorrySliders
                     contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba2@gmail.com'");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'UsuarioDePrueba' AND Apellido = 'ApellidoDePrueba'");
+                    
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'UsuarioDePrueba2' AND Apellido = 'ApellidoDePrueba2'");
                 }
             }
             catch (SqlException ex)
@@ -96,6 +112,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
 
+        //IRegistroUsuario
         [Fact]
         public void ActualizarUsuarioExitosoPrueba()
         {
@@ -114,6 +131,18 @@ namespace PruebasSorrySliders
                 Apellido = "ApellidoDePrueba"
             };
             Constantes respuestaActual = servicioComunicacion.ActualizarUsuario(usuarioActualizado, nuevaActualizada);
+            Assert.Equal(respuestaActual, respuestaEsperada);
+        }
+        //IJuegoPuntuacion
+        [Fact]
+        public void ActualizarGanadorExitosoPrueba()
+        {
+            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            string uid = "00000000-0000-0000-0000-000000000000";
+            string correoElectronico = "correoPrueba3@gmail.com";
+            int posicion = 1;
+            Constantes respuestaActual = servicioComunicacion.ActualizarGanador(uid, correoElectronico, posicion);
             Assert.Equal(respuestaActual, respuestaEsperada);
         }
 
