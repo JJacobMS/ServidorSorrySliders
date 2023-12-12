@@ -91,6 +91,10 @@
     <Compile Include="CreacionRegistrosErrorConsultaPruebas.cs" />
     <Compile Include="CreacionRegistrosExitososPruebas.cs" />
     <Compile Include="CreacionRegistrosErrorExitosoServidorPruebas.cs" />
+    <Compile Include="EliminarRegistrosErrorConexionBaseDatos.cs" />
+    <Compile Include="EliminarRegistrosErrorSqlPruebas.cs" />
+    <Compile Include="EliminarRegistrosExitososPruebas.cs" />
+    <Compile Include="EliminarRegistrosNoExistentesPruebas.cs" />
     <Compile Include="LlamadaCallBackJuegoLanzamientoPruebas.cs" />
     <Compile Include="LlamadaCallBackUsuarioEnLineaPruebas.cs" />
     <Compile Include="LlamadaCallChatPruebas.cs" />

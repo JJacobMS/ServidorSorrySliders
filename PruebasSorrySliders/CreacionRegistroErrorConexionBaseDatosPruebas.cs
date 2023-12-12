@@ -116,7 +116,7 @@ namespace PruebasSorrySliders
         }
 
         [Fact]
-        public void VerificarCrearBaneoExitosamentePrueba()
+        public void VerificarCrearBaneoSinConexionBDPrueba()
         {
             Constantes respuestaEsperado = Constantes.ERROR_CONEXION_BD;
             Constantes resultadoObtenido;

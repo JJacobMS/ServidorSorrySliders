@@ -19,11 +19,23 @@ namespace PruebasSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    UsuarioSet usuario = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePrueba", 
+                        Apellido = "apellidoPrueba", 
+                    };
                     context.UsuarioSet.Add(usuario);
-                    UsuarioSet usuario2 = new UsuarioSet { Nombre = "UsuarioDePrueba", Apellido = "ApellidoDePrueba", };
+                    UsuarioSet usuario2 = new UsuarioSet 
+                    { 
+                        Nombre = "UsuarioDePrueba",
+                        Apellido = "ApellidoDePrueba", 
+                    };
                     context.UsuarioSet.Add(usuario2);
-                    UsuarioSet usuario3 = new UsuarioSet { Nombre = "UsuarioDePrueba2", Apellido = "ApellidoDePrueba2", };
+                    UsuarioSet usuario3 = new UsuarioSet 
+                    { 
+                        Nombre = "UsuarioDePrueba2", 
+                        Apellido = "ApellidoDePrueba2", 
+                    };
                     context.UsuarioSet.Add(usuario3);
                     context.SaveChanges();
 
@@ -63,15 +75,23 @@ namespace PruebasSorrySliders
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM RelacionPartidaCuentaSet where CodigoPartida='00000000-0000-0000-0000-000000000000';");
+                    
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM PartidaSet where CodigoPartida='00000000-0000-0000-0000-000000000000'; ");
+
                     contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba@gmail.com'");
+
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba3@gmail.com'");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePrueba' AND Apellido = 'apellidoPrueba'");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba2@gmail.com'");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'UsuarioDePrueba' AND Apellido = 'ApellidoDePrueba'");
-                    
+
                     contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'UsuarioDePrueba2' AND Apellido = 'ApellidoDePrueba2'");
+
+
                 }
             }
             catch (SqlException ex)
