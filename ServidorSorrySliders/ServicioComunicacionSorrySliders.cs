@@ -39,21 +39,21 @@ namespace ServidorSorrySliders
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
                             SalirDelSistema(jugadorCorreo);
                             CambiarMultiple();
-                            return Constantes.ERROR_CONEXION_SERVIDOR;
+                            return Constantes.OPERACION_EXITOSA_VACIA;
                         }
                         catch (TimeoutException ex)
                         {
                             log.LogWarn("La conexión del usuario se ha perdido", ex);
                             SalirDelSistema(jugadorCorreo);
                             CambiarMultiple();
-                            return Constantes.ERROR_CONEXION_SERVIDOR;
+                            return Constantes.OPERACION_EXITOSA_VACIA;
                         }
                         CambiarMultiple();
                         return Constantes.OPERACION_EXITOSA;
                     }
                 }
                 CambiarMultiple();
-                return Constantes.ERROR_CONEXION_SERVIDOR;
+                return Constantes.OPERACION_EXITOSA_VACIA;
             }
         }
 

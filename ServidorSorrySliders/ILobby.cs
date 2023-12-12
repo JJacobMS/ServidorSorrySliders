@@ -17,6 +17,8 @@ namespace ServidorSorrySliders
         void SalirPartida(string uid);
         [OperationContract(IsOneWay = true)]
         void IniciarPartida(string uid);
+        [OperationContract(IsOneWay = true)]
+        void ComprobarJugadoresExistentes(string uid);
 
     }
 
