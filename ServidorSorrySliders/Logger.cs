@@ -12,8 +12,7 @@ namespace ServidorSorrySliders
 {
     public class Logger
     {
-        private ILog _log;
-        public ILog Log { get => _log; set => _log = value; }
+        public ILog Log { get; set; }
 
         public Logger(Type declaringType)
         {

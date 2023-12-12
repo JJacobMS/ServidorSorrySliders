@@ -2,7 +2,9 @@
 using InterfacesServidorSorrySliders;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Core;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -212,6 +214,11 @@ namespace ServidorSorrySliders
                 Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
+            }
+            catch (DataException ex)
+            {
+                log.LogError("Error con los datos", ex);
+                return Constantes.ERROR_CONSULTA;
             }
 
         }

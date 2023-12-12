@@ -39,6 +39,8 @@ namespace InterfacesServidorSorrySliders
         Constantes BanearJugador(string correoElectronicoPrincipal, string correoElectronicoBaneado);
         [OperationContract]
         Constantes EliminarBaneo(string correoElectronicoPrincipal, string correoElectronicoBaneado);
+        [OperationContract]
+        Constantes EnviarCorreo(string correoElectronicoDestinatario, string asuntoCorreo, string cuerpoCorreo);
 
     }
 

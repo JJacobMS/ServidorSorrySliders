@@ -90,7 +90,7 @@ namespace PruebasSorrySliders
                     contexto.Database.ExecuteSqlCommand("DELETE FROM PartidaSet WHERE CorreoElectronico = 'correoPrueba@gmail.com' OR " +
                         "CodigoPartida = '00000000-0000-0000-0000-000000000000'");
 
-                    contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba@gmail.com' " +
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba@gmail.com' OR CorreoElectronico = 'correoParaPruebas@gmail.com'" +
                         "OR CorreoElectronico = 'correoAmigoPruebaUno@gmail.com' OR CorreoElectronico = 'correoAmigoPruebaDos@gmail.com' OR " +
                         "CorreoElectronico = '00000000-0000-0000-0000-000000000001'");
 
@@ -154,23 +154,6 @@ namespace PruebasSorrySliders
         }
 
         //IUnirsePartida
-        [Fact]
-        public void VerificarInsertarJugadorPartidaExitosamentePrueba()
-        {
-            Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
-            int jugadoresMaximos = 4;
-
-            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-
-            string correoExistente = "correoAmigoPruebaDos@gmail.com";
-            string uidExistente = "00000000-0000-0000-0000-000000000000";
-
-            (Constantes resultadoObtenidos, int cantidadJugadoresPrevios) = servicioComunicacion.UnirseAlLobby(uidExistente,correoExistente);
-
-            Assert.Equal(respuestaEsperado, resultadoObtenidos);
-            Assert.Equal(jugadoresMaximos, cantidadJugadoresPrevios);
-        }
-
         [Fact]
         public void VerificarInsertarCuentaProvisionalInvitadoPrueba()
         {

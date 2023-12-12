@@ -1,11 +1,17 @@
 ﻿using DatosSorrySliders;
 using InterfacesServidorSorrySliders;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Contexts;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,12 +76,12 @@ namespace ServidorSorrySliders
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
                     var jugadores = contexto.Database.SqlQuery<CuentaSet>
-                        ("Select * From CuentaSet Where (CorreoElectronico Like '%' + @correo + '%' OR Nickname Like '%' + @correo +'%') " +
+                        ("Select * From CuentaSet Where (Nickname Like '%' + @nickname +'%') " +
                         "AND CorreoElectronico Like '%@%' AND CorreoElectronico != @correoJugadorOriginal " +
                         "ORDER BY CorreoElectronico DESC ",
-                        new SqlParameter("@nickname", informacionJugador), new SqlParameter("@correo", informacionJugador),
+                        new SqlParameter("@nickname", informacionJugador),
                         new SqlParameter("@correoJugadorOriginal", correoJugador)).ToList();
-
+                    
                     if (jugadores == null || jugadores.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
@@ -120,7 +126,7 @@ namespace ServidorSorrySliders
                     var notificacionesRecuperadas = contexto.Database.SqlQuery<TipoNotificacion>
                         ("SELECT IdTipoNotificacion, NombreNotificacion from TipoNotificacion").ToList();
 
-                    if (notificacionesRecuperadas == null || notificacionesRecuperadas.Count() <= 0)
+                    if (notificacionesRecuperadas == null || notificacionesRecuperadas.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -305,7 +311,7 @@ namespace ServidorSorrySliders
                         listaNotificaciones.Add(notificacionNueva);
                     }
 
-                    if (listaNotificaciones == null || listaNotificaciones.Count <= 0)
+                    if (listaNotificaciones.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -419,7 +425,7 @@ namespace ServidorSorrySliders
                         listaAmigos.Add(amigoNuevo);
                     }
 
-                    if (listaAmigos == null || listaAmigos.Count <= 0)
+                    if (listaAmigos.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -499,7 +505,7 @@ namespace ServidorSorrySliders
                         };
                         listaBaneados.Add(baneado);
                     }
-                    if (listaBaneados == null || listaBaneados.Count <= 0)
+                    if (listaBaneados.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -545,7 +551,7 @@ namespace ServidorSorrySliders
                         };
                         listaSolicitudes.Add(jugadorSolicitado);
                     }
-                    if (listaSolicitudes == null || listaSolicitudes.Count <= 0)
+                    if (listaSolicitudes.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -637,5 +643,77 @@ namespace ServidorSorrySliders
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
+
+        public Constantes EnviarCorreo(string correoElectronicoDestinatario, string asuntoCorreo, string cuerpoCorreo)
+        {
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+
+            IConfiguration configuracion;
+            try
+            {
+                configuracion = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "recursos"))
+                .AddJsonFile("ConfiguracionesAplicacion.json").Build();
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("No se pudieron encontrar las credenciales para enviar el archivo: " + ex.StackTrace);
+                log.LogWarn("No se ha podido recuperar el archivo", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+
+            try
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+
+                    MailMessage correo = new MailMessage();
+                    string correoJuego = configuracion["ConfiguracionesCorreo:CorreoJuego"];
+                    string contraseñaAplicacion = Descifrador.Descrifrar(configuracion["ConfiguracionesCorreo:ContrasenaJuego"]);
+                    correo.From = new MailAddress(correoJuego);
+                    correo.To.Add(correoElectronicoDestinatario);
+                    correo.Subject = asuntoCorreo;
+                    correo.Body = cuerpoCorreo;
+                    correo.IsBodyHtml = true;
+                    SmtpClient clienteSmtp = new SmtpClient(configuracion["ConfiguracionesCorreo:ClienteSmtp"]);
+
+                    string puerto = configuracion.GetSection("ConfiguracionesCorreo")["PuertoSmtp"];
+                    clienteSmtp.Port = int.Parse(puerto);
+                    clienteSmtp.Credentials = new NetworkCredential(correoJuego, contraseñaAplicacion);
+                    clienteSmtp.EnableSsl = true;
+                    clienteSmtp.Send(correo);
+                    return Constantes.OPERACION_EXITOSA;
+                }
+                else
+                {
+                    return Constantes.OPERACION_EXITOSA_VACIA;
+                }
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("El correo no tiene forma de coreo elecronico: " + ex.StackTrace);
+                log.LogWarn("Ha ocurrido un error inesperado", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (SmtpFailedRecipientException ex)
+            {
+                Console.WriteLine("Error al enviar el correo electronico al destinatarip: " + ex.StackTrace);
+                log.LogWarn("Ha al enviar el correo electronico al destinatario", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (SmtpException ex)
+            {
+                Console.WriteLine("Error de autenticación:" + ex.Message);
+                log.LogWarn("Ha ocurrido un error de autenticación", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+            catch (CryptographicException ex)
+            {
+                Console.WriteLine("Error de cifrado:" + ex.Message);
+                log.LogWarn("Ha ocurrido un error de cifrado", ex);
+                return Constantes.ERROR_CONSULTA;
+            }
+        }
+
     }
 }

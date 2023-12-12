@@ -103,5 +103,16 @@ namespace ServidorSorrySliders
                 diccionario.Remove(uid);
             }
         }
+        public static void EliminarJugadorDiccionarioPorCorreo(Dictionary<string, List<ContextoJugador>> diccionario, string codigoPartida, string correo)
+        {
+            if (diccionario.ContainsKey(codigoPartida))
+            {
+                int posicion = DevolverPosicionCorreoJugador(diccionario[codigoPartida], correo);
+                if (posicion != -1)
+                {
+                    EliminarJugadorDiccionario(diccionario, codigoPartida, diccionario[codigoPartida][posicion].ContextoJugadorCallBack);
+                }
+            }
+        }
     }
 }

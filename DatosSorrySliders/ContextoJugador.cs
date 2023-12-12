@@ -31,5 +31,14 @@ namespace DatosSorrySliders
             }
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1790901596;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CorreoJugador);
+            hashCode = hashCode * -1521134295 + EqualityComparer<OperationContext>.Default.GetHashCode(ContextoJugadorCallBack);
+            hashCode = hashCode * -1521134295 + ListoParaTurnoSiguiente.GetHashCode();
+            return hashCode;
+        }
     }
 }

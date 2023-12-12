@@ -27,6 +27,7 @@ namespace ServidorSorrySliders
 
         public void EliminarJugadorJuegoLanzamiento(string codigoPartida)
         {
+            Console.WriteLine("Se eliminooooo");
             CambiarSingle();
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
@@ -61,14 +62,6 @@ namespace ServidorSorrySliders
                     {
                         jugadoresSinConexion.Add(jugador);
                         log.LogInfo("No se pudo encontrar al jugador ", ex);
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogFatal("Ha ocurrido un error inesperado", ex);
                     }
                 }
                 if (jugadoresSinConexion.Count > 0)
@@ -131,15 +124,6 @@ namespace ServidorSorrySliders
                     jugadoresSinConexion.Add(jugador);
                     log.LogInfo("No se pudo encontrar al jugador ", ex);
                 }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    jugadoresSinConexion.Add(jugador);
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                }
             }
             if (jugadoresSinConexion.Count > 0)
             {
@@ -178,14 +162,6 @@ namespace ServidorSorrySliders
                     jugadoresSinConexion.Add(jugador);
                     log.LogInfo("No se pudo encontrar al jugador ", ex);
                 }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
-                }
             }
             if (jugadoresSinConexion.Count > 0)
             {
@@ -223,14 +199,6 @@ namespace ServidorSorrySliders
                 {
                     jugadoresSinConexion.Add(jugador);
                     log.LogInfo("No se pudo encontrar al jugador ", ex);
-                }
-                catch (InvalidCastException ex)
-                {
-                    log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                }
-                catch (Exception ex)
-                {
-                    log.LogFatal("Ha ocurrido un error inesperado", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
@@ -282,6 +250,57 @@ namespace ServidorSorrySliders
                     }
                     
                 }
+
+                lock (_diccionarioPuntuacion)
+                {
+                    int posicionChat = ManejarOperationContext.DevolverPosicionCorreoJugador(_diccionarioPuntuacion[codigo], jugador.CorreoJugador);
+                    if (posicionChat != -1)
+                    {
+                        ManejarOperationContext.EliminarJugadorDiccionario(_diccionarioPuntuacion, codigo, _diccionarioPuntuacion[codigo][posicionChat].ContextoJugadorCallBack);
+                        NotificarEliminarJugador(codigo, jugador.CorreoJugador);
+                    }
+
+                }
+
+                SalirDelSistema(jugador.CorreoJugador);
+            }
+        }
+
+        public void NotificarPosicionFichasFinales(string codigoPartida, string correo, PeonesTablero peones)
+        {
+            lock (_jugadoresEnLineaJuegoLanzamiento)
+            {
+                if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida) && _jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
+                {
+                    NotificarCambiarFichas(codigoPartida, correo, peones);
+                }
+            }
+        }
+
+        private void NotificarCambiarFichas(string codigoPartida, string correo, PeonesTablero peones)
+        {
+            Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
+            List<ContextoJugador> jugadoresSinConexion = new List<ContextoJugador>();
+            foreach (ContextoJugador jugador in _jugadoresEnLineaJuegoLanzamiento[codigoPartida])
+            {
+                try
+                {
+                    jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().CambiarPosicionPeonesTableroYContinuar(peones);
+                }
+                catch (CommunicationObjectAbortedException ex)
+                {
+                    jugadoresSinConexion.Add(jugador);
+                    log.LogWarn("La conexión del usuario" + correo + "se ha perdido", ex);
+                }
+                catch (TimeoutException ex)
+                {
+                    jugadoresSinConexion.Add(jugador);
+                    log.LogInfo("No se pudo encontrar al jugador " + correo, ex);
+                }
+            }
+            if (jugadoresSinConexion.Count > 0)
+            {
+                EliminarJugadoresSinConexionMientrasJugabaLanzamiento(jugadoresSinConexion, codigoPartida);
             }
         }
     }
