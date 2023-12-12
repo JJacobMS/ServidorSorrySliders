@@ -45,13 +45,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
@@ -81,13 +79,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
@@ -120,12 +116,10 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.StackTrace);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
@@ -141,7 +135,6 @@ namespace ServidorSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities()) 
                 {
-                    Console.WriteLine("Correo "+cuentaPorActualizar.CorreoElectronico);
                     var filasAfectadasUsuario = context.Database.ExecuteSqlCommand("UPDATE UsuarioSet SET Nombre = @nombre, " +
                         "Apellido= @apellido where IdUsuario = (SELECT IdUsuario FROM CuentaSet WHERE CorreoElectronico = @correo)",
                         new SqlParameter("@correo", cuentaPorActualizar.CorreoElectronico),
@@ -170,13 +163,11 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
                 log.LogError("Error de conexión a la base de datos", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONEXION_BD;
             }
 
