@@ -137,6 +137,8 @@ namespace PruebasSorrySliders
             Assert.Equal(nicknameEsperado, nickname);
             Assert.Equal(avatarEsperado, avatar);
         }
+        //IPuntuaciones
+        
     }
 }
 

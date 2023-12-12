@@ -52,7 +52,7 @@ namespace PruebasSorrySliders
         [Fact]
         public void ActualizarGanadorSinConexionBDPrueba()
         {
-            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
+            Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
             string uid = "00000000-0000-0000-0000-000000000000";
             string correoElectronico = "";

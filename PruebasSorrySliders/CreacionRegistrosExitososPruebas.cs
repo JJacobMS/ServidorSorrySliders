@@ -21,19 +21,39 @@ namespace PruebasSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    UsuarioSet usuario = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePrueba", 
+                        Apellido = "apellidoPrueba", 
+                    };
                     context.UsuarioSet.Add(usuario);
 
-                    UsuarioSet usuarioAmigoUno = new UsuarioSet { Nombre = "nombrePruebaUno", Apellido = "apellidoPruebaUno", };
+                    UsuarioSet usuarioAmigoUno = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaUno", 
+                        Apellido = "apellidoPruebaUno", 
+                    };
                     context.UsuarioSet.Add(usuarioAmigoUno);
 
-                    UsuarioSet usuarioDos = new UsuarioSet { Nombre = "nombrePruebaDos", Apellido = "apellidoPruebaDos", };
+                    UsuarioSet usuarioDos = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaDos",
+                        Apellido = "apellidoPruebaDos",
+                    };
                     context.UsuarioSet.Add(usuarioDos);
 
-                    UsuarioSet usuarioTresRemitente = new UsuarioSet { Nombre = "nombrePruebaTres", Apellido = "apellidoPruebaTres", };
+                    UsuarioSet usuarioTresRemitente = new UsuarioSet 
+                    {
+                        Nombre = "nombrePruebaTres",
+                        Apellido = "apellidoPruebaTres", 
+                    };
                     context.UsuarioSet.Add(usuarioTresRemitente);
                     
-                    UsuarioSet usuarioAmigoDestinatario = new UsuarioSet { Nombre = "nombrePruebaCuatro", Apellido = "apellidoPruebaCuatro", };
+                    UsuarioSet usuarioAmigoDestinatario = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaCuatro",
+                        Apellido = "apellidoPruebaCuatro",
+                    };
                     context.UsuarioSet.Add(usuarioAmigoDestinatario);
 
                     context.SaveChanges();
