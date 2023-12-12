@@ -17,31 +17,24 @@ namespace ServidorSorrySliders
             Logger log = new Logger(this.GetType(), "IChat");
             lock (_jugadoresEnLineaChat)
             {
-                foreach (ContextoJugador contextoJugador in _jugadoresEnLineaChat[uid])
+                if (_jugadoresEnLineaChat.ContainsKey(uid))
                 {
-                    try
+                    foreach (ContextoJugador contextoJugador in _jugadoresEnLineaChat[uid])
                     {
-                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().DevolverMensaje(nickname, mensaje);
-                    }
-                    catch (CommunicationObjectAbortedException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        try
+                        {
+                            contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().DevolverMensaje(nickname, mensaje);
+                        }
+                        catch (CommunicationException ex)
+                        {
+                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                        }
 
                     }
-                    catch (TimeoutException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogFatal("Ha ocurrido un error inesperado", ex);
-                    }
-
                 }
             }
         }
@@ -55,7 +48,7 @@ namespace ServidorSorrySliders
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaChat, jugadorNuevo, uid);
             }
-            Console.WriteLine( "Agregar Jugador Chat " + correo);
+            Console.WriteLine("Agregar Jugador Chat " + correo);
             CambiarMultiple();
         }
         public void ExpulsarJugadorPartida(string uid, string correo)
@@ -64,24 +57,22 @@ namespace ServidorSorrySliders
             Logger log = new Logger(this.GetType(), "IChat");
             lock (_jugadoresEnLineaChat)
             {
-                foreach (ContextoJugador contextoJugador in _jugadoresEnLineaChat[uid])
+                if (_jugadoresEnLineaChat.ContainsKey(uid))
                 {
-                    try
+                    foreach (ContextoJugador contextoJugador in _jugadoresEnLineaChat[uid])
                     {
-                        contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().ExpulsadoDeJugador(correo);
-                    }
-                    catch (CommunicationObjectAbortedException ex)
-                    {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogFatal("Ha ocurrido un error inesperado", ex);
+                        try
+                        {
+                            contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().ExpulsadoDeJugador(correo);
+                        }
+                        catch (CommunicationException ex)
+                        {
+                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                        }
                     }
                 }
             }
@@ -128,7 +119,7 @@ namespace ServidorSorrySliders
                     {
                         ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaChat[uid]);
 
-                        Console.WriteLine("Jugador eliminado del chat y lista jugadores");
+                        Console.WriteLine("Jugador eliminado del chat jugadores");
                         if (_jugadoresEnLineaChat[uid].Count > 0)
                         {
                             NotificarEliminarJugadorChat(uid, correo);
@@ -154,9 +145,13 @@ namespace ServidorSorrySliders
                     {
                         jugador.ContextoJugadorCallBack.GetCallbackChannel<IChatCallback>().JugadorSalioListaJugadores(correo);
                     }
-                    catch (CommunicationObjectAbortedException ex)
+                    catch (CommunicationException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
                     }
                 }
             }

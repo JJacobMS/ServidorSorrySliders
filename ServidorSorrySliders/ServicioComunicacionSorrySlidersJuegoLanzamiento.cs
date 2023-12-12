@@ -27,7 +27,6 @@ namespace ServidorSorrySliders
 
         public void EliminarJugadorJuegoLanzamiento(string codigoPartida)
         {
-            Console.WriteLine("Se eliminooooo");
             CambiarSingle();
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
@@ -53,7 +52,7 @@ namespace ServidorSorrySliders
                     {
                         jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorSalioJuegoLanzamiento(jugadorEliminado);
                     }
-                    catch (CommunicationObjectAbortedException ex)
+                    catch (CommunicationException ex)
                     {
                         jugadoresSinConexion.Add(jugador);
                         log.LogWarn("La conexión del usuario se ha perdido", ex);
@@ -114,7 +113,7 @@ namespace ServidorSorrySliders
                     jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadoresListosParaSiguienteTurno();
                     jugador.ListoParaTurnoSiguiente = false;
                 }
-                catch (CommunicationObjectAbortedException ex)
+                catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
@@ -152,7 +151,7 @@ namespace ServidorSorrySliders
                 {
                     jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorTiroDado(numeroDado);
                 }
-                catch (CommunicationObjectAbortedException ex)
+                catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
@@ -190,7 +189,7 @@ namespace ServidorSorrySliders
                 {
                     jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().JugadorDetuvoLinea(posicionX, posicionY);
                 }
-                catch (CommunicationObjectAbortedException ex)
+                catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario se ha perdido", ex);
@@ -242,24 +241,28 @@ namespace ServidorSorrySliders
 
                 lock (_jugadoresEnLineaChat)
                 {
-                    int posicionChat = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaChat[codigo], jugador.CorreoJugador);
-                    if (posicionChat != -1)
+                    if (_jugadoresEnLineaChat.ContainsKey(codigo))
                     {
-                        ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaChat, codigo, _jugadoresEnLineaChat[codigo][posicionChat].ContextoJugadorCallBack);
-                        NotificarEliminarJugadorChat(codigo, jugador.CorreoJugador);
-                    }
-                    
+                        int posicionChat = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaChat[codigo], jugador.CorreoJugador);
+                        if (posicionChat != -1)
+                        {
+                            ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaChat, codigo, _jugadoresEnLineaChat[codigo][posicionChat].ContextoJugadorCallBack);
+                            NotificarEliminarJugadorChat(codigo, jugador.CorreoJugador);
+                        }
+                    }                    
                 }
 
                 lock (_diccionarioPuntuacion)
                 {
-                    int posicionChat = ManejarOperationContext.DevolverPosicionCorreoJugador(_diccionarioPuntuacion[codigo], jugador.CorreoJugador);
-                    if (posicionChat != -1)
+                    if (_diccionarioPuntuacion.ContainsKey(codigo))
                     {
-                        ManejarOperationContext.EliminarJugadorDiccionario(_diccionarioPuntuacion, codigo, _diccionarioPuntuacion[codigo][posicionChat].ContextoJugadorCallBack);
-                        NotificarEliminarJugador(codigo, jugador.CorreoJugador);
+                        int posicionChat = ManejarOperationContext.DevolverPosicionCorreoJugador(_diccionarioPuntuacion[codigo], jugador.CorreoJugador);
+                        if (posicionChat != -1)
+                        {
+                            ManejarOperationContext.EliminarJugadorDiccionario(_diccionarioPuntuacion, codigo, _diccionarioPuntuacion[codigo][posicionChat].ContextoJugadorCallBack);
+                            NotificarEliminarJugador(codigo, jugador.CorreoJugador);
+                        }
                     }
-
                 }
 
                 SalirDelSistema(jugador.CorreoJugador);
@@ -287,7 +290,7 @@ namespace ServidorSorrySliders
                 {
                     jugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoLanzamientoCallback>().CambiarPosicionPeonesTableroYContinuar(peones);
                 }
-                catch (CommunicationObjectAbortedException ex)
+                catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
                     log.LogWarn("La conexión del usuario" + correo + "se ha perdido", ex);
