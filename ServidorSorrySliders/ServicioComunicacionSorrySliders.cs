@@ -20,9 +20,9 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IInicioSesion
     {
-        public bool JugadorEstaEnLinea(string jugadorCorreo)
+        public Constantes JugadorEstaEnLinea(string jugadorCorreo)
         {
-            bool estaEnLinea = false;
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
             CambiarSingle();
             lock (_listaContextoJugadores)
             {
@@ -30,22 +30,31 @@ namespace ServidorSorrySliders
                 {
                     if (_listaContextoJugadores[i].CorreoJugador.Equals(jugadorCorreo))
                     {
-                        //Aquí tendría q llamar a comprobar jugador
-                        /*try
+                        try
                         {
                             _listaContextoJugadores[i].ContextoJugadorCallBack.GetCallbackChannel<IUsuarioEnLineaCallback>().ComprobarJugador();
                         }
-                        catch ()
+                        catch (CommunicationException ex)
                         {
-
-                        }*/
-                        estaEnLinea = true;
-                        break;
+                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            SalirDelSistema(jugadorCorreo);
+                            CambiarMultiple();
+                            return Constantes.ERROR_CONEXION_SERVIDOR;
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            SalirDelSistema(jugadorCorreo);
+                            CambiarMultiple();
+                            return Constantes.ERROR_CONEXION_SERVIDOR;
+                        }
+                        CambiarMultiple();
+                        return Constantes.OPERACION_EXITOSA;
                     }
                 }
+                CambiarMultiple();
+                return Constantes.ERROR_CONEXION_SERVIDOR;
             }
-            CambiarMultiple();
-            return estaEnLinea;
         }
 
         public Constantes VerificarContrasenaDeCuenta(CuentaSet cuentaPorVerificar)

@@ -21,13 +21,17 @@ namespace PruebasSorrySliders
                 {
                     UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
                     context.UsuarioSet.Add(usuario);
+                    UsuarioSet usuario2 = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    context.UsuarioSet.Add(usuario2);
                     context.SaveChanges();
 
                     context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
                         "VALUES('correoPrueba@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'nicknamePrueba', @idUsuario)",
                         new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuario.IdUsuario));
 
-                    
+                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                        "VALUES('correoPrueba2@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'nicknamePrueba', @idUsuario)",
+                        new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuario2.IdUsuario));
                 }
             }
             catch (SqlException ex)
@@ -49,6 +53,9 @@ namespace PruebasSorrySliders
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePrueba' AND Apellido = 'apellidoPrueba'");
 
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba2@gmail.com'");
+
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'UsuarioDePrueba' AND Apellido = 'ApellidoDePrueba'");
                 }
             }
             catch (SqlException ex)
@@ -87,6 +94,27 @@ namespace PruebasSorrySliders
             Constantes respuestaActual = servicioComunicacion.CambiarContrasena(cuentaExistente);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
+        }
+
+        [Fact]
+        public void ActualizarUsuarioExitosoPrueba()
+        {
+            Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            var nuevaActualizada = new CuentaSet
+            {
+                CorreoElectronico = "correoPrueba2@gmail.com",
+                Avatar = BitConverter.GetBytes(0102030405),
+                Nickname = "NicknameDePrueba",
+                Contraseña = "ContraseñaDePrueba1234567890"
+            };
+            var usuarioActualizado = new UsuarioSet
+            {
+                Nombre = "UsuarioDePrueba",
+                Apellido = "ApellidoDePrueba"
+            };
+            Constantes respuestaActual = servicioComunicacion.ActualizarUsuario(usuarioActualizado, nuevaActualizada);
+            Assert.Equal(respuestaActual, respuestaEsperada);
         }
 
     }

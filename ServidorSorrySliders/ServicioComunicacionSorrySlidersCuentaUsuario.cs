@@ -189,8 +189,6 @@ namespace ServidorSorrySliders
                         new SqlParameter("@avatar", (cuentaPorGuardar.Avatar)),
                         new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
                         new SqlParameter("@idUsuario", usuarioPorGuardar.IdUsuario));
-
-                    Console.WriteLine("Inserción exitosa");
                 }
                 return Constantes.OPERACION_EXITOSA;
             }
