@@ -128,7 +128,7 @@ namespace ServidorSorrySliders
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
 
-                    for (int i = 0; i < notificacionesRecuperadas.Count(); i++)
+                    for (int i = 0; i < notificacionesRecuperadas.Count; i++)
                     {
                         TipoNotificacion notificacion = new TipoNotificacion
                         {
@@ -288,7 +288,7 @@ namespace ServidorSorrySliders
                         listaNotificaciones.Add(notificacionNueva);
                     }
 
-                    if (listaNotificaciones.Count <= 0 || listaNotificaciones == null) 
+                    if (listaNotificaciones == null || listaNotificaciones.Count <= 0 ) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -396,7 +396,7 @@ namespace ServidorSorrySliders
                         listaAmigos.Add(amigoNuevo);
                     }
 
-                    if (listaAmigos.Count <= 0 || listaAmigos == null) 
+                    if (listaAmigos == null || listaAmigos.Count <= 0) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -472,7 +472,7 @@ namespace ServidorSorrySliders
                         };
                         listaBaneados.Add(baneado);
                     }
-                    if (listaBaneados.Count <= 0 || listaBaneados == null)
+                    if (listaBaneados == null || listaBaneados.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -516,7 +516,7 @@ namespace ServidorSorrySliders
                         };
                         listaSolicitudes.Add(jugadorSolicitado);
                     }
-                    if (listaSolicitudes.Count <= 0 || listaSolicitudes == null) 
+                    if (listaSolicitudes == null || listaSolicitudes.Count <= 0) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
