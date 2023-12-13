@@ -11,6 +11,7 @@ namespace PruebasSorrySliders
 {
     public class ActualizarRegistrosNoExistentesPruebas
     {
+        //IDetallesCuentaUsuario
         [Fact]
         public void VerificarCambioContrasenaCuentaNoExistentePrueba()
         {

@@ -31,7 +31,11 @@ namespace PruebasSorrySliders
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuentaNoExistente = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com", Contraseña = "1234567890" };
+            CuentaSet cuentaNoExistente = new CuentaSet 
+            { 
+                CorreoElectronico = "correoPrueba@gmail.com",
+                Contraseña = "1234567890" 
+            };
 
             Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuentaNoExistente);
 
@@ -39,7 +43,7 @@ namespace PruebasSorrySliders
 
         }
         
-        //Pruebas Interfaces IDetallesCuentaUsuario
+        // IDetallesCuentaUsuario
         [Fact]
         public void VerificarRecuperarUsuarioNoExistentePrueba()
         {
@@ -71,7 +75,7 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //Pruebas Interfaces IListaAmigos
+        // IListaAmigos
         [Fact]
         public void VerificarRecuperarAmigosCuentaNoExistentePrueba()
         {
@@ -104,7 +108,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
-        //Pruebas Interfaces IUnirsePartida
+        // IUnirsePartida
         [Fact]
         public void VerificarRecuperarJugadoresLobbyNoExistentesPrueba()
         {
@@ -137,7 +141,6 @@ namespace PruebasSorrySliders
             Assert.Equal(nicknameEsperado, nickname);
             Assert.Equal(avatarEsperado, avatar);
         }
-        //IPuntuaciones
         
     }
 }

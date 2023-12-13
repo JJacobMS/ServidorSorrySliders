@@ -9,9 +9,9 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para esta prueba no se debería tener una conexión con la base de datos
     public class ActualizarRegistroErrorConexionBaseDatosPruebas
     {
+        //IDetallesCuentaUsuario
         [Fact]
         public void VerificarCambioContrasenaCuentaSinConexionBDPrueba()
         {

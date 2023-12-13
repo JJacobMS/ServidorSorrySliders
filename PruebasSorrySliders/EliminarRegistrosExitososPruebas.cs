@@ -74,7 +74,6 @@ namespace PruebasSorrySliders
         }
         public void Dispose()
         {
-            //Eliminar cuentas y usuario, relacion amistad y notificaicon
             try
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())

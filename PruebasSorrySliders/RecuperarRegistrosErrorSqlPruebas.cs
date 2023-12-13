@@ -18,7 +18,10 @@ namespace PruebasSorrySliders
             Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuentaNoExistente = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com" };
+            CuentaSet cuentaNoExistente = new CuentaSet 
+            { 
+                CorreoElectronico = "correoPrueba@gmail.com" 
+            };
 
             Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuentaNoExistente);
 
