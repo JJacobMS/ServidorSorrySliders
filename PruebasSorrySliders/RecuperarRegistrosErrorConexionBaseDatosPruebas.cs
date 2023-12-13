@@ -121,6 +121,7 @@ namespace PruebasSorrySliders
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
 
+
         /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarRecuperarJugadoresLobbySinConexionBDPrueba()
