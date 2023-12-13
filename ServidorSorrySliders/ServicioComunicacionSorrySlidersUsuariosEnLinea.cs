@@ -77,5 +77,17 @@ namespace ServidorSorrySliders
                 ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaChat, uid, correo);
             }
         }
+
+        public bool ComprobarMismoJugadorConectado(string jugadorCorreo)
+        {
+            lock (_listaContextoJugadores)
+            {
+                if(_listaContextoJugadores.Exists(jugador => jugador.ContextoJugadorCallBack.SessionId.Equals(OperationContext.Current) && jugador.CorreoJugador.Equals(jugadorCorreo)))
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }

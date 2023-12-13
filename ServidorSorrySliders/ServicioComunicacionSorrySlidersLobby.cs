@@ -86,23 +86,27 @@ namespace ServidorSorrySliders
         public void IniciarPartida(string uid)
         {
             Logger log = new Logger(this.GetType(), "ILobby");
-            try
+            lock (_jugadoresEnLineaLobby)
             {
-                lock (_jugadoresEnLineaLobby)
+                if (!_jugadoresEnLineaLobby.ContainsKey(uid))
                 {
-                    foreach (ContextoJugador contexto in _jugadoresEnLineaLobby[uid])
+                    return;
+                }
+                foreach (ContextoJugador contexto in _jugadoresEnLineaLobby[uid])
+                {
+                    try
                     {
                         contexto.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().HostInicioPartida();
                     }
+                    catch (CommunicationException ex)
+                    {
+                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                    }
                 }
-            }
-            catch (CommunicationException ex)
-            {
-                log.LogWarn("Hubo un error de comunicación con el cliente", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
             }
         }
         private bool CodigoPartidaExiste(string codigoPartida)
