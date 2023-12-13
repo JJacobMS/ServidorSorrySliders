@@ -9,7 +9,6 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Estas pruebas se deben ejecutar sin conexión a la base de datos
     public class CreacionRegistroErrorConexionBaseDatosPruebas
     {
         //IUnirsePartida

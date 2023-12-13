@@ -9,7 +9,6 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para estas pruebas es necesario no tener una conexión activa a la base de datos
     public class RecuperarRegistrosErrorConexionBaseDatosPruebas
     {
         //IInicioSesion
@@ -32,7 +31,11 @@ namespace PruebasSorrySliders
             Constantes respuestaEsperada = Constantes.ERROR_CONEXION_BD;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuenta = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com", Contraseña = "1234567890" };
+            CuentaSet cuenta = new CuentaSet 
+            { 
+                CorreoElectronico = "correoPrueba@gmail.com", 
+                Contraseña = "1234567890" 
+            };
 
             Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuenta);
 

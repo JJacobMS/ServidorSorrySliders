@@ -10,7 +10,6 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para estas pruebas debería estar activo el servidor
     public class LlamadaCallChatPruebas: IDisposable
     {
         private static ChatClient _proxyChat;

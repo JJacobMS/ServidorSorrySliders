@@ -12,7 +12,6 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para estas pruebas debería estar el servidor
     public class LlamadaCallBackJuegoLanzamientoPruebas : IDisposable
     {
         private static JuegoLanzamientoClient _proxyJuegoLanzamiento;
