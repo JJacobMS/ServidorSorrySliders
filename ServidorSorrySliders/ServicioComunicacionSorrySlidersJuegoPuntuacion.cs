@@ -66,12 +66,12 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                         EliminarJugador(uid, contextoJugador.CorreoJugador);
                     }
                     catch (TimeoutException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                         EliminarJugador(uid, contextoJugador.CorreoJugador);
                     }
                 }
@@ -98,17 +98,13 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                         EliminarJugador(uid, contextoJugador.CorreoJugador);
                     }
                     catch (TimeoutException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                         EliminarJugador(uid, contextoJugador.CorreoJugador);
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                     }
                 }
             }
@@ -137,17 +133,13 @@ namespace ServidorSorrySliders
                         }
                         catch (CommunicationObjectAbortedException ex)
                         {
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Error comunicación con el cliente", ex);
                             EliminarJugador(uid, contextoJugador.CorreoJugador);
                         }
                         catch (TimeoutException ex)
                         {
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                             EliminarJugador(uid, contextoJugador.CorreoJugador);
-                        }
-                        catch (InvalidCastException ex)
-                        {
-                            log.LogWarn("el callback no pertenece a dicho contexto ", ex);
                         }
                     }
                 }
@@ -185,6 +177,7 @@ namespace ServidorSorrySliders
             }
             catch (EntityException ex)
             {
+                log.LogError("Error con la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
@@ -228,15 +221,11 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                     }
                     catch (TimeoutException ex)
                     {
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                     }
                 }
             }

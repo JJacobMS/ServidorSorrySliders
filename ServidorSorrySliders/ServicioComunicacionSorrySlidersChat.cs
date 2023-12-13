@@ -27,11 +27,11 @@ namespace ServidorSorrySliders
                         }
                         catch (CommunicationException ex)
                         {
-                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                            log.LogWarn("Error comunicación con el cliente", ex);
                         }
                         catch (TimeoutException ex)
                         {
-                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                         }
 
                     }
@@ -42,7 +42,11 @@ namespace ServidorSorrySliders
         public void IngresarAlChat(string uid, string correo)
         {
             CambiarSingle();
-            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = correo, ContextoJugadorCallBack = OperationContext.Current };
+            ContextoJugador jugadorNuevo = new ContextoJugador 
+            { 
+                CorreoJugador = correo, 
+                ContextoJugadorCallBack = OperationContext.Current 
+            };
 
             lock (_jugadoresEnLineaChat)
             {
@@ -66,11 +70,11 @@ namespace ServidorSorrySliders
                         }
                         catch (CommunicationException ex)
                         {
-                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                            log.LogWarn("Error comunicación con el cliente", ex);
                         }
                         catch (TimeoutException ex)
                         {
-                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                         }
                     }
                 }
@@ -108,16 +112,13 @@ namespace ServidorSorrySliders
             CambiarSingle();
             lock (_jugadoresEnLineaChat)
             {
-                if (_jugadoresEnLineaChat.ContainsKey(uid))
+                if (_jugadoresEnLineaChat.ContainsKey(uid) && ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaChat[uid]))
                 {
-                    if (ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaChat[uid]))
-                    {
-                        ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaChat[uid]);
+                    ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaChat[uid]);
 
-                        if (_jugadoresEnLineaChat[uid].Count > 0)
-                        {
-                            NotificarEliminarJugadorChat(uid, correo);
-                        }
+                    if (_jugadoresEnLineaChat[uid].Count > 0)
+                    {
+                        NotificarEliminarJugadorChat(uid, correo);
                     }
                 }
             }
@@ -141,11 +142,11 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationException ex)
                     {
-                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                     }
                     catch (TimeoutException ex)
                     {
-                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                     }
                 }
             }

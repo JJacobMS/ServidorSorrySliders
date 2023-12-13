@@ -74,13 +74,6 @@ namespace ServidorSorrySliders
             return -1;
         }
 
-        /// <summary>
-        /// Verifica que exista la llave en el diccionario, que el jugador exista y de ahí lo elimina. Al final, checa si el código ya no tiene jugadores, y si es así, lo elimina del diccionario
-        /// </summary>
-        /// <param name="diccionario"></param>
-        /// <param name="codigoPartida"></param>
-        /// <param name="contextoActual"></param>
-        /// <returns></returns>
         public static string EliminarJugadorDiccionario(Dictionary<string, List<ContextoJugador>> diccionario, string codigoPartida, OperationContext contextoActual)
         {
             if (diccionario.ContainsKey(codigoPartida))

@@ -157,7 +157,6 @@ namespace ServidorSorrySliders
                         return Constantes.OPERACION_EXITOSA_VACIA;
 
                     }
-
                 }
             }
             catch (SqlException ex)
@@ -187,7 +186,8 @@ namespace ServidorSorrySliders
                         "VALUES(@correo, @avatar, HASHBYTES('SHA2_512', @contrasena), @nickname, @idUsuario)",
                         new SqlParameter("@correo", cuentaPorGuardar.CorreoElectronico),
                         new SqlParameter("@avatar", (cuentaPorGuardar.Avatar)),
-                        new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
+                        new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), 
+                        new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
                         new SqlParameter("@idUsuario", usuarioPorGuardar.IdUsuario));
                 }
                 return Constantes.OPERACION_EXITOSA;
@@ -210,7 +210,4 @@ namespace ServidorSorrySliders
 
         }
     }
-
-
-
 }

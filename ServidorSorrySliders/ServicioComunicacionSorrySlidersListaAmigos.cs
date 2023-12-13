@@ -205,52 +205,58 @@ namespace ServidorSorrySliders
         public void LlamarCallback(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "INotificarJugadores");
-            try
+            lock (_jugadoresEnLineaListaAmigos)
             {
-                if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+                try
                 {
-                    _jugadoresEnLineaListaAmigos[correoElectronico].GetCallbackChannel<INotificarJugadoresCallback>().RecuperarNotificacion();
+                    if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+                    {
+                        _jugadoresEnLineaListaAmigos[correoElectronico].GetCallbackChannel<INotificarJugadoresCallback>().RecuperarNotificacion();
+                    }
                 }
-            }
-            catch (CommunicationException ex)
-            {
-                EliminarProxy(correoElectronico);
-                log.LogWarn("La conexión del usuario se ha perdido", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                EliminarProxy(correoElectronico);
-                log.LogInfo("No se pudo encontrar al jugador", ex);
+                catch (CommunicationException ex)
+                {
+                    EliminarProxy(correoElectronico);
+                    log.LogWarn("Error comunicación con el cliente", ex);
+                }
+                catch (TimeoutException ex)
+                {
+                    EliminarProxy(correoElectronico);
+                    log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
+                }
             }
         }
 
         public Constantes AgregarProxy(string correoElectronico)
         {
             Logger log = new Logger(this.GetType(), "INotificar");
-            try
+            lock (_jugadoresEnLineaListaAmigos)
             {
-                if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+                try
                 {
-                    _jugadoresEnLineaListaAmigos.Remove(correoElectronico);
-                    _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
+                    if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
+                    {
+                        _jugadoresEnLineaListaAmigos.Remove(correoElectronico);
+                        _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
+                    }
+                    else
+                    {
+                        _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
+                    }
+                    return Constantes.OPERACION_EXITOSA;
                 }
-                else 
+                catch (CommunicationException ex)
                 {
-                    _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
+                    EliminarProxy(correoElectronico);
+                    log.LogWarn("Error comunicación con el cliente", ex);
                 }
-                return Constantes.OPERACION_EXITOSA;
+                catch (TimeoutException ex)
+                {
+                    EliminarProxy(correoElectronico);
+                    log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
+                }
+                return Constantes.ERROR_CONEXION_SERVIDOR;
             }
-            catch (CommunicationException ex)
-            {
-                EliminarProxy(correoElectronico);
-                log.LogWarn("La conexión del usuario se ha perdido", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                EliminarProxy(correoElectronico);
-                log.LogInfo("No se pudo encontrar al jugador", ex);
-            }
-            return Constantes.ERROR_CONEXION_SERVIDOR;
         }
 
         public void EliminarProxy(string correoElectronico)
@@ -288,7 +294,7 @@ namespace ServidorSorrySliders
                         listaNotificaciones.Add(notificacionNueva);
                     }
 
-                    if (listaNotificaciones == null || listaNotificaciones.Count <= 0 ) 
+                    if (listaNotificaciones.Count <= 0 ) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -396,7 +402,7 @@ namespace ServidorSorrySliders
                         listaAmigos.Add(amigoNuevo);
                     }
 
-                    if (listaAmigos == null || listaAmigos.Count <= 0) 
+                    if (listaAmigos.Count <= 0) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -472,7 +478,7 @@ namespace ServidorSorrySliders
                         };
                         listaBaneados.Add(baneado);
                     }
-                    if (listaBaneados == null || listaBaneados.Count <= 0)
+                    if (listaBaneados.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -516,7 +522,7 @@ namespace ServidorSorrySliders
                         };
                         listaSolicitudes.Add(jugadorSolicitado);
                     }
-                    if (listaSolicitudes == null || listaSolicitudes.Count <= 0) 
+                    if (listaSolicitudes.Count <= 0) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -657,22 +663,22 @@ namespace ServidorSorrySliders
             }
             catch (FormatException ex)
             {
-                log.LogWarn("Ha ocurrido un error inesperado", ex);
+                log.LogError("Ha ocurrido un error inesperado", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (SmtpFailedRecipientException ex)
             {
-                log.LogWarn("Ha al enviar el correo electronico al destinatario", ex);
+                log.LogError("Ha al enviar el correo electronico al destinatario", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (SmtpException ex)
             {
-                log.LogWarn("Ha ocurrido un error de autenticación", ex);
+                log.LogError("Ha ocurrido un error de autenticación", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (CryptographicException ex)
             {
-                log.LogWarn("Ha ocurrido un error de cifrado", ex);
+                log.LogError("Ha ocurrido un error de cifrado", ex);
                 return Constantes.ERROR_CONSULTA;
             }
         }

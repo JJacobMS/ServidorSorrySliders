@@ -36,14 +36,14 @@ namespace ServidorSorrySliders
                         }
                         catch (CommunicationException ex)
                         {
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Error de comunicación con el cliente", ex);
                             SalirDelSistema(jugadorCorreo);
                             CambiarMultiple();
                             return Constantes.OPERACION_EXITOSA_VACIA;
                         }
                         catch (TimeoutException ex)
                         {
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                             SalirDelSistema(jugadorCorreo);
                             CambiarMultiple();
                             return Constantes.OPERACION_EXITOSA_VACIA;

@@ -16,7 +16,11 @@ namespace ServidorSorrySliders
         public void AgregarJugadorJuegoLanzamiento(string codigoPartida, string correoElectronico)
         {
             CambiarSingle();
-            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = correoElectronico, ContextoJugadorCallBack = OperationContext.Current };
+            ContextoJugador jugadorNuevo = new ContextoJugador 
+            { 
+                CorreoJugador = correoElectronico, 
+                ContextoJugadorCallBack = OperationContext.Current 
+            };
             lock (_jugadoresEnLineaJuegoLanzamiento)
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaJuegoLanzamiento, jugadorNuevo, codigoPartida);
@@ -35,11 +39,6 @@ namespace ServidorSorrySliders
             CambiarMultiple();
         }
 
-        /// <summary>
-        /// Notifica a todos los jugadores de esa partida que el jugadorEliminado se ha salido, en el caso de que no encuentre a uno lo saca
-        /// </summary>
-        /// <param name="jugadorEliminado"></param>
-        /// <param name="codigoPartida"></param>
         private void NotificarJugadorSalioPartidaLanzamiento(string jugadorEliminado, string codigoPartida)
         {
             Logger log = new Logger(this.GetType(), "IJuegoLanzamiento");
@@ -55,12 +54,12 @@ namespace ServidorSorrySliders
                     catch (CommunicationException ex)
                     {
                         jugadoresSinConexion.Add(jugador);
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                     }
                     catch (TimeoutException ex)
                     {
                         jugadoresSinConexion.Add(jugador);
-                        log.LogInfo("No se pudo encontrar al jugador ", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                     }
                 }
                 if (jugadoresSinConexion.Count > 0)
@@ -113,12 +112,12 @@ namespace ServidorSorrySliders
                 catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    log.LogWarn("Error comunicación con el cliente", ex);
                 }
                 catch (TimeoutException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogInfo("No se pudo encontrar al jugador ", ex);
+                    log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
@@ -151,12 +150,12 @@ namespace ServidorSorrySliders
                 catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    log.LogWarn("Error comunicación con el cliente", ex);
                 }
                 catch (TimeoutException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogInfo("No se pudo encontrar al jugador ", ex);
+                    log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
@@ -189,12 +188,12 @@ namespace ServidorSorrySliders
                 catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogWarn("La conexión del usuario se ha perdido", ex);
+                    log.LogWarn("Error comunicación con el cliente", ex);
                 }
                 catch (TimeoutException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogInfo("No se pudo encontrar al jugador ", ex);
+                    log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
@@ -290,12 +289,12 @@ namespace ServidorSorrySliders
                 catch (CommunicationException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogWarn("La conexión del usuario" + correo + "se ha perdido", ex);
+                    log.LogWarn("Error comunicación con el cliente " + correo, ex);
                 }
                 catch (TimeoutException ex)
                 {
                     jugadoresSinConexion.Add(jugador);
-                    log.LogInfo("No se pudo encontrar al jugador " + correo, ex);
+                    log.LogWarn("Se agoto el tiempo de espera del cliente " + correo, ex);
                 }
             }
             if (jugadoresSinConexion.Count > 0)
