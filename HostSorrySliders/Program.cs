@@ -13,15 +13,12 @@ namespace HostSorrySliders
     {
         static void Main(string[] args)
         {
-            ObtenerStringConexion();
+            ObtenerCadenaConexionBaseDatos();
             Logger log = new Logger(typeof(Program));
             try
             {
                 using (ServiceHost host = new ServiceHost(typeof(ServidorSorrySliders.ServicioComunicacionSorrySliders)))
                 {
-                    string updatedConnectionString = ConfigurationManager.ConnectionStrings["BaseDeDatosSorrySlidersEntities"].ConnectionString;
-
-                    Console.WriteLine($"La cadena de conexión actualizada es: {updatedConnectionString}");
                     host.Open();
                     Console.WriteLine("Servidor en línea");
                     Console.ReadLine();
@@ -38,7 +35,7 @@ namespace HostSorrySliders
             }
         }
 
-        public static void ObtenerStringConexion() 
+        public static void ObtenerCadenaConexionBaseDatos() 
         {
 
             string connectionString = Environment.GetEnvironmentVariable("VARIABLEENTORNO");
@@ -47,17 +44,12 @@ namespace HostSorrySliders
 
             if (connectionStringSection != null)
             {
-                Console.WriteLine($"La cadena de conexión  es: {connectionString}");
 
                 connectionStringSection.ConnectionString = connectionString;
 
                 config.Save(ConfigurationSaveMode.Modified);
 
                 ConfigurationManager.RefreshSection("connectionStrings");
-
-                string updatedConnectionString = ConfigurationManager.ConnectionStrings["BaseDeDatosSorrySlidersEntities"].ConnectionString;
-
-                Console.WriteLine($"La cadena de conexión actualizada es: {updatedConnectionString}");
 
             }
 
