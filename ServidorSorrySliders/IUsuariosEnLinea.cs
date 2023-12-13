@@ -15,8 +15,6 @@ namespace InterfacesServidorSorrySliders
         void EntrarConCuenta(string jugadorCorreo);
         [OperationContract(IsOneWay = true)]
         void SalirDelSistema(string jugadorCorreo);
-        [OperationContract]
-        bool ComprobarMismoJugadorConectado(string jugadorCorreo);
     }
 
     [ServiceContract]

@@ -173,12 +173,12 @@ namespace ServidorSorrySliders
 
         private void EliminarLobbySistema(List<ContextoJugador> jugadores, string codigoPartida)
         {
-            foreach (ContextoJugador jugador in jugadores) 
+            foreach (string jugadorCorreo in jugadores.Select(jugadorAEliminar => jugadorAEliminar.CorreoJugador)) 
             {
-                SalirDelLobby(jugador.CorreoJugador, codigoPartida);
-                if (!jugador.CorreoJugador.Contains("@"))
+                SalirDelLobby(jugadorCorreo, codigoPartida);
+                if (!jugadorCorreo.Contains("@"))
                 {
-                    EliminarCuentaProvisional(jugador.CorreoJugador);
+                    EliminarCuentaProvisional(jugadorCorreo);
                 }
                 lock (_jugadoresEnLineaLobby)
                 {
@@ -186,7 +186,7 @@ namespace ServidorSorrySliders
                 }
                 lock (_listaContextoJugadores)
                 {
-                    SalirDelSistema(jugador.CorreoJugador);
+                    SalirDelSistema(jugadorCorreo);
                 }
             }            
         }
