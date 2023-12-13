@@ -48,7 +48,6 @@ namespace ServidorSorrySliders
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaChat, jugadorNuevo, uid);
             }
-            Console.WriteLine("Agregar Jugador Chat " + correo);
             CambiarMultiple();
         }
         public void ExpulsarJugadorPartida(string uid, string correo)
@@ -119,7 +118,6 @@ namespace ServidorSorrySliders
                     {
                         ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaChat[uid]);
 
-                        Console.WriteLine("Jugador eliminado del chat jugadores");
                         if (_jugadoresEnLineaChat[uid].Count > 0)
                         {
                             NotificarEliminarJugadorChat(uid, correo);

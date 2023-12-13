@@ -14,8 +14,11 @@ namespace ServidorSorrySliders
         private List<ContextoJugador> _listaContextoJugadores = new List<ContextoJugador>();
         public void EntrarConCuenta(string jugadorCorreo)
         {
-            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = jugadorCorreo, ContextoJugadorCallBack = OperationContext.Current };
-            
+            ContextoJugador jugadorNuevo = new ContextoJugador 
+            { 
+                CorreoJugador = jugadorCorreo, 
+                ContextoJugadorCallBack = OperationContext.Current 
+            };
             CambiarSingle();
             lock (_listaContextoJugadores)
             {
@@ -23,15 +26,11 @@ namespace ServidorSorrySliders
                 if (posicionJugador == -1)
                 {
                     _listaContextoJugadores.Add(jugadorNuevo);
-                    Console.WriteLine("Entró al sistema " + jugadorCorreo);
                 }
                 else
                 {
                     _listaContextoJugadores[posicionJugador] = jugadorNuevo;
-                    Console.WriteLine("Cambio de contexto " + jugadorCorreo);
                 }
-                
-                
             }
             CambiarMultiple();
         }
@@ -46,7 +45,6 @@ namespace ServidorSorrySliders
                 if (posicionJugador != -1) 
                 { 
                     _listaContextoJugadores.RemoveAt(posicionJugador);
-                    Console.WriteLine("Salio del sistema " + jugadorCorreo);
                 }
             }
             CambiarMultiple();

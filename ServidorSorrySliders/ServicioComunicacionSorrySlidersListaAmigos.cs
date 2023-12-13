@@ -238,10 +238,6 @@ namespace ServidorSorrySliders
                 {
                     _jugadoresEnLineaListaAmigos.Add(correoElectronico, OperationContext.Current);
                 }
-                foreach (var correo in _jugadoresEnLineaListaAmigos)
-                {
-                    Console.WriteLine("Correo Guardado: "+correo);
-                }
                 return Constantes.OPERACION_EXITOSA;
             }
             catch (CommunicationException ex)
@@ -259,7 +255,6 @@ namespace ServidorSorrySliders
 
         public void EliminarProxy(string correoElectronico)
         {
-            Console.WriteLine("Eliminar " + correoElectronico);
             if (_jugadoresEnLineaListaAmigos.ContainsKey(correoElectronico))
             {
                 _jugadoresEnLineaListaAmigos.Remove(correoElectronico);
@@ -293,7 +288,7 @@ namespace ServidorSorrySliders
                         listaNotificaciones.Add(notificacionNueva);
                     }
 
-                    if (listaNotificaciones.Count <= 0)
+                    if (listaNotificaciones.Count <= 0 || listaNotificaciones == null) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -401,7 +396,7 @@ namespace ServidorSorrySliders
                         listaAmigos.Add(amigoNuevo);
                     }
 
-                    if (listaAmigos.Count <= 0)
+                    if (listaAmigos.Count <= 0 || listaAmigos == null) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -477,7 +472,7 @@ namespace ServidorSorrySliders
                         };
                         listaBaneados.Add(baneado);
                     }
-                    if (listaBaneados.Count <= 0)
+                    if (listaBaneados.Count <= 0 || listaBaneados == null)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }
@@ -521,7 +516,7 @@ namespace ServidorSorrySliders
                         };
                         listaSolicitudes.Add(jugadorSolicitado);
                     }
-                    if (listaSolicitudes.Count <= 0)
+                    if (listaSolicitudes.Count <= 0 || listaSolicitudes == null) 
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);
                     }

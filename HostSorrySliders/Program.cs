@@ -25,12 +25,10 @@ namespace HostSorrySliders
             catch (AddressAccessDeniedException ex) 
             {
                 log.LogError("No se cuentan con los permisos necesarios en el servidor", ex);
-                Console.WriteLine("No se cuentan con los permisos necesarios en el servidor \n"+ex.StackTrace);
             }
             catch (Exception ex)
             {
                 log.LogFatal("Ha ocurrido un error inesperado", ex);
-                Console.WriteLine("Ha ocurrido un error con el servidor \n"+ex.StackTrace);
                 Console.ReadLine();
             }
         }

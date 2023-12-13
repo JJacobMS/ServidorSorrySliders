@@ -21,7 +21,6 @@ namespace ServidorSorrySliders
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaJuegoLanzamiento, jugadorNuevo, codigoPartida);
             }
-            Console.WriteLine("Se agregó " + correoElectronico + " al juego");
             CambiarMultiple();
         }
 
@@ -35,6 +34,7 @@ namespace ServidorSorrySliders
             }
             CambiarMultiple();
         }
+
         /// <summary>
         /// Notifica a todos los jugadores de esa partida que el jugadorEliminado se ha salido, en el caso de que no encuentre a uno lo saca
         /// </summary>

@@ -194,13 +194,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }

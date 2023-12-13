@@ -21,7 +21,7 @@ namespace ServidorSorrySliders
                 {
                     var puntuaciones = context.Database.SqlQuery<Puntuacion>("SELECT TOP(5) CuentaSet.Nickname, Count(Posicion) AS NumeroPartidasGanadas FROM RelacionPartidaCuentaSET " +
                     "Inner Join CuentaSet on CuentaSet.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico " +
-                    "where RelacionPartidaCuentaSET.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico AND Posicion = 0 GROUP BY CuentaSet.Nickname ORDER BY NumeroPartidasGanadas DESC;").ToList();
+                    "where RelacionPartidaCuentaSET.CorreoElectronico = RelacionPartidaCuentaSET.CorreoElectronico AND Posicion = 1 GROUP BY CuentaSet.Nickname ORDER BY NumeroPartidasGanadas DESC;").ToList();
                     if (puntuaciones == null || puntuaciones.Count <= 0)
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, null);

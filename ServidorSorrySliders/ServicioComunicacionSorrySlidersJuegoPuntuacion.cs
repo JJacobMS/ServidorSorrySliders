@@ -27,7 +27,6 @@ namespace ServidorSorrySliders
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_diccionarioPuntuacion, contextoJugador, uid);
             }
-            Console.WriteLine("Jugador agregado "+contextoJugador.CorreoJugador);
             CambiarMultiple();
         }
 
@@ -36,7 +35,6 @@ namespace ServidorSorrySliders
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
-                Console.WriteLine("EliminarJugador " + correoElectronico);
                 if (_diccionarioPuntuacion.ContainsKey(uid)) 
                 {
                     int posicionJugador = ManejarOperationContext.DevolverPosicionCorreoJugador(_diccionarioPuntuacion[uid], correoElectronico);
@@ -52,7 +50,6 @@ namespace ServidorSorrySliders
         private void NotificarEliminarJugador(string uid, string correoElectronico) 
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-            Console.WriteLine("Notificar eliminacion");
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
@@ -184,13 +181,10 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.StackTrace);
-                log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
@@ -218,13 +212,7 @@ namespace ServidorSorrySliders
         public void NotificarCambiarPagina(string uid, int[] arrayPosiciones, string[] arrayNickname)
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-            Console.WriteLine("Diccionario" + uid);
-            for (int i = 0; i < arrayPosiciones.Count(); i++)
-            {
-                Console.WriteLine(arrayPosiciones[i]);
-                Console.WriteLine(arrayNickname[i]);
-
-            }
+            
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
@@ -236,9 +224,7 @@ namespace ServidorSorrySliders
                 {
                     try
                     {
-                        Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
                         contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina(arrayPosiciones, arrayNickname);
-
                     }
                     catch (CommunicationObjectAbortedException ex)
                     {
