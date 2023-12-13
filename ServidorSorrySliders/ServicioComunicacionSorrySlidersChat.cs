@@ -108,16 +108,13 @@ namespace ServidorSorrySliders
             CambiarSingle();
             lock (_jugadoresEnLineaChat)
             {
-                if (_jugadoresEnLineaChat.ContainsKey(uid))
+                if (_jugadoresEnLineaChat.ContainsKey(uid) && ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaChat[uid]))
                 {
-                    if (ManejarOperationContext.ExisteJugadorEnLista(OperationContext.Current, _jugadoresEnLineaChat[uid]))
-                    {
-                        ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaChat[uid]);
+                    ManejarOperationContext.EliminarJugadorLista(OperationContext.Current, _jugadoresEnLineaChat[uid]);
 
-                        if (_jugadoresEnLineaChat[uid].Count > 0)
-                        {
-                            NotificarEliminarJugadorChat(uid, correo);
-                        }
+                    if (_jugadoresEnLineaChat[uid].Count > 0)
+                    {
+                        NotificarEliminarJugadorChat(uid, correo);
                     }
                 }
             }

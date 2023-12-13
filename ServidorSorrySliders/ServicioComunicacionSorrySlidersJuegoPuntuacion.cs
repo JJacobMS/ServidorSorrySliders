@@ -185,6 +185,7 @@ namespace ServidorSorrySliders
             }
             catch (EntityException ex)
             {
+                log.LogError("Error con la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
