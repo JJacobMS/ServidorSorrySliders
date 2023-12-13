@@ -20,6 +20,8 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IInicioSesion
     {
+        
+
         public Constantes JugadorEstaEnLinea(string jugadorCorreo)
         {
             Logger log = new Logger(this.GetType(), "IInicioSesion");
