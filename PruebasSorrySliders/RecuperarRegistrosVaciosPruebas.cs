@@ -11,7 +11,8 @@ namespace PruebasSorrySliders
 {
     public class RecuperarRegistrosVaciosPruebas
     {
-        //IInicioSesion
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IInicioSesion"/>
         [Fact]
         public void VerificarCorreoNoExistentePrueba()
         {
@@ -31,15 +32,19 @@ namespace PruebasSorrySliders
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA_VACIA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuentaNoExistente = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com", Contraseña = "1234567890" };
+            CuentaSet cuentaNoExistente = new CuentaSet 
+            { 
+                CorreoElectronico = "correoPrueba@gmail.com",
+                Contraseña = "1234567890" 
+            };
 
             Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuentaNoExistente);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
-        
-        //Pruebas Interfaces IDetallesCuentaUsuario
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarRecuperarUsuarioNoExistentePrueba()
         {
@@ -71,7 +76,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //Pruebas Interfaces IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarRecuperarAmigosCuentaNoExistentePrueba()
         {
@@ -104,7 +110,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
-        //Pruebas Interfaces IUnirsePartida
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarRecuperarJugadoresLobbyNoExistentesPrueba()
         {
@@ -120,7 +127,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasLobbyActuales);
         }
-        //IMenuPrincipal
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IMenuPrincipal"/>
         [Fact]
         public void VerificarRecuperarDatosUsuarioNoExistentePrueba()
         {
@@ -137,6 +145,7 @@ namespace PruebasSorrySliders
             Assert.Equal(nicknameEsperado, nickname);
             Assert.Equal(avatarEsperado, avatar);
         }
+        
     }
 }
 

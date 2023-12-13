@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class CreacionRegistrosErrorConsultaPruebas
     {
-        //IDetallesCuenta
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuenta"/>
         [Fact]
         public void VerificarInsertarCuentaUsuarioIncorrectoPrueba()
         {
@@ -25,7 +25,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
 
         }
-        //IUnirsePartida
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarIntentarEntrarPartidaDatosIncompletosPrueba()
         {
@@ -54,6 +54,58 @@ namespace PruebasSorrySliders
             Constantes resultadoObtenidos = servicioComunicacion.CrearCuentaProvisionalInvitado(cuentaProvisional);
 
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
+        }
+
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
+        [Fact]
+        public void VerificarCrearPartidaDatosIncompletosPrueba()
+        {
+            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            Constantes resultadoObtenido;
+            string codigo;
+            int cantidadJugadores = 4;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            CuentaSet cuenta = new CuentaSet();
+            (resultadoObtenido, codigo) = servicioComunicacion.CrearPartida(cuenta.CorreoElectronico, cantidadJugadores);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+
+        }
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
+        [Fact]
+        public void VerificarCrearNotificacionDatosIncompletosPrueba()
+        {
+            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            Constantes resultadoObtenido;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            NotificacionSet notificacionNueva = new NotificacionSet();
+            resultadoObtenido = servicioComunicacion.GuardarNotificacion(notificacionNueva);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+        }
+
+        [Fact]
+        public void VerificarCrearAmistadDatosIncompletosPrueba()
+        {
+            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            Constantes resultadoObtenido;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            string CorreoElectronicoDestinatario = null;
+            string CorreoElectronicoRemitente = null;
+            resultadoObtenido = servicioComunicacion.GuardarAmistad(CorreoElectronicoDestinatario, CorreoElectronicoRemitente);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+        }
+
+        [Fact]
+        public void VerificarCrearBaneoDatosIncompletosPrueba()
+        {
+            Constantes respuestaEsperado = Constantes.ERROR_CONSULTA;
+            Constantes resultadoObtenido;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            string CorreoElectronicoDestinatario = null;
+            string CorreoElectronicoRemitente = null;
+            resultadoObtenido = servicioComunicacion.BanearJugador(CorreoElectronicoDestinatario, CorreoElectronicoRemitente);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
         }
     }
 }

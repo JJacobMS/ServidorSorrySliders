@@ -25,10 +25,9 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         Constantes ActualizarGanador(string uid, string correoElectronico, int posicion);
         [OperationContract(IsOneWay = true)]
-        void NotificarCambiarPagina(string uid, List<JugadorGanador> listaGanadores);
+        void NotificarCambiarPagina(string uid, int[] arrayPosiciones, string[] arrayNickname);
         [OperationContract(IsOneWay = true)]
         void EliminarDiccionariosJuego(string uid);
-
     }
 
     [ServiceContract]
@@ -41,6 +40,6 @@ namespace InterfacesServidorSorrySliders
         [OperationContract]
         void EliminarTurnoJugador(string correoElectronico);
         [OperationContract(IsOneWay = true)]
-        void CambiarPagina(List<JugadorGanador> listaGanadores);
+        void CambiarPagina(int[] arrayPosiciones, string[] arrayNickname);
     }
 }

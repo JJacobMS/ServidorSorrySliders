@@ -21,14 +21,41 @@ namespace PruebasSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    UsuarioSet usuario = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePrueba", 
+                        Apellido = "apellidoPrueba", 
+                    };
                     context.UsuarioSet.Add(usuario);
 
-                    UsuarioSet usuarioAmigoUno = new UsuarioSet { Nombre = "nombrePruebaUno", Apellido = "apellidoPruebaUno", };
+                    UsuarioSet usuarioAmigoUno = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaUno", 
+                        Apellido = "apellidoPruebaUno", 
+                    };
                     context.UsuarioSet.Add(usuarioAmigoUno);
 
-                    UsuarioSet usuarioAmigoDos = new UsuarioSet { Nombre = "nombrePruebaDos", Apellido = "apellidoPruebaDos", };
-                    context.UsuarioSet.Add(usuarioAmigoDos);
+                    UsuarioSet usuarioDos = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaDos",
+                        Apellido = "apellidoPruebaDos",
+                    };
+                    context.UsuarioSet.Add(usuarioDos);
+
+                    UsuarioSet usuarioTresRemitente = new UsuarioSet 
+                    {
+                        Nombre = "nombrePruebaTres",
+                        Apellido = "apellidoPruebaTres", 
+                    };
+                    context.UsuarioSet.Add(usuarioTresRemitente);
+                    
+                    UsuarioSet usuarioAmigoDestinatario = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaCuatro",
+                        Apellido = "apellidoPruebaCuatro",
+                    };
+                    context.UsuarioSet.Add(usuarioAmigoDestinatario);
+
                     context.SaveChanges();
 
                     context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
@@ -41,7 +68,15 @@ namespace PruebasSorrySliders
 
                     context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
                         "VALUES('correoAmigoPruebaDos@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'amigoPruebasDos', @idUsuario)",
-                        new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuarioAmigoDos.IdUsuario));
+                        new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuarioDos.IdUsuario));
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                       "VALUES('correoTresRemitente@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'amigoPruebasDos', @idUsuario)",
+                       new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuarioTresRemitente.IdUsuario));
+
+                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                       "VALUES('correoCuatroDestinatario@gmail.com', @avatar, HASHBYTES('SHA2_512', N'1234567890'), 'amigoPruebasDos', @idUsuario)",
+                       new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuarioAmigoDestinatario.IdUsuario));
 
                     context.PartidaSet.Add(new PartidaSet
                     {
@@ -83,28 +118,41 @@ namespace PruebasSorrySliders
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM NotificacionSet where CorreoElectronicoRemitente = 'correoTresRemitente@gmail.com' AND CorreoElectronicoDestinatario= 'correoCuatroDestinatario@gmail.com'");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM RelacionPartidaCuentaSet WHERE CodigoPartida = '00000000-0000-0000-0000-000000000000' " +
                         "OR CorreoElectronico = 'correoPrueba@gmail.com'");
 
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM RelacionBaneadosSet where CorreoElectronicoJugadorPrincipal='correoTresRemitente@gmail.com' OR CorreoElectronicoJugadorBaneado='correoTresRemitente@gmail.com'");
+
+
                     contexto.Database.ExecuteSqlCommand("DELETE FROM PartidaSet WHERE CorreoElectronico = 'correoPrueba@gmail.com' OR " +
                         "CodigoPartida = '00000000-0000-0000-0000-000000000000'");
+
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM RelaciónAmigosSet where CorreoElectronicoJugadorPrincipal = 'correoTresRemitente@gmail.com' OR CorreoElectronicoJugadorPrincipal= 'correoCuatroDestinatario@gmail.com';");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoPrueba@gmail.com' OR CorreoElectronico = 'correoParaPruebas@gmail.com'" +
                         "OR CorreoElectronico = 'correoAmigoPruebaUno@gmail.com' OR CorreoElectronico = 'correoAmigoPruebaDos@gmail.com' OR " +
                         "CorreoElectronico = '00000000-0000-0000-0000-000000000001'");
 
-                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePrueba' AND Apellido = 'apellidoPrueba'");
-
-                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePruebaUno' AND Apellido = 'apellidoPruebaUno'");
-
-                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePruebaDos' AND Apellido = 'apellidoPruebaDos'");
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = 'correoTresRemitente@gmail.com' OR " +
+                        "CorreoElectronico = 'correoCuatroDestinatario@gmail.com'");
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM CuentaSet WHERE CorreoElectronico = @correo",
                         new SqlParameter("@correo", "correoParaPruebas@gmail.com"));
 
                     contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = @nombre AND Apellido = @apellido",
                         new SqlParameter("@nombre", "nombrePrueba"), new SqlParameter("@apellido", "apellidoPrueba"));
+
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePrueba' AND Apellido = 'apellidoPrueba'");
+
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePruebaUno' AND Apellido = 'apellidoPruebaUno'");
+
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePruebaDos' AND Apellido = 'apellidoPruebaDos'");
+                    
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePruebaTres' AND Apellido = 'apellidoPruebaTres'");
+                    
+                    contexto.Database.ExecuteSqlCommand("DELETE FROM UsuarioSet WHERE Nombre = 'nombrePruebaCuatro' AND Apellido = 'apellidoPruebaCuatro'");
 
                 }
             }
@@ -128,8 +176,7 @@ namespace PruebasSorrySliders
             _configuracion = configuracion;
         }
 
-        //IRegistroUsuario
-
+        /// <seealso cref="InterfacesServidorSorrySliders.IRegistroUsuario"/>
         [Fact]
         public void VerificarInsertarCuentaUsuarioExitosamentePrueba()
         {
@@ -153,7 +200,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
 
-        //IUnirsePartida
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarInsertarCuentaProvisionalInvitadoPrueba()
         {
@@ -173,7 +220,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
 
-        //ICrearLobby
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
         [Fact]
         public void VerificarCrearPartidaExitosamentePrueba()
         {
@@ -191,5 +238,49 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenido);
 
         }
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
+        [Fact]
+        public void VerificarCrearNotificacionExitosamentePrueba()
+        {
+            Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
+            Constantes resultadoObtenido;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            NotificacionSet notificacionNueva = new NotificacionSet 
+            {
+                 CorreoElectronicoDestinatario = "correoCuatroDestinatario@gmail.com",
+                 CorreoElectronicoRemitente = "correoTresRemitente@gmail.com",
+                 Mensaje = "MensajeNotificacion",
+                 IdTipoNotificacion = 1
+            };
+           
+            resultadoObtenido= servicioComunicacion.GuardarNotificacion(notificacionNueva);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+        }
+
+        [Fact]
+        public void VerificarCrearAmistadExitosamentePrueba()
+        {
+            Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
+            Constantes resultadoObtenido;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            string CorreoElectronicoDestinatario = "correoTresRemitente@gmail.com";
+            string CorreoElectronicoRemitente = "correoCuatroDestinatario@gmail.com";
+            resultadoObtenido = servicioComunicacion.GuardarAmistad(CorreoElectronicoDestinatario, CorreoElectronicoRemitente);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+        }
+
+        [Fact]
+        public void VerificarCrearBaneoExitosamentePrueba()
+        {
+            Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA;
+            Constantes resultadoObtenido;
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+            string CorreoElectronicoDestinatario = "correoTresRemitente@gmail.com";
+            string CorreoElectronicoRemitente = "correoCuatroDestinatario@gmail.com";
+            resultadoObtenido = servicioComunicacion.BanearJugador(CorreoElectronicoDestinatario, CorreoElectronicoRemitente);
+            Assert.Equal(respuestaEsperado, resultadoObtenido);
+        }
+
+
     }
 }

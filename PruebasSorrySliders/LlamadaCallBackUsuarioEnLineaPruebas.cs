@@ -11,6 +11,7 @@ namespace PruebasSorrySliders
 {
     public class LlamadaCallBackUsuarioEnLineaPruebas : IDisposable
     {
+        /// <seealso cref="InterfacesServidorSorrySliders.IUsuariosEnLinea"/>
         private static UsuariosEnLineaClient _proxyUsuarioEnLinea;
         private static ImplementacionPruebaCallbackUsuarioEnLinea _implementacionCallbackUsuario;
 

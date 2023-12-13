@@ -12,9 +12,9 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para estas pruebas debería estar el servidor
     public class LlamadaCallBackJuegoLanzamientoPruebas : IDisposable
     {
+        /// <seealso cref="InterfacesServidorSorrySliders.IJuegoLanzamiento"/>
         private static JuegoLanzamientoClient _proxyJuegoLanzamiento;
         private static ImplementacionPruebaCallbackJuegoLanzamiento _implementacionCallbackJuegoLanzamiento;
         private static ImplementacionPruebaCallbackJuegoLanzamiento _nuevaImplementacionCallbackJuegoLanzamiento;
@@ -49,6 +49,20 @@ namespace PruebasSorrySliders
             Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.CorreoElectronicoSalido, correoJugadorSalido);
 
         }
+        [Fact]
+        public async void EliminarJugadorPartidaNoExistentePrueba()
+        {
+            string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3302";
+
+            _proxyJuegoLanzamiento.EliminarJugadorJuegoLanzamiento(codigoPartida);
+
+            string correoEsperado = "";
+
+            await Task.Delay(2000);
+            Assert.False(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoEliminarJugador);
+            Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.CorreoElectronicoSalido, correoEsperado);
+
+        }
 
         [Fact]
         public async void NotificarFinalizarLanzamientoJugadorLlamadaCallBackJugadorPrueba()
@@ -65,6 +79,20 @@ namespace PruebasSorrySliders
             Assert.True(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoNotificarSiguienteTurno);
         }
         [Fact]
+        public async void NotificarFinalizarLanzamientoPartidaNoExistentePrueba()
+        {
+            string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3302";
+            string correoJugador = "jazmin@gmail.com";
+            string correoJugadorNuevo = "sulem477@gmail.com";
+
+            _proxyJuegoLanzamiento.NotificarFinalizarLanzamiento(codigoPartida, correoJugador);
+            _proxyNuevoJuegoLanzamiento.NotificarFinalizarLanzamiento(codigoPartida, correoJugadorNuevo);
+
+            await Task.Delay(2000);
+            Assert.False(_implementacionCallbackJuegoLanzamiento.HaActivadoEventoNotificarSiguienteTurno);
+            Assert.False(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoNotificarSiguienteTurno);
+        }
+        [Fact]
         public async void NotificarLanzamientoDadoLlamadaCallBackJugadorPrueba()
         {
             string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3301";
@@ -76,6 +104,19 @@ namespace PruebasSorrySliders
             await Task.Delay(2000);
             Assert.True(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoJugadorTirarDado);
             Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.NumeroDadoNotificado, numeroDado);
+        }
+        [Fact]
+        public async void NotificarLanzamientoDadoPartidaNoExistentePrueba()
+        {
+            string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3302";
+            string correoJugador = "jazmin@gmail.com";
+            int numeroDadoEsperado = -1;
+
+            _proxyJuegoLanzamiento.NotificarLanzamientoDado(codigoPartida, correoJugador, 1);
+
+            await Task.Delay(2000);
+            Assert.False(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoJugadorTirarDado);
+            Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.NumeroDadoNotificado, numeroDadoEsperado);
         }
         [Fact]
         public async void NotificarLanzamientoPeonLlamadaCallBackJugadorPrueba()
@@ -93,6 +134,25 @@ namespace PruebasSorrySliders
             Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.PosicionY, posicionY);
         }
         [Fact]
+        public async void NotificarLanzamientoPartidaNoExistentePrueba()
+        {
+            string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3302";
+            string correoJugador = "jazmin@gmail.com";
+            int posicionX = 12;
+            int posicionY = 14;
+
+            _proxyJuegoLanzamiento.NotificarLanzamientoLinea(codigoPartida, correoJugador, posicionX, posicionY);
+
+            int posicionXEsperada = -1;
+            int posicionYEsperada = -1;
+             
+
+            await Task.Delay(2000);
+            Assert.False(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoJugadorLanzoPeon);
+            Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.PosicionX, posicionXEsperada);
+            Assert.Equal(_nuevaImplementacionCallbackJuegoLanzamiento.PosicionY, posicionYEsperada);
+        }
+        [Fact]
         public async void NotificarCambiarPosicionPeonesTableroYContinuarPrueba()
         {
             string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3301";
@@ -104,12 +164,23 @@ namespace PruebasSorrySliders
             await Task.Delay(2000);
             Assert.True(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoCambiarPosiciones);
         }
+        [Fact]
+        public async void NotificarCambiarPosicionPartidaNoExistentePrueba()
+        {
+            string codigoPartida = "3F2504E0-4F89-11D3-9A0C-0305E82C3303";
+            string correoJugador = "jazmin@gmail.com";
+            PeonesTablero peones = new PeonesTablero();
+
+            _proxyJuegoLanzamiento.NotificarPosicionFichasFinales(codigoPartida, correoJugador, peones);
+
+            await Task.Delay(2000);
+            Assert.False(_nuevaImplementacionCallbackJuegoLanzamiento.HaActivadoEventoCambiarPosiciones);
+        }
 
     }
 
     public class ImplementacionPruebaCallbackJuegoLanzamiento : IJuegoLanzamientoCallback
     {
-        private PeonesTablero _peones;
         public bool HaActivadoEventoEliminarJugador { get; set; }
         public bool HaActivadoEventoNotificarSiguienteTurno { get; set; }
         public string CorreoElectronicoSalido { get; set; }

@@ -33,6 +33,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -126,7 +130,6 @@
     <Compile Include="IRegistroUsuario.cs" />
     <Compile Include="IUnirsePartida.cs" />
     <Compile Include="IUsuariosEnLinea.cs" />
-    <Compile Include="JugadorGanador.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ManejarOperationContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -156,7 +159,6 @@
       <Name>DatosSorrySliders</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

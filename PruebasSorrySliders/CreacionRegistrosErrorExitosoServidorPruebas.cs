@@ -13,7 +13,6 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
-    //Para realizar estas pruebas se requiere que el servidor y la base de datos estén funcionando
     public class ConfiguracionBaseDatosCrearRegistrosFallidos : IDisposable
     {
         private static LobbyClient _proxyJuegoLanzamiento;
@@ -37,13 +36,25 @@ namespace PruebasSorrySliders
 
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    UsuarioSet usuario = new UsuarioSet 
+                    {
+                        Nombre = "nombrePrueba", 
+                        Apellido = "apellidoPrueba",
+                    };
                     context.UsuarioSet.Add(usuario);
 
-                    UsuarioSet usuarioAmigoUno = new UsuarioSet { Nombre = "nombrePruebaUno", Apellido = "apellidoPruebaUno", };
+                    UsuarioSet usuarioAmigoUno = new UsuarioSet
+                    { 
+                        Nombre = "nombrePruebaUno", 
+                        Apellido = "apellidoPruebaUno", 
+                    };
                     context.UsuarioSet.Add(usuarioAmigoUno);
 
-                    UsuarioSet usuarioAmigoDos = new UsuarioSet { Nombre = "nombrePruebaUno", Apellido = "apellidoPruebaUno", };
+                    UsuarioSet usuarioAmigoDos = new UsuarioSet 
+                    {
+                        Nombre = "nombrePruebaUno",
+                        Apellido = "apellidoPruebaUno",
+                    };
                     context.UsuarioSet.Add(usuarioAmigoDos);
 
                     context.SaveChanges();
@@ -159,6 +170,7 @@ namespace PruebasSorrySliders
             _configuracion = configuracion;
         }
 
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
         [Fact]
         public void VerificarCrearPartidaSinExitoPrueba()
         {
@@ -176,7 +188,7 @@ namespace PruebasSorrySliders
 
         }
         [Fact]
-        public void VerificarEntrarPartidaInexistente()
+        public void VerificarEntrarPartidaInexistentePrueba()
         {
             Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA_VACIA;
             int numeroError = -3;

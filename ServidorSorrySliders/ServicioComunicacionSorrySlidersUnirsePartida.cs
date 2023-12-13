@@ -269,8 +269,6 @@ namespace ServidorSorrySliders
                     context.Database.ExecuteSqlCommand("DELETE FROM CuentaSet " +
                         "WHERE CorreoElectronico = @correo",
                         new SqlParameter("@correo", correoElectronico));
-
-                    Console.WriteLine("Eliminar cuenta provisional invitado " + correoElectronico);
                 }
             }
             catch (SqlException ex)
