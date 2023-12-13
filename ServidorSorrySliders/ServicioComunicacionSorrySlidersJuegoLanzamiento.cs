@@ -91,12 +91,9 @@ namespace ServidorSorrySliders
 
         private int PartidaYJugadorExisten(string codigoPartida, string correoElectronico)
         {
-            if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida))
+            if (_jugadoresEnLineaJuegoLanzamiento.ContainsKey(codigoPartida) && _jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
             {
-                if (_jugadoresEnLineaJuegoLanzamiento[codigoPartida].Count > 0)
-                {
-                    return ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaJuegoLanzamiento[codigoPartida], correoElectronico);
-                }
+                return ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaJuegoLanzamiento[codigoPartida], correoElectronico);
             }
             return -1;
         }

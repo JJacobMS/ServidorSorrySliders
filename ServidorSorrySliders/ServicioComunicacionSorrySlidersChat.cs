@@ -100,10 +100,6 @@ namespace ServidorSorrySliders
             {
                 ManejarOperationContext.EliminarJugadorDiccionarioPorCorreo(_jugadoresEnLineaChat, codigoPartida, correoJugador);
             }
-            lock (_listaContextoJugadores)
-            {
-                SalirDelSistema(correoJugador);
-            }
             CambiarMultiple();
         }
 
