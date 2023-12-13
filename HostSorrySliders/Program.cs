@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -12,6 +13,7 @@ namespace HostSorrySliders
     {
         static void Main(string[] args)
         {
+            ObtenerCadenaConexionBaseDatos();
             Logger log = new Logger(typeof(Program));
             try
             {
@@ -31,6 +33,27 @@ namespace HostSorrySliders
                 log.LogFatal("Ha ocurrido un error inesperado", ex);
                 Console.ReadLine();
             }
+        }
+
+        public static void ObtenerCadenaConexionBaseDatos() 
+        {
+
+            string connectionString = Environment.GetEnvironmentVariable("VARIABLEENTORNO");
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var connectionStringSection = config.ConnectionStrings.ConnectionStrings["BaseDeDatosSorrySlidersEntities"];
+
+            if (connectionStringSection != null)
+            {
+
+                connectionStringSection.ConnectionString = connectionString;
+
+                config.Save(ConfigurationSaveMode.Modified);
+
+                ConfigurationManager.RefreshSection("connectionStrings");
+
+            }
+
+
         }
     }
 }

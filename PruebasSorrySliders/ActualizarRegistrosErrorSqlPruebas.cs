@@ -2,6 +2,7 @@
 using ServidorSorrySliders;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,10 @@ namespace PruebasSorrySliders
 {
     public class ActualizarRegistrosErrorSqlPruebas
     {
+        public ActualizarRegistrosErrorSqlPruebas()
+        {
+            ObtenerCadenaConexion.ObtenerCadenaConexionBaseDatos();
+        }
         /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarCambioContrasenaCuentaErrorSqlPrueba()
