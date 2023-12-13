@@ -53,10 +53,14 @@ namespace ServidorSorrySliders
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
             Console.WriteLine("Notificar eliminacion");
-            var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
+                if (!_diccionarioPuntuacion.ContainsKey(uid))
+                {
+                    return;
+                }
+                var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
                 foreach (ContextoJugador contextoJugador in contextosJugadoresDiccionario)
                 {
                     try
@@ -81,10 +85,14 @@ namespace ServidorSorrySliders
         public void NotificarCambioTurno(string uid)
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-            var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
+                if (!_diccionarioPuntuacion.ContainsKey(uid))
+                {
+                    return;
+                }
+                var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
                 foreach (ContextoJugador contextoJugador in contextosJugadoresDiccionario)
                 {
                     try
@@ -113,10 +121,15 @@ namespace ServidorSorrySliders
         public void NotificarJugadores(string uid, string correoJugador, string nombrePeon, int puntosObtenidos)
         {
             Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-            var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
+                if (!_diccionarioPuntuacion.ContainsKey(uid))
+                {
+                    return;
+                }
+                var contextosJugadoresDiccionario = _diccionarioPuntuacion[uid].ToList();
+
                 foreach (ContextoJugador contextoJugador in contextosJugadoresDiccionario)
                 {
                     if (contextoJugador.CorreoJugador != correoJugador)
@@ -215,6 +228,10 @@ namespace ServidorSorrySliders
             CambiarSingle();
             lock (_diccionarioPuntuacion)
             {
+                if (!_diccionarioPuntuacion.ContainsKey(uid))
+                {
+                    return;
+                }
                 foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
                 {
                     try
@@ -239,42 +256,5 @@ namespace ServidorSorrySliders
             }
             CambiarMultiple();
         }
-        /*
-public void NotificarCambiarPagina(string uid, JugadorGanador[] listaPuntuaciones)
-{
-   Logger log = new Logger(this.GetType(), "IJuegoPuntuacion");
-   Console.WriteLine("Diccionario" + uid);
-   for (int i = 0; i < listaPuntuaciones.Count(); i++)
-   {
-
-   }
-   CambiarSingle();
-   lock (_diccionarioPuntuacion)
-   {
-       foreach (ContextoJugador contextoJugador in _diccionarioPuntuacion[uid])
-       {
-           try
-           {
-               Console.WriteLine("CALLBACK" + contextoJugador.CorreoJugador);
-               contextoJugador.ContextoJugadorCallBack.GetCallbackChannel<IJuegoNotificacionCallback>().CambiarPagina(listaPuntuaciones);
-
-           }
-           catch (CommunicationObjectAbortedException ex)
-           {
-               log.LogWarn("La conexión del usuario se ha perdido", ex);
-           }
-           catch (TimeoutException ex)
-           {
-               log.LogWarn("La conexión del usuario se ha perdido", ex);
-           }
-           catch (InvalidCastException ex)
-           {
-               log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-           }
-       }
-   }
-   CambiarMultiple();
-}
-*/
     }
 }
