@@ -176,8 +176,7 @@ namespace PruebasSorrySliders
             _configuracion = configuracion;
         }
 
-        //IRegistroUsuario
-
+        /// <seealso cref="InterfacesServidorSorrySliders.IRegistroUsuario"/>
         [Fact]
         public void VerificarInsertarCuentaUsuarioExitosamentePrueba()
         {
@@ -201,7 +200,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
 
-        //IUnirsePartida
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarInsertarCuentaProvisionalInvitadoPrueba()
         {
@@ -221,7 +220,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
 
-        //ICrearLobby
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
         [Fact]
         public void VerificarCrearPartidaExitosamentePrueba()
         {
@@ -239,7 +238,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenido);
 
         }
-        //IListaAmigos
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarCrearNotificacionExitosamentePrueba()
         {

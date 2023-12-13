@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class CreacionRegistroErrorConexionBaseDatosPruebas
     {
-        //IUnirsePartida
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarEntrarPartidaSinConexionBDPrueba()
         {
@@ -41,8 +41,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
-        //IRegistroUsuario
 
+        /// <seealso cref="InterfacesServidorSorrySliders.IRegistroUsuario"/>
         [Fact]
         public void VerificarInsertarCuentaUsuarioSinConexionBDPrueba()
         {
@@ -65,7 +65,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
-        //ICrearLobby
+
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
         [Fact]
         public void VerificarCrearPartidaSinConexionBDPrueba()
         {
@@ -83,7 +84,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenido);
 
         }
-        //IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarCrearNotificacionSinConexionBDPrueba()
         {

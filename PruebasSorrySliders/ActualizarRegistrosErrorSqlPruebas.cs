@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class ActualizarRegistrosErrorSqlPruebas
     {
-        //IDetallesCuentaUsuario
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarCambioContrasenaCuentaErrorSqlPrueba()
         {
@@ -25,7 +25,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
 
-        //IRegistroUsuario
+        /// <seealso cref="InterfacesServidorSorrySliders.IRegistroUsuario"/>
         [Fact]
         public void ActualizarUsuarioErrorSqlPrueba()
         {
@@ -36,7 +36,8 @@ namespace PruebasSorrySliders
             Constantes respuestaActual = servicioComunicacion.ActualizarUsuario(usuarioActualizado, nuevaActualizada);
             Assert.Equal(respuestaActual, respuestaEsperada);
         }
-        //IJuegoPuntuacion
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IJuegoPuntuacion"/>
         [Fact]
         public void ActualizarGanadorErrorSqlPrueba()
         {

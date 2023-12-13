@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class RecuperarRegistrosErrorSqlPruebas
     {
-        //IInicioSesion
+        /// <seealso cref="InterfacesServidorSorrySliders.IInicioSesion"/>
         [Fact]
         public void VerificarContrasenaCuentaErrorSqlPrueba()
         {
@@ -28,7 +28,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
-        //IDetallesCuentaUsuario
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarRecuperarUsuarioIncompletoErrorSqlPrueba()
         {
@@ -55,7 +56,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //Pruebas Interfaces IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarRecuperarAmigosCuentaIncompletosErrorSqlPrueba()
         {
@@ -87,7 +89,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
-        //IUnirsePartida
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarRecuperarJugadoresLobbyDatosIncompletosErrorSqlPrueba()
         {

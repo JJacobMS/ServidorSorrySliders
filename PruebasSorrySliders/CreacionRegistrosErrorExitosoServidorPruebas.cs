@@ -170,6 +170,7 @@ namespace PruebasSorrySliders
             _configuracion = configuracion;
         }
 
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
         [Fact]
         public void VerificarCrearPartidaSinExitoPrueba()
         {
@@ -187,7 +188,7 @@ namespace PruebasSorrySliders
 
         }
         [Fact]
-        public void VerificarEntrarPartidaInexistente()
+        public void VerificarEntrarPartidaInexistentePrueba()
         {
             Constantes respuestaEsperado = Constantes.OPERACION_EXITOSA_VACIA;
             int numeroError = -3;

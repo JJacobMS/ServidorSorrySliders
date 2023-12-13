@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class EliminarRegistrosErrorConexionBaseDatos
     {
-        //IListaAmigos
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarEliminarNotificacionJugadorSinConexionBDPrueba()
         {

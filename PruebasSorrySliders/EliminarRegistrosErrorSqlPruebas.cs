@@ -11,7 +11,8 @@ namespace PruebasSorrySliders
 {
     public class EliminarRegistrosErrorSqlPruebas
     {
-        //IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarEliminarNotificacionJugadorErrorSqlPrueba()
         {
