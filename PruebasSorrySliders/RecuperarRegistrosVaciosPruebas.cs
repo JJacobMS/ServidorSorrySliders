@@ -11,7 +11,8 @@ namespace PruebasSorrySliders
 {
     public class RecuperarRegistrosVaciosPruebas
     {
-        //IInicioSesion
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IInicioSesion"/>
         [Fact]
         public void VerificarCorreoNoExistentePrueba()
         {
@@ -42,8 +43,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
-        
-        // IDetallesCuentaUsuario
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarRecuperarUsuarioNoExistentePrueba()
         {
@@ -75,7 +76,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        // IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarRecuperarAmigosCuentaNoExistentePrueba()
         {
@@ -108,7 +110,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
-        // IUnirsePartida
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarRecuperarJugadoresLobbyNoExistentesPrueba()
         {
@@ -124,7 +127,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasLobbyActuales);
         }
-        //IMenuPrincipal
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IMenuPrincipal"/>
         [Fact]
         public void VerificarRecuperarDatosUsuarioNoExistentePrueba()
         {

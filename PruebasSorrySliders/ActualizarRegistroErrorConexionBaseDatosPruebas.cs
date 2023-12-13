@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class ActualizarRegistroErrorConexionBaseDatosPruebas
     {
-        //IDetallesCuentaUsuario
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarCambioContrasenaCuentaSinConexionBDPrueba()
         {
@@ -28,7 +28,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //IRegistroUsuario
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IRegistroUsuario"/>
         [Fact]
         public void ActualizarUsuarioSinConexionBDPrueba()
         {
@@ -48,7 +49,8 @@ namespace PruebasSorrySliders
             Constantes respuestaActual = servicioComunicacion.ActualizarUsuario(usuarioActualizado, nuevaActualizada);
             Assert.Equal(respuestaActual, respuestaEsperada);
         }
-        //IJuegoPuntuacion
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IJuegoPuntuacion"/>
         [Fact]
         public void ActualizarGanadorSinConexionBDPrueba()
         {

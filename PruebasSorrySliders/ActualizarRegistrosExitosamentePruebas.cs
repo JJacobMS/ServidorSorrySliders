@@ -113,7 +113,7 @@ namespace PruebasSorrySliders
             _configuracion = configuracion;
         }
 
-        //IDetallesCuenta
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuenta"/>
         [Fact]
         public void VerificarCambioContrasenaCuentaExistentePrueba()
         {
@@ -131,7 +131,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
 
-        //IRegistroUsuario
+        /// <seealso cref="InterfacesServidorSorrySliders.IRegistroUsuario"/>
         [Fact]
         public void ActualizarUsuarioExitosoPrueba()
         {
@@ -152,7 +152,8 @@ namespace PruebasSorrySliders
             Constantes respuestaActual = servicioComunicacion.ActualizarUsuario(usuarioActualizado, nuevaActualizada);
             Assert.Equal(respuestaActual, respuestaEsperada);
         }
-        //IJuegoPuntuacion
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IJuegoPuntuacion"/>
         [Fact]
         public void ActualizarGanadorExitosoPrueba()
         {

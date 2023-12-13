@@ -10,8 +10,10 @@ using Xunit;
 
 namespace PruebasSorrySliders
 {
+
     public class LlamadaCallChatPruebas: IDisposable
     {
+        /// <seealso cref="ServidorSorrySliders.IChat"/>
         private static ChatClient _proxyChat;
         private static ChatClient _proxyChatNuevo;
         private static ChatClient _proxyChatNuevoDos;

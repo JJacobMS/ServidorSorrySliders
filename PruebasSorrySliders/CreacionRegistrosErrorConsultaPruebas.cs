@@ -11,7 +11,7 @@ namespace PruebasSorrySliders
 {
     public class CreacionRegistrosErrorConsultaPruebas
     {
-        //IDetallesCuenta
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuenta"/>
         [Fact]
         public void VerificarInsertarCuentaUsuarioIncorrectoPrueba()
         {
@@ -25,7 +25,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
 
         }
-        //IUnirsePartida
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarIntentarEntrarPartidaDatosIncompletosPrueba()
         {
@@ -56,8 +56,7 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenidos);
         }
 
-
-        //ICrearLobby
+        /// <seealso cref="InterfacesServidorSorrySliders.ICrearLobby"/>
         [Fact]
         public void VerificarCrearPartidaDatosIncompletosPrueba()
         {
@@ -72,7 +71,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperado, resultadoObtenido);
 
         }
-        //IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarCrearNotificacionDatosIncompletosPrueba()
         {

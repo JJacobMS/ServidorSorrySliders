@@ -14,6 +14,7 @@ namespace PruebasSorrySliders
 {
     public class LlamadaCallBackJuegoLanzamientoPruebas : IDisposable
     {
+        /// <seealso cref="InterfacesServidorSorrySliders.IJuegoLanzamiento"/>
         private static JuegoLanzamientoClient _proxyJuegoLanzamiento;
         private static ImplementacionPruebaCallbackJuegoLanzamiento _implementacionCallbackJuegoLanzamiento;
         private static ImplementacionPruebaCallbackJuegoLanzamiento _nuevaImplementacionCallbackJuegoLanzamiento;

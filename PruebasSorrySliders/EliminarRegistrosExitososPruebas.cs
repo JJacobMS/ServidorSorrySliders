@@ -113,7 +113,7 @@ namespace PruebasSorrySliders
             _configuracion = configuracion;
         }
 
-        //IListaAmigos
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarEliminarNotificacionJugadorPrueba() 
         {
