@@ -36,12 +36,12 @@ namespace ServidorSorrySliders
                     catch (CommunicationException ex)
                     {
                         jugadoresDesconectados.Add(jugadorOperation);
-                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                     }
                     catch (TimeoutException ex)
                     {
                         jugadoresDesconectados.Add(jugadorOperation);
-                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                     }
                 }
                 EliminarLobbySistema(jugadoresDesconectados, uid);
@@ -68,12 +68,12 @@ namespace ServidorSorrySliders
                         catch (CommunicationException ex)
                         {
                             jugadoresDesconectados.Add(jugador);
-                            log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                            log.LogWarn("Error comunicación con el cliente", ex);
                         }
                         catch (TimeoutException ex)
                         {
                             jugadoresDesconectados.Add(jugador);
-                            log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                         }
                     }
                     EliminarLobbySistema(jugadoresDesconectados, uid);
@@ -100,11 +100,11 @@ namespace ServidorSorrySliders
                     }
                     catch (CommunicationException ex)
                     {
-                        log.LogWarn("Hubo un error de comunicación con el cliente", ex);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                     }
                     catch (TimeoutException ex)
                     {
-                        log.LogWarn("Ha ocurrido una excepción de tiempo de respuesta", ex);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                     }
                 }
             }
@@ -140,12 +140,12 @@ namespace ServidorSorrySliders
                         }
                         catch (CommunicationException ex)
                         {
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Error comunicación con el cliente", ex);
                             jugadoresDesconectados.Add(jugador);
                         }
                         catch (TimeoutException ex)
                         {
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                             jugadoresDesconectados.Add(jugador);
                         }
                     }
