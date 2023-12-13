@@ -2,6 +2,7 @@
 using InterfacesServidorSorrySliders;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
@@ -52,15 +53,18 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
+            }
+            catch (DataException ex)
+            {
+                log.LogError("Hubo un error con alguno de los componentes de ADO.NET", ex);
+                return (Constantes.ERROR_CONSULTA, null);
             }
         }
     }

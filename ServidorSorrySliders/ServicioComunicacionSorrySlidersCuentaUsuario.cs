@@ -2,7 +2,9 @@
 using InterfacesServidorSorrySliders;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Core;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -43,13 +45,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
             }
@@ -79,13 +79,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
@@ -118,12 +116,10 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.StackTrace);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
@@ -139,7 +135,6 @@ namespace ServidorSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities()) 
                 {
-                    Console.WriteLine("Correo "+cuentaPorActualizar.CorreoElectronico);
                     var filasAfectadasUsuario = context.Database.ExecuteSqlCommand("UPDATE UsuarioSet SET Nombre = @nombre, " +
                         "Apellido= @apellido where IdUsuario = (SELECT IdUsuario FROM CuentaSet WHERE CorreoElectronico = @correo)",
                         new SqlParameter("@correo", cuentaPorActualizar.CorreoElectronico),
@@ -162,19 +157,16 @@ namespace ServidorSorrySliders
                         return Constantes.OPERACION_EXITOSA_VACIA;
 
                     }
-
                 }
             }
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
                 log.LogError("Error de conexión a la base de datos", ex);
-                Console.WriteLine(ex.StackTrace);
                 return Constantes.ERROR_CONEXION_BD;
             }
 
@@ -194,29 +186,28 @@ namespace ServidorSorrySliders
                         "VALUES(@correo, @avatar, HASHBYTES('SHA2_512', @contrasena), @nickname, @idUsuario)",
                         new SqlParameter("@correo", cuentaPorGuardar.CorreoElectronico),
                         new SqlParameter("@avatar", (cuentaPorGuardar.Avatar)),
-                        new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
+                        new SqlParameter("@contrasena", cuentaPorGuardar.Contraseña), 
+                        new SqlParameter("@nickname", cuentaPorGuardar.Nickname),
                         new SqlParameter("@idUsuario", usuarioPorGuardar.IdUsuario));
-
-                    Console.WriteLine("Inserción exitosa");
                 }
                 return Constantes.OPERACION_EXITOSA;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
+            }
+            catch (DataException ex)
+            {
+                log.LogError("Error con los datos", ex);
+                return Constantes.ERROR_CONSULTA;
             }
 
         }
     }
-
-
-
 }

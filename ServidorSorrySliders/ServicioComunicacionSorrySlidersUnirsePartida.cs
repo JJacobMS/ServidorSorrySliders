@@ -2,6 +2,7 @@
 using InterfacesServidorSorrySliders;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
@@ -52,15 +53,18 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
+            }
+            catch (DataException ex)
+            {
+                log.LogError("Hubo un error con alguno de los componentes de ADO.NET", ex);
+                return (Constantes.ERROR_CONSULTA, null);
             }
         }
 
@@ -93,15 +97,18 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, null);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, null);
+            }
+            catch (DataException ex)
+            {
+                log.LogError("Hubo un error con alguno de los componentes de ADO.NET", ex);
+                return (Constantes.ERROR_CONSULTA, null);
             }
         }
 
@@ -123,30 +130,22 @@ namespace ServidorSorrySliders
 
                     if (numeroJugadoresRestantes <= 0)
                     {
-                        var filasAfectadas = contexto.Database.ExecuteSqlCommand(
-                        "DELETE FROM PartidaSet WHERE CodigoPartida = @codigo",
-                        new SqlParameter("@codigo", codigoPartida));
-
-                        if (filasAfectadas > 0)
-                        {
-                            Console.WriteLine("Partida Eliminada " + codigoPartida);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error, ninguna partida se eliminó");
-                        }
+                        contexto.Database.ExecuteSqlCommand("DELETE FROM PartidaSet WHERE CodigoPartida = @codigo",
+                            new SqlParameter("@codigo", codigoPartida));
                     }
                 }
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
+            }
+            catch (DataException ex)
+            {
+                log.LogError("Hubo un error con alguno de los componentes de ADO.NET", ex);
             }
         }
 
@@ -158,16 +157,16 @@ namespace ServidorSorrySliders
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
+                    var estaBaneado = contexto.Database.SqlQuery<string>("select DISTINCT CorreoElectronicoJugadorBaneado from RelacionBaneadosSet " +
+                        "INNER JOIN RelacionPartidaCuentaSet On CorreoElectronico = CorreoElectronicoJugadorPrincipal " +
+                        "WHERE CodigoPartida = @uid AND CorreoElectronicoJugadorBaneado = @correo",
+                        new SqlParameter("@uid", uid), new SqlParameter("@correo", correoJugadorNuevo)).Any();
+
                     int partidaTerminada = -3;
                     if (!CodigoPartidaExiste(uid))
                     {
                         return (Constantes.OPERACION_EXITOSA_VACIA, partidaTerminada);
                     }
-
-                    var estaBaneado = contexto.Database.SqlQuery<string>("select DISTINCT CorreoElectronicoJugadorBaneado from RelacionBaneadosSet " +
-                        "INNER JOIN RelacionPartidaCuentaSet On CorreoElectronico = CorreoElectronicoJugadorPrincipal " +
-                        "WHERE CodigoPartida = @uid AND CorreoElectronicoJugadorBaneado = @correo",
-                        new SqlParameter("@uid", uid), new SqlParameter("@correo",correoJugadorNuevo)).Any();
 
                     int jugadorBaneado = -2;
                     if (estaBaneado)
@@ -213,13 +212,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return (Constantes.ERROR_CONSULTA, numeroMaximoJugadores);
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return (Constantes.ERROR_CONEXION_BD, numeroMaximoJugadores);
             }
@@ -232,28 +229,31 @@ namespace ServidorSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    int idUsuarioInvitado = 10;
+                    (Constantes respuesta, int idUsuarioInvitado) = RecuperarUsuarioInvitado();
+                    if (respuesta != Constantes.OPERACION_EXITOSA)
+                    {
+                        return respuesta;
+                    }
 
-                    context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
+                    if (idUsuarioInvitado != -1)
+                    {
+                        context.Database.ExecuteSqlCommand("INSERT INTO CuentaSet(CorreoElectronico, Avatar, Contraseña, Nickname, IdUsuario) " +
                         "VALUES(@correo, @avatar,'', @nickname, @idUsuario)",
                         new SqlParameter("@correo", cuentaProvisionalInvitado.CorreoElectronico),
                         new SqlParameter("@avatar", cuentaProvisionalInvitado.Avatar),
                         new SqlParameter("@nickname", cuentaProvisionalInvitado.Nickname),
                         new SqlParameter("@idUsuario", idUsuarioInvitado));
-
-                    Console.WriteLine("Inserción exitosa Invitado");
+                    }
+                    return Constantes.OPERACION_EXITOSA;
                 }
-                return Constantes.OPERACION_EXITOSA;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex);
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }
@@ -269,21 +269,55 @@ namespace ServidorSorrySliders
                     context.Database.ExecuteSqlCommand("DELETE FROM CuentaSet " +
                         "WHERE CorreoElectronico = @correo",
                         new SqlParameter("@correo", correoElectronico));
-
-                    Console.WriteLine("Eliminar cuenta provisional invitado " + correoElectronico);
                 }
             }
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine(ex);
             }
             catch (EntityException ex)
             {
                 log.LogError("Error de conexión a la base de datos", ex);
-                Console.WriteLine(ex);
             }
         }
 
+        private (Constantes, int) RecuperarUsuarioInvitado()
+        {
+            Constantes respuesta;
+            int idUsuario = -1;
+            Logger log = new Logger(this.GetType(), "IUnirsePartida");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    var usuarioInvitado = contexto.Database.SqlQuery<UsuarioSet>
+                        ("SELECT * FROM UsuarioSet WHERE Apellido = '' AND Nombre = ''").FirstOrDefault();
+
+                    if (usuarioInvitado == null)
+                    {
+                        idUsuario = contexto.Database.SqlQuery<int>
+                            ("INSERT INTO UsuarioSet(Nombre, Apellido) VALUES('', '') SELECT CAST(SCOPE_IDENTITY() AS int)").Single();
+                    }
+                    else
+                    {
+                        idUsuario = usuarioInvitado.IdUsuario;
+                    }
+                    respuesta = Constantes.OPERACION_EXITOSA;
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                respuesta = Constantes.ERROR_CONSULTA;
+                log.LogError("Error al ejecutar consulta SQL", ex);
+            }
+            catch (EntityException ex)
+            {
+                respuesta = Constantes.ERROR_CONEXION_BD;
+                log.LogError("Error de conexión a la base de datos", ex);
+            }
+
+            return (respuesta, idUsuario);
+        }
     }
 }

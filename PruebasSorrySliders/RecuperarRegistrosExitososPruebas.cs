@@ -19,13 +19,25 @@ namespace PruebasSorrySliders
             {
                 using (var context = new BaseDeDatosSorrySlidersEntities())
                 {
-                    UsuarioSet usuario = new UsuarioSet { Nombre = "nombrePrueba", Apellido = "apellidoPrueba", };
+                    UsuarioSet usuario = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePrueba", 
+                        Apellido = "apellidoPrueba", 
+                    };
                     context.UsuarioSet.Add(usuario);
 
-                    UsuarioSet usuarioAmigoUno = new UsuarioSet { Nombre = "nombrePruebaUno", Apellido = "apellidoPruebaUno", };
+                    UsuarioSet usuarioAmigoUno = new UsuarioSet 
+                    {
+                        Nombre = "nombrePruebaUno", 
+                        Apellido = "apellidoPruebaUno",
+                    };
                     context.UsuarioSet.Add(usuarioAmigoUno);
 
-                    UsuarioSet usuarioAmigoDos = new UsuarioSet { Nombre = "nombrePruebaDos", Apellido = "apellidoPruebaDos", };
+                    UsuarioSet usuarioAmigoDos = new UsuarioSet 
+                    { 
+                        Nombre = "nombrePruebaDos", 
+                        Apellido = "apellidoPruebaDos", 
+                    };
                     context.UsuarioSet.Add(usuarioAmigoDos);
                     context.SaveChanges();
 
@@ -42,23 +54,37 @@ namespace PruebasSorrySliders
                         new SqlParameter("@avatar", BitConverter.GetBytes(0102030405)), new SqlParameter("@idUsuario", usuarioAmigoDos.IdUsuario));
 
                     context.RelaciónAmigosSet.Add(
-                        new RelaciónAmigosSet { CorreoElectronicoJugadorPrincipal = "correoPrueba@gmail.com", CorreoElectronicoJugadorAmigo = "correoAmigoPruebaUno@gmail.com" });
+                        new RelaciónAmigosSet 
+                        {
+                            CorreoElectronicoJugadorPrincipal = "correoPrueba@gmail.com", 
+                            CorreoElectronicoJugadorAmigo = "correoAmigoPruebaUno@gmail.com" 
+                        });
 
                     context.RelaciónAmigosSet.Add(
-                        new RelaciónAmigosSet { CorreoElectronicoJugadorPrincipal = "correoPrueba@gmail.com", CorreoElectronicoJugadorAmigo = "correoAmigoPruebaDos@gmail.com" });
+                        new RelaciónAmigosSet
+                        { 
+                            CorreoElectronicoJugadorPrincipal = "correoPrueba@gmail.com",
+                            CorreoElectronicoJugadorAmigo = "correoAmigoPruebaDos@gmail.com" 
+                        });
 
-                    context.PartidaSet.Add(new PartidaSet { 
-                        CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"), CantidadJugadores = 4, 
+                    context.PartidaSet.Add(new PartidaSet 
+                    { 
+                        CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"), 
+                        CantidadJugadores = 4, 
                         CorreoElectronico = "correoPrueba@gmail.com"
                     });
 
-                    context.RelacionPartidaCuentaSet.Add(new RelacionPartidaCuentaSet {
-                        Posicion = 0, CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"),
+                    context.RelacionPartidaCuentaSet.Add(new RelacionPartidaCuentaSet 
+                    {
+                        Posicion = 0, 
+                        CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"),
                         CorreoElectronico = "correoPrueba@gmail.com"
                     });
 
-                    context.RelacionPartidaCuentaSet.Add(new RelacionPartidaCuentaSet { 
-                        Posicion = 0, CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"),
+                    context.RelacionPartidaCuentaSet.Add(new RelacionPartidaCuentaSet
+                    { 
+                        Posicion = 0, 
+                        CodigoPartida = new Guid("00000000-0000-0000-0000-000000000000"),
                         CorreoElectronico = "correoAmigoPruebaUno@gmail.com"
                     });
 
@@ -121,7 +147,8 @@ namespace PruebasSorrySliders
         {
             _configuracion = configuracion;
         }
-        //Pruebas Interfaces IInicioSesion
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IInicioSesion"/>
         [Fact]
         public void VerificarExistenciaCorreoCorrectoPrueba()
         {
@@ -141,14 +168,18 @@ namespace PruebasSorrySliders
             Constantes respuestaEsperada = Constantes.OPERACION_EXITOSA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuentaExistente = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com", Contraseña = "1234567890" };
+            CuentaSet cuentaExistente = new CuentaSet 
+            { 
+                CorreoElectronico = "correoPrueba@gmail.com", 
+                Contraseña = "1234567890" 
+            };
 
             Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuentaExistente);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
-        //Pruebas Interfaces IDetallesCuentaUsuario
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarRecuperarDetallesUsuarioExistentePrueba()
         {
@@ -184,7 +215,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //Pruebas Interfaces IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarRecuperarAmigosCuentaExitosamentePrueba()
         {
@@ -193,8 +225,16 @@ namespace PruebasSorrySliders
 
             List<CuentaSet> amigosEsperados = new List<CuentaSet>
             {
-                new CuentaSet{ Nickname = "amigoPruebasUno", CorreoElectronico = "correoAmigoPruebaUno@gmail.com"},
-                new CuentaSet{ Nickname = "amigoPruebasDos", CorreoElectronico = "correoAmigoPruebaDos@gmail.com"}
+                new CuentaSet
+                { 
+                    Nickname = "amigoPruebasUno",
+                    CorreoElectronico = "correoAmigoPruebaUno@gmail.com"
+                },
+                new CuentaSet
+                { 
+                    Nickname = "amigoPruebasDos", 
+                    CorreoElectronico = "correoAmigoPruebaDos@gmail.com"
+                }
             };
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
@@ -214,8 +254,16 @@ namespace PruebasSorrySliders
 
             List<CuentaSet> cuentasEsperadas = new List<CuentaSet>
             {
-                new CuentaSet{ Nickname = "amigoPruebasUno", CorreoElectronico = "correoAmigoPruebaUno@gmail.com"},
-                new CuentaSet{ Nickname = "amigoPruebasDos", CorreoElectronico = "correoAmigoPruebaDos@gmail.com"}
+                new CuentaSet
+                {
+                    Nickname = "amigoPruebasUno", 
+                    CorreoElectronico = "correoAmigoPruebaUno@gmail.com"
+                },
+                new CuentaSet
+                {
+                    Nickname = "amigoPruebasDos",
+                    CorreoElectronico = "correoAmigoPruebaDos@gmail.com"
+                }
             };
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
@@ -225,7 +273,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
-        //Pruebas Interfaces IUnirsePartida
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarRecuperarJugadoresLobbyExitosamentePrueba()
         {
@@ -234,9 +283,21 @@ namespace PruebasSorrySliders
 
             List<CuentaSet> cuentasEsperadas = new List<CuentaSet>
             {
-                new CuentaSet{ Nickname = "nicknamePrueba", CorreoElectronico = "correoPrueba@gmail.com"},
-                new CuentaSet{ Nickname = "amigoPruebasUno", CorreoElectronico = "correoAmigoPruebaUno@gmail.com"},
-                new CuentaSet{ Nickname = "amigoPruebasDos", CorreoElectronico = "correoAmigoPruebaDos@gmail.com"},
+                new CuentaSet
+                {
+                    Nickname = "nicknamePrueba", 
+                    CorreoElectronico = "correoPrueba@gmail.com"
+                },
+                new CuentaSet
+                {
+                    Nickname = "amigoPruebasUno", 
+                    CorreoElectronico = "correoAmigoPruebaUno@gmail.com"
+                },
+                new CuentaSet
+                { 
+                    Nickname = "amigoPruebasDos", 
+                    CorreoElectronico = "correoAmigoPruebaDos@gmail.com"
+                },
             };
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
@@ -267,7 +328,8 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(partidaEsperada, partidaRecuperada);
         }
-        //IMenuPrincipal
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IMenuPrincipal"/>
         [Fact]
         public void VerificarRecuperarDatosUsuarioExitosamentePrueba()
         {

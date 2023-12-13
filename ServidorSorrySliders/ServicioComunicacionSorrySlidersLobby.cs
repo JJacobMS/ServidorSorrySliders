@@ -18,48 +18,33 @@ namespace ServidorSorrySliders
     public partial class ServicioComunicacionSorrySliders : ILobby, IChat
     {
         private Dictionary<string, List<ContextoJugador>> _jugadoresEnLineaLobby = new Dictionary<string, List<ContextoJugador>>();
-        public void EntrarPartida(string uid, string cuentaCorreo)
+        public void EntrarPartida(string uid, string jugadorCorreo)
         {
             CambiarSingle();
             Logger log = new Logger(this.GetType(), "ILobby");
-            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = cuentaCorreo, ContextoJugadorCallBack = OperationContext.Current};
+            ContextoJugador jugadorNuevo = new ContextoJugador { CorreoJugador = jugadorCorreo, ContextoJugadorCallBack = OperationContext.Current};
             lock (_jugadoresEnLineaLobby)
             {
                 ManejarOperationContext.AgregarOReemplazarJugadorContextoLista(_jugadoresEnLineaLobby, jugadorNuevo, uid);
-
+                List<ContextoJugador> jugadoresDesconectados = new List<ContextoJugador>();
                 foreach (ContextoJugador jugadorOperation in _jugadoresEnLineaLobby[uid])
                 {
-                    bool huboError = false;
                     try
                     {
                         jugadorOperation.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorEntroPartida();
                     }
-                    catch (CommunicationObjectAbortedException ex)
+                    catch (CommunicationException ex)
                     {
-                        huboError = true;
-                        Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                        log.LogWarn("La conexión del usuario se ha perdido", ex);
+                        jugadoresDesconectados.Add(jugadorOperation);
+                        log.LogWarn("Error comunicación con el cliente", ex);
                     }
-                    catch (InvalidCastException ex)
+                    catch (TimeoutException ex)
                     {
-                        huboError = true;
-                        Console.WriteLine(ex.StackTrace);
-                        Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                        log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        huboError = true;
-                        Console.WriteLine(ex.StackTrace);
-                        log.LogFatal("Ha ocurrido un error inesperado", ex);
-                    }
-                    if (huboError)
-                    {
-                        //COMPROBAR JUGADORES
-                        /*ManejarOperationContext.EliminarJugadorLista(jugadorOperation.ContextoJugadorCallBack, _jugadoresEnLineaLobby[uid]);
-                        EliminarRelacionPartidaJugadorDesconectado(jugadorOperation.CorreoJugador, uid);*/
+                        jugadoresDesconectados.Add(jugadorOperation);
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                     }
                 }
+                EliminarLobbySistema(jugadoresDesconectados, uid);
             }
             CambiarMultiple();
         }
@@ -73,29 +58,25 @@ namespace ServidorSorrySliders
                 string jugadorEliminado = ManejarOperationContext.EliminarJugadorDiccionario(_jugadoresEnLineaLobby, uid, OperationContext.Current);
                 if (jugadorEliminado.Length > 0 && _jugadoresEnLineaLobby.ContainsKey(uid))
                 {
+                    List<ContextoJugador> jugadoresDesconectados = new List<ContextoJugador>();
                     foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid])
                     {
                         try
                         {
                             jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().JugadorSalioPartida();
                         }
-                        catch (CommunicationObjectAbortedException ex)
+                        catch (CommunicationException ex)
                         {
-                            Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                            log.LogWarn("La conexión del usuario se ha perdido", ex);
+                            jugadoresDesconectados.Add(jugador);
+                            log.LogWarn("Error comunicación con el cliente", ex);
                         }
-                        catch (InvalidCastException ex)
+                        catch (TimeoutException ex)
                         {
-                            Console.WriteLine(ex.StackTrace);
-                            Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                            log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.StackTrace);
-                            log.LogFatal("Ha ocurrido un error inesperado", ex);
+                            jugadoresDesconectados.Add(jugador);
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
                         }
                     }
+                    EliminarLobbySistema(jugadoresDesconectados, uid);
                 }
             }
             CambiarMultiple();
@@ -105,36 +86,109 @@ namespace ServidorSorrySliders
         public void IniciarPartida(string uid)
         {
             Logger log = new Logger(this.GetType(), "ILobby");
-            try
+            lock (_jugadoresEnLineaLobby)
             {
-                lock (_jugadoresEnLineaLobby)
+                if (!_jugadoresEnLineaLobby.ContainsKey(uid))
                 {
-                    foreach (ContextoJugador contexto in _jugadoresEnLineaLobby[uid])
+                    return;
+                }
+                foreach (ContextoJugador contexto in _jugadoresEnLineaLobby[uid])
+                {
+                    try
                     {
                         contexto.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().HostInicioPartida();
                     }
+                    catch (CommunicationException ex)
+                    {
+                        log.LogWarn("Error comunicación con el cliente", ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
+                    }
                 }
-            }
-            catch (CommunicationObjectAbortedException ex)
-            {
-                Console.WriteLine("Ha ocurrido un error en el callback \n" + ex.StackTrace);
-                log.LogWarn("La conexión del usuario se ha perdido", ex);
-            }
-            catch (InvalidCastException ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine("El metodo del callback no pertenece a dicho contexto \n" + ex.StackTrace);
-                log.LogWarn("el callback no pertenece a dicho contexto ", ex);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                log.LogFatal("Ha ocurrido un error inesperado", ex);
             }
         }
         private bool CodigoPartidaExiste(string codigoPartida)
         {
+            if (codigoPartida == null)
+            {
+                return false;
+            }
             return _jugadoresEnLineaLobby.ContainsKey(codigoPartida);
+        }
+
+        public void ComprobarJugadoresExistentes(string uid)
+        {
+            List<string> cuentasSistema = ObtenerCuentasLobby(uid);
+            if (cuentasSistema.Count <= 0)
+            {
+                return;
+            }
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
+            CambiarSingle();
+            lock (_listaContextoJugadores)
+            {
+                List<ContextoJugador> jugadoresDesconectados = new List<ContextoJugador>();
+                foreach (string correo in cuentasSistema)
+                {
+                    foreach (ContextoJugador jugador in _listaContextoJugadores.Where(jugadorLista => jugadorLista.CorreoJugador.Equals(correo)))
+                    {
+                        try
+                        {
+                            jugador.ContextoJugadorCallBack.GetCallbackChannel<IUsuarioEnLineaCallback>().ComprobarJugador();
+                        }
+                        catch (CommunicationException ex)
+                        {
+                            log.LogWarn("Error comunicación con el cliente", ex);
+                            jugadoresDesconectados.Add(jugador);
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
+                            jugadoresDesconectados.Add(jugador);
+                        }
+                    }
+                }
+                EliminarLobbySistema(jugadoresDesconectados, uid);
+            }
+        }
+
+        private List<string> ObtenerCuentasLobby(string uid)
+        {
+            lock (_jugadoresEnLineaLobby)
+            {
+                if (!_jugadoresEnLineaLobby.ContainsKey(uid))
+                {
+                    return new List<string>();
+                }
+                List<string> lista = new List<string>();
+                foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid])
+                {
+                    lista.Add(jugador.CorreoJugador);
+                }
+                return lista;
+            }
+        }
+
+        private void EliminarLobbySistema(List<ContextoJugador> jugadores, string codigoPartida)
+        {
+            foreach (string jugadorCorreo in jugadores.Select(jugadorAEliminar => jugadorAEliminar.CorreoJugador)) 
+            {
+                SalirDelLobby(jugadorCorreo, codigoPartida);
+                if (!jugadorCorreo.Contains("@"))
+                {
+                    EliminarCuentaProvisional(jugadorCorreo);
+                }
+                lock (_jugadoresEnLineaLobby)
+                {
+                    SalirPartida(codigoPartida);
+                }
+                lock (_listaContextoJugadores)
+                {
+                    SalirDelSistema(jugadorCorreo);
+                }
+            }            
         }
     }
 }

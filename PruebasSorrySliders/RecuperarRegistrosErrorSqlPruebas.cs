@@ -11,21 +11,25 @@ namespace PruebasSorrySliders
 {
     public class RecuperarRegistrosErrorSqlPruebas
     {
-        //IInicioSesion
+        /// <seealso cref="InterfacesServidorSorrySliders.IInicioSesion"/>
         [Fact]
         public void VerificarContrasenaCuentaErrorSqlPrueba()
         {
             Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
 
             ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
-            CuentaSet cuentaNoExistente = new CuentaSet { CorreoElectronico = "correoPrueba@gmail.com" };
+            CuentaSet cuentaNoExistente = new CuentaSet 
+            { 
+                CorreoElectronico = "correoPrueba@gmail.com" 
+            };
 
             Constantes respuestaActual = servicioComunicacion.VerificarContrasenaDeCuenta(cuentaNoExistente);
 
             Assert.Equal(respuestaEsperada, respuestaActual);
 
         }
-        //IDetallesCuentaUsuario
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IDetallesCuentaUsuario"/>
         [Fact]
         public void VerificarRecuperarUsuarioIncompletoErrorSqlPrueba()
         {
@@ -52,7 +56,8 @@ namespace PruebasSorrySliders
 
             Assert.Equal(respuestaEsperada, respuestaActual);
         }
-        //Pruebas Interfaces IListaAmigos
+
+        /// <seealso cref="InterfacesServidorSorrySliders.IListaAmigos"/>
         [Fact]
         public void VerificarRecuperarAmigosCuentaIncompletosErrorSqlPrueba()
         {
@@ -84,7 +89,37 @@ namespace PruebasSorrySliders
             Assert.Equal(respuestaEsperada, respuestaActual);
             Assert.Equal(cuentasEsperadas, cuentasActuales);
         }
-        //IUnirsePartida
+        [Fact]
+        public void VerificarRecuperarTiposNotificacionErrorSqlPrueba()
+        {
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
+            string correoElectronico = null;
+
+            List<CuentaSet> cuentasEsperadas = null;
+
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            (Constantes respuestaActual, List<CuentaSet> cuentasActuales) = servicioComunicacion.RecuperarBaneados(correoElectronico);
+
+            Assert.Equal(respuestaEsperada, respuestaActual);
+            Assert.Equal(cuentasEsperadas, cuentasActuales);
+        }
+        [Fact]
+        public void VerificarRecuperarNotificacionesErrorSqlPrueba()
+        {
+            Constantes respuestaEsperada = Constantes.ERROR_CONSULTA;
+            string correoElectronico = null;
+
+            List<NotificacionSet> cuentasEsperadas = null;
+
+            ServicioComunicacionSorrySliders servicioComunicacion = new ServicioComunicacionSorrySliders();
+
+            (Constantes respuestaActual, List <NotificacionSet> cuentasActuales) = servicioComunicacion.RecuperarNotificaciones(correoElectronico);
+
+            Assert.Equal(respuestaEsperada, respuestaActual);
+            Assert.Equal(cuentasEsperadas, cuentasActuales);
+        }
+        /// <seealso cref="InterfacesServidorSorrySliders.IUnirsePartida"/>
         [Fact]
         public void VerificarRecuperarJugadoresLobbyDatosIncompletosErrorSqlPrueba()
         {

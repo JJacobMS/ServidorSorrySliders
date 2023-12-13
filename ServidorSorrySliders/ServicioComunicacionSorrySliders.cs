@@ -20,9 +20,11 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IInicioSesion
     {
-        public bool JugadorEstaEnLinea(string jugadorCorreo)
+        
+
+        public Constantes JugadorEstaEnLinea(string jugadorCorreo)
         {
-            bool estaEnLinea = false;
+            Logger log = new Logger(this.GetType(), "IInicioSesion");
             CambiarSingle();
             lock (_listaContextoJugadores)
             {
@@ -30,22 +32,31 @@ namespace ServidorSorrySliders
                 {
                     if (_listaContextoJugadores[i].CorreoJugador.Equals(jugadorCorreo))
                     {
-                        //Aquí tendría q llamar a comprobar jugador
-                        /*try
+                        try
                         {
                             _listaContextoJugadores[i].ContextoJugadorCallBack.GetCallbackChannel<IUsuarioEnLineaCallback>().ComprobarJugador();
                         }
-                        catch ()
+                        catch (CommunicationException ex)
                         {
-
-                        }*/
-                        estaEnLinea = true;
-                        break;
+                            log.LogWarn("Error de comunicación con el cliente", ex);
+                            SalirDelSistema(jugadorCorreo);
+                            CambiarMultiple();
+                            return Constantes.OPERACION_EXITOSA_VACIA;
+                        }
+                        catch (TimeoutException ex)
+                        {
+                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
+                            SalirDelSistema(jugadorCorreo);
+                            CambiarMultiple();
+                            return Constantes.OPERACION_EXITOSA_VACIA;
+                        }
+                        CambiarMultiple();
+                        return Constantes.OPERACION_EXITOSA;
                     }
                 }
+                CambiarMultiple();
+                return Constantes.OPERACION_EXITOSA_VACIA;
             }
-            CambiarMultiple();
-            return estaEnLinea;
         }
 
         public Constantes VerificarContrasenaDeCuenta(CuentaSet cuentaPorVerificar)
@@ -70,13 +81,11 @@ namespace ServidorSorrySliders
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error al ejecutar consulta SQL", ex);
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
-                Console.WriteLine(ex.ToString());
                 log.LogError("Error de conexión a la base de datos", ex);
                 return Constantes.ERROR_CONEXION_BD;
             }

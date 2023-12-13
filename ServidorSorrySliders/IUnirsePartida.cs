@@ -27,6 +27,8 @@ namespace InterfacesServidorSorrySliders
         Constantes CrearCuentaProvisionalInvitado(CuentaSet cuentaProvisionalInvitado);
         [OperationContract(IsOneWay = true)]
         void EliminarCuentaProvisional(string correoElectronico);
+        [OperationContract(IsOneWay = true)]
+        void SalirJuegoCompleto(string uid, string correo);
 
     }
 }
