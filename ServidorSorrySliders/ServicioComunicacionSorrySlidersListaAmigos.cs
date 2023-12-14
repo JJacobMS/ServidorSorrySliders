@@ -354,14 +354,23 @@ namespace ServidorSorrySliders
             {
                 try
                 {
-                    var filasAfectadas = contexto.Database.ExecuteSqlCommand("INSERT INTO RelaciónAmigosSet (CorreoElectronicoJugadorPrincipal, CorreoElectronicoJugadorAmigo) " +
+                    int registrosAmistad = VerificarExistenciaAmistad(correoElectronicoDestinatario, correoElectronicoRemitente);
+                    Console.WriteLine("FILAS "+registrosAmistad);
+                    if (registrosAmistad <= 0)
+                    {
+                        var filasAfectadas = contexto.Database.ExecuteSqlCommand("INSERT INTO RelaciónAmigosSet (CorreoElectronicoJugadorPrincipal, CorreoElectronicoJugadorAmigo) " +
                         "VALUES (@correoDestinatario,@correoRemitente), (@correoRemitente, @correoDestinatario);", 
                         new SqlParameter("@correoDestinatario",correoElectronicoDestinatario), new SqlParameter("@correoRemitente", correoElectronicoRemitente));
-                    if (filasAfectadas > 0)
-                    {
-                        return Constantes.OPERACION_EXITOSA;
+                        if (filasAfectadas > 0)
+                        {
+                            return Constantes.OPERACION_EXITOSA;
+                        }
+                        else 
+                        {
+                            return Constantes.OPERACION_EXITOSA_VACIA;
+                        }
                     }
-                    else 
+                    else
                     {
                         return Constantes.OPERACION_EXITOSA_VACIA;
                     }
@@ -424,24 +433,57 @@ namespace ServidorSorrySliders
             }
         }
 
-        public Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo)
+        public int VerificarExistenciaAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo)
         {
+            int respuesta = 1;
             Logger log = new Logger(this.GetType(), "IListaAmigos");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
+                    var filasAfectadas = contexto.Database.SqlQuery<int>("SELECT COUNT(*) FROM RelaciónAmigosSet where CorreoElectronicoJugadorPrincipal=@correoPrincipal " +
+                        "AND CorreoElectronicoJugadorAmigo=@correoAmigo;", new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), 
+                        new SqlParameter("@correoAmigo", correoElectronicoAmigo)).ToArray();
+                    Console.WriteLine("FILAS " + filasAfectadas[0]);
+                    return filasAfectadas[0];
+                }
+            }
+            catch (SqlException ex)
+            {
+                log.LogError("Error al ejecutar consulta SQL", ex);
+                Console.WriteLine("ERROR");
+                return respuesta;
+            }
+            catch (EntityException ex)
+            {
+                log.LogError("Error de conexión a la base de datos", ex);
+                Console.WriteLine("ERROR");
+                return respuesta;
+            }
+        }
+
+        public Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo)
+        {
+            Console.WriteLine("E");
+            CambiarSingle();
+            Logger log = new Logger(this.GetType(), "IListaAmigos");
+            try
+            {
+                using (var contexto = new BaseDeDatosSorrySlidersEntities())
+                {
+                    Console.WriteLine("Es");
                     var filasAfectadas = contexto.Database.ExecuteSqlCommand("DELETE FROM RelaciónAmigosSet where " +
                         "(CorreoElectronicoJugadorPrincipal = @correoPrincipal AND CorreoElectronicoJugadorAmigo = @correoAmigo) OR " +
-                        "(CorreoElectronicoJugadorPrincipal = @correoAmigo AND CorreoElectronicoJugadorAmigo = @correoPrincipal);", 
-                        new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), new SqlParameter("@correoAmigo",correoElectronicoAmigo));
-
+                        "(CorreoElectronicoJugadorPrincipal = @correoAmigo AND CorreoElectronicoJugadorAmigo = @correoPrincipal);",
+                        new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), new SqlParameter("@correoAmigo", correoElectronicoAmigo));
                     if (filasAfectadas <= 0)
                     {
+                        CambiarMultiple();
                         return Constantes.OPERACION_EXITOSA_VACIA;
                     }
                     else
                     {
+                        CambiarMultiple();
                         return Constantes.OPERACION_EXITOSA;
                     }
                 }
@@ -449,11 +491,13 @@ namespace ServidorSorrySliders
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
+                CambiarMultiple();
                 return Constantes.ERROR_CONSULTA;
             }
             catch (EntityException ex)
             {
                 log.LogError("Error de conexión a la base de datos", ex);
+                CambiarMultiple();
                 return Constantes.ERROR_CONEXION_BD;
             }
         }
