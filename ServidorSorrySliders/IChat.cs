@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DatosSorrySliders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -18,7 +19,12 @@ namespace ServidorSorrySliders
         void ExpulsarJugadorPartida(string uid, string correo);
         [OperationContract(IsOneWay = true)]
         void SalirChatListaJugadores(string uid, string correo);
+        [OperationContract]
+        Constantes ReingresarChat(string uid, string correo);
+        [OperationContract]
+        Constantes ValidarPartidaJugadorExistenteChat(string uid, string correo);
     }
+
 
     [ServiceContract]
     public interface IChatCallback

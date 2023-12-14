@@ -129,7 +129,6 @@
     <Compile Include="IPuntuacion.cs" />
     <Compile Include="IRegistroUsuario.cs" />
     <Compile Include="IUnirsePartida.cs" />
-    <Compile Include="IUsuariosEnLinea.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ManejarOperationContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -143,7 +142,6 @@
     <Compile Include="ServicioComunicacionSorrySlidersLobby.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersPuntuaciones.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersUnirsePartida.cs" />
-    <Compile Include="ServicioComunicacionSorrySlidersUsuariosEnLinea.cs" />
     <Compile Include="ServicioComunicacionSorrySlidersJuegoPuntuacion.cs" />
   </ItemGroup>
   <ItemGroup>
