@@ -85,7 +85,6 @@ namespace ServidorSorrySliders
 
         public void IniciarPartida(string uid)
         {
-            Console.WriteLine("S");
             Logger log = new Logger(this.GetType(), "ILobby");
             lock (_jugadoresEnLineaLobby)
             {

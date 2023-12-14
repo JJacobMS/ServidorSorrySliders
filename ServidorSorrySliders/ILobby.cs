@@ -15,7 +15,7 @@ namespace ServidorSorrySliders
         void EntrarPartida(string uid, string jugadorCorreo);
         [OperationContract(IsOneWay = true)]
         void SalirPartida(string uid);
-        [OperationContract]
+        [OperationContract(IsOneWay =true)]
         void IniciarPartida(string uid);
         [OperationContract]
         void ComprobarJugadoresExistentes(string uid);
