@@ -355,7 +355,6 @@ namespace ServidorSorrySliders
                 try
                 {
                     int registrosAmistad = VerificarExistenciaAmistad(correoElectronicoDestinatario, correoElectronicoRemitente);
-                    Console.WriteLine("FILAS "+registrosAmistad);
                     if (registrosAmistad <= 0)
                     {
                         var filasAfectadas = contexto.Database.ExecuteSqlCommand("INSERT INTO RelaciónAmigosSet (CorreoElectronicoJugadorPrincipal, CorreoElectronicoJugadorAmigo) " +
@@ -444,34 +443,29 @@ namespace ServidorSorrySliders
                     var filasAfectadas = contexto.Database.SqlQuery<int>("SELECT COUNT(*) FROM RelaciónAmigosSet where CorreoElectronicoJugadorPrincipal=@correoPrincipal " +
                         "AND CorreoElectronicoJugadorAmigo=@correoAmigo;", new SqlParameter("@correoPrincipal", correoElectronicoPrincipal), 
                         new SqlParameter("@correoAmigo", correoElectronicoAmigo)).ToArray();
-                    Console.WriteLine("FILAS " + filasAfectadas[0]);
                     return filasAfectadas[0];
                 }
             }
             catch (SqlException ex)
             {
                 log.LogError("Error al ejecutar consulta SQL", ex);
-                Console.WriteLine("ERROR");
                 return respuesta;
             }
             catch (EntityException ex)
             {
                 log.LogError("Error de conexión a la base de datos", ex);
-                Console.WriteLine("ERROR");
                 return respuesta;
             }
         }
 
         public Constantes EliminarAmistad(string correoElectronicoPrincipal, string correoElectronicoAmigo)
         {
-            Console.WriteLine("E");
             CambiarSingle();
             Logger log = new Logger(this.GetType(), "IListaAmigos");
             try
             {
                 using (var contexto = new BaseDeDatosSorrySlidersEntities())
                 {
-                    Console.WriteLine("Es");
                     var filasAfectadas = contexto.Database.ExecuteSqlCommand("DELETE FROM RelaciónAmigosSet where " +
                         "(CorreoElectronicoJugadorPrincipal = @correoPrincipal AND CorreoElectronicoJugadorAmigo = @correoAmigo) OR " +
                         "(CorreoElectronicoJugadorPrincipal = @correoAmigo AND CorreoElectronicoJugadorAmigo = @correoPrincipal);",
