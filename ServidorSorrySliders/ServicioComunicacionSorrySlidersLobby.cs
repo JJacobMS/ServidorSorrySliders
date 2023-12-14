@@ -120,56 +120,37 @@ namespace ServidorSorrySliders
 
         public void ComprobarJugadoresExistentes(string uid)
         {
-            List<string> cuentasSistema = ObtenerCuentasLobby(uid);
-            if (cuentasSistema.Count <= 0)
-            {
-                return;
-            }
             Logger log = new Logger(this.GetType(), "IInicioSesion");
             CambiarSingle();
-            lock (_listaContextoJugadores)
+            lock (_jugadoresEnLineaLobby)
             {
-                List<ContextoJugador> jugadoresDesconectados = new List<ContextoJugador>();
-                foreach (string correo in cuentasSistema)
+                if (!_jugadoresEnLineaLobby.ContainsKey(uid))
                 {
-                    foreach (ContextoJugador jugador in _listaContextoJugadores.Where(jugadorLista => jugadorLista.CorreoJugador.Equals(correo)))
+                    return;
+                }
+                List<ContextoJugador> jugadoresDesconectados = new List<ContextoJugador>();
+                string correoActual = ManejarOperationContext.DevolverCorreoJugador(_jugadoresEnLineaLobby[uid], OperationContext.Current);
+                foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid].Where(jugadorLista => !jugadorLista.CorreoJugador.Equals(correoActual)))
+                {
+                    try
                     {
-                        try
-                        {
-                            jugador.ContextoJugadorCallBack.GetCallbackChannel<IUsuarioEnLineaCallback>().ComprobarJugador();
-                        }
-                        catch (CommunicationException ex)
-                        {
-                            log.LogWarn("Error comunicación con el cliente", ex);
-                            jugadoresDesconectados.Add(jugador);
-                        }
-                        catch (TimeoutException ex)
-                        {
-                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
-                            jugadoresDesconectados.Add(jugador);
-                        }
+                        jugador.ContextoJugadorCallBack.GetCallbackChannel<ILobbyCallback>().ComprobarJugadorLobby();
+                    }
+                    catch (CommunicationException ex)
+                    {
+                        log.LogWarn("Error comunicación con el cliente", ex);
+                        jugadoresDesconectados.Add(jugador);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
+                        jugadoresDesconectados.Add(jugador);
                     }
                 }
                 EliminarLobbySistema(jugadoresDesconectados, uid);
             }
         }
 
-        private List<string> ObtenerCuentasLobby(string uid)
-        {
-            lock (_jugadoresEnLineaLobby)
-            {
-                if (!_jugadoresEnLineaLobby.ContainsKey(uid))
-                {
-                    return new List<string>();
-                }
-                List<string> lista = new List<string>();
-                foreach (ContextoJugador jugador in _jugadoresEnLineaLobby[uid])
-                {
-                    lista.Add(jugador.CorreoJugador);
-                }
-                return lista;
-            }
-        }
 
         private void EliminarLobbySistema(List<ContextoJugador> jugadores, string codigoPartida)
         {
@@ -183,10 +164,6 @@ namespace ServidorSorrySliders
                 lock (_jugadoresEnLineaLobby)
                 {
                     SalirPartida(codigoPartida);
-                }
-                lock (_listaContextoJugadores)
-                {
-                    SalirDelSistema(jugadorCorreo);
                 }
             }            
         }

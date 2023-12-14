@@ -16,7 +16,5 @@ namespace InterfacesServidorSorrySliders
 
         [OperationContract]
         Constantes VerificarContrasenaDeCuenta(CuentaSet cuentaPorVerificar);
-        [OperationContract]
-        Constantes JugadorEstaEnLinea(string jugadorCorreo);
     }
 }

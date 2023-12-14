@@ -261,7 +261,6 @@ namespace ServidorSorrySliders
                     }
                 }
 
-                SalirDelSistema(jugador.CorreoJugador);
             }
         }
 

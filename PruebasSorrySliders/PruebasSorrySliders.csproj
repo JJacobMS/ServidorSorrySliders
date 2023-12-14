@@ -96,7 +96,6 @@
     <Compile Include="EliminarRegistrosExitososPruebas.cs" />
     <Compile Include="EliminarRegistrosNoExistentesPruebas.cs" />
     <Compile Include="LlamadaCallBackJuegoLanzamientoPruebas.cs" />
-    <Compile Include="LlamadaCallBackUsuarioEnLineaPruebas.cs" />
     <Compile Include="LlamadaCallChatPruebas.cs" />
     <Compile Include="ObtenerCadenaConexion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

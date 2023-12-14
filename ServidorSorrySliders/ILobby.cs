@@ -31,6 +31,8 @@ namespace ServidorSorrySliders
         void JugadorSalioPartida();
         [OperationContract(IsOneWay = true)]
         void HostInicioPartida();
+        [OperationContract(IsOneWay = true)]
+        void ComprobarJugadorLobby();
     }
 }
 

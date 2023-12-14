@@ -20,45 +20,6 @@ namespace ServidorSorrySliders
 {
     public partial class ServicioComunicacionSorrySliders : IInicioSesion
     {
-        
-
-        public Constantes JugadorEstaEnLinea(string jugadorCorreo)
-        {
-            Logger log = new Logger(this.GetType(), "IInicioSesion");
-            CambiarSingle();
-            lock (_listaContextoJugadores)
-            {
-                for (int i = 0; i < _listaContextoJugadores.Count; i++)
-                {
-                    if (_listaContextoJugadores[i].CorreoJugador.Equals(jugadorCorreo))
-                    {
-                        try
-                        {
-                            _listaContextoJugadores[i].ContextoJugadorCallBack.GetCallbackChannel<IUsuarioEnLineaCallback>().ComprobarJugador();
-                        }
-                        catch (CommunicationException ex)
-                        {
-                            log.LogWarn("Error de comunicación con el cliente", ex);
-                            SalirDelSistema(jugadorCorreo);
-                            CambiarMultiple();
-                            return Constantes.OPERACION_EXITOSA_VACIA;
-                        }
-                        catch (TimeoutException ex)
-                        {
-                            log.LogWarn("Se agoto el tiempo de espera del cliente", ex);
-                            SalirDelSistema(jugadorCorreo);
-                            CambiarMultiple();
-                            return Constantes.OPERACION_EXITOSA_VACIA;
-                        }
-                        CambiarMultiple();
-                        return Constantes.OPERACION_EXITOSA;
-                    }
-                }
-                CambiarMultiple();
-                return Constantes.OPERACION_EXITOSA_VACIA;
-            }
-        }
-
         public Constantes VerificarContrasenaDeCuenta(CuentaSet cuentaPorVerificar)
         {
             Logger log = new Logger(this.GetType(), "IInicioSesion");

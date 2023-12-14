@@ -185,7 +185,6 @@ namespace ServidorSorrySliders
             {
                 if (_jugadoresEnLineaChat.ContainsKey(uid))
                 {
-                    Console.WriteLine("Si esta");
                     int posicionJugador = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaChat[uid], correo);
                     if (posicionJugador != -1)
                     {
@@ -194,7 +193,6 @@ namespace ServidorSorrySliders
                     }
                 }
             }
-            Console.WriteLine("no");
             CambiarMultiple();
             return Constantes.OPERACION_EXITOSA_VACIA;
         }
