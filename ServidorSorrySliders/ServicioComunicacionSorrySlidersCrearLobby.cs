@@ -16,6 +16,7 @@ namespace ServidorSorrySliders
     {
         public (Constantes, string) CrearPartida(string correoHost, int numeroJugadores)
         {
+            Console.WriteLine("Creando partida");
             Logger log = new Logger(this.GetType(), "ICrearLobby");
             try
             {
