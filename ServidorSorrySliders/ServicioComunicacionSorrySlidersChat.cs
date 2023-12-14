@@ -152,5 +152,51 @@ namespace ServidorSorrySliders
             }
         }
 
+        public Constantes ReingresarChat(string uid, string correo)
+        {
+            CambiarSingle();
+            ContextoJugador jugadorReemplazado = new ContextoJugador
+            {
+                CorreoJugador = correo,
+                ContextoJugadorCallBack = OperationContext.Current
+            };
+
+            lock (_jugadoresEnLineaChat)
+            {
+                if (_jugadoresEnLineaChat.ContainsKey(uid))
+                {
+                    int posicionJugador = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaChat[uid], jugadorReemplazado.CorreoJugador);
+                    if (posicionJugador != -1)
+                    {
+                        _jugadoresEnLineaChat[uid][posicionJugador] = jugadorReemplazado;
+                        CambiarMultiple();
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                }
+            }
+            CambiarMultiple();
+            return Constantes.OPERACION_EXITOSA_VACIA;
+        }
+
+        public Constantes ValidarPartidaJugadorExistenteChat(string uid, string correo)
+        {
+            CambiarSingle();
+            lock (_jugadoresEnLineaChat)
+            {
+                if (_jugadoresEnLineaChat.ContainsKey(uid))
+                {
+                    Console.WriteLine("Si esta");
+                    int posicionJugador = ManejarOperationContext.DevolverPosicionCorreoJugador(_jugadoresEnLineaChat[uid], correo);
+                    if (posicionJugador != -1)
+                    {
+                        CambiarMultiple();
+                        return Constantes.OPERACION_EXITOSA;
+                    }
+                }
+            }
+            Console.WriteLine("no");
+            CambiarMultiple();
+            return Constantes.OPERACION_EXITOSA_VACIA;
+        }
     }
 }
